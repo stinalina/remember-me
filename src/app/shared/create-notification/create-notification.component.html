@@ -1,61 +1,73 @@
-<!-- <template>
-  <form class="shadow-lg p-3 rounded-lg bg-white
-    border-2 border-gray-500"
-    @submit.prevent="onSubmit">
-    <div class="flex flex-col gap-4 justify-around">
+<form [formGroup]="this.myForm" (ngSubmit)="this.sendNotification()"
+  class="shadow-lg p-3 rounded-lg bg-white
+  border-2 border-gray-500">
+  <div class="flex flex-col gap-4 justify-around">
+    <label class="input">
+      Subject
+      <input type="text" id="create-notifcation-subject" 
+        formControlName="subject"
+        class="grow" placeholder="{{ this.placeholderSubject }}" />
+    </label>
 
-      <input id="create-notifcation-subject"
-        type="text" 
-        placeholder="Meine erste RememberMe Benachrichtigung..." 
-        v-model="subject"/>
-
-      <QuillEditor id="create-notification-editor"
-        ref="editorRef"
-        contentType="text"
-        v-model:content="content"
-        toolbar="minimal"
-        class="min-h-24"/>
-
-      <div class="flex flex-col w-full">
-        <label for="create-notification-date-time">
-          Wann möchtest du erinnert werden?
-        </label>
-        <input id="create-notification-date-time" required
-          type="datetime-local"
-          :min="now"
-          v-model="dateTime"/>
-      </div>
-
-      <div class="flex flex-col w-full">
-        <label for="create-notifcation-mail">
-          Sende Erinnerung an:
-        </label>
-        <input id="create-notifcation-mail" required
-          type="email" 
-          pattern="\w+@\w+\.(com|de|net|org)"
-          size="30"
-          placeholder="yourMailAdress@provider.com"
-          v-model="mail" />
-      </div>
-
-      <div class="flex justify-end">
-        <button id="create-notification-apply"
-          class="btn btn-outline"
-          type="submit"
-          :disabled="!canSubmitForm || sendingNotification">
-          {{ sendingNotification ? 'Sending...' : 'Create Notification' }}
-        </button>
-      </div>
+    <div class="NgxEditor__Wrapper">
+      <ngx-editor-menu [editor]="editor"> </ngx-editor-menu>
+      <ngx-editor id="create-notification-editor" class="min-h-full"
+        [editor]="editor"
+        outputFormat="html"
+        formControlName="content"
+        [placeholder]="'Type here...'"
+      ></ngx-editor>
     </div>
-  </form>
-</template> -->
 
-<div class="NgxEditor__Wrapper">
-  <ngx-editor-menu [editor]="editor"> </ngx-editor-menu>
-  <ngx-editor
-    [editor]="editor"
-    [ngModel]="html"
-    [disabled]="false"
-    [placeholder]="'Type here...'"
-  ></ngx-editor>
-</div>
+    <div class="flex flex-col w-full">
+      <label for="create-notification-date-time">
+        Wann möchtest du erinnert werden?
+      </label>
+      <input id="create-notification-date-time" class="input"
+        formControlName="dateTime"
+        type="datetime-local"
+        [min]="this.now"/>
+    </div>
+
+    <div class="flex flex-col w-full">
+      <label for="create-notifcation-mail">
+        Sende Erinnerung an:
+      </label>
+      <label class="input validator">
+        <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <g
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            stroke-width="2.5"
+            fill="none"
+            stroke="currentColor"
+          >
+            <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+          </g>
+        </svg>
+        <input id="create-notifcation-mail"
+          formControlName="mail"
+          type="email" placeholder="mail@site.com" />
+      </label>
+      <div class="validator-hint hidden">Enter valid email address</div>
+    </div>
+
+    <div class="flex justify-end">
+      <!-- <button id="create-notification-apply"
+        class="btn btn-outline"
+        type="submit"
+        :disabled="!canSubmitForm || sendingNotification">
+        {{ sendingNotification ? 'Sending...' : 'Create Notification' }}
+      </button> -->
+
+      <button type="submit" class="btn" id="create-notification-apply"
+        [class.btn-disabled]="!this.canSubmitForm() || this.sendingNotification()">
+        @if (this.sendingNotification()) {
+          <span class="loading loading-spinner"></span>
+        }
+        {{ this.sendingNotification() ? 'Sending...' : 'Create Notification' }}
+      </button>
+    </div>
+  </div>
+</form>
