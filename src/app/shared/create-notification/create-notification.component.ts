@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { Component, computed, inject, OnDestroy, OnInit, signal, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NotificationService } from '../services/notification.service';
+import { INotification } from '../models';
 
 @Component({
   selector: 'reme-create-notification',
@@ -62,13 +63,13 @@ export class CreateNotificationComponent implements OnDestroy {
 
     const notification = {
       subject: this.myForm.value.subject ||  this.placeholderSubject, // use placeholder if empty
-      content: this.myForm.value.content,
-      dateTime: this.myForm.value.dateTime,
-      mail: this.myForm.value.mail
-    };
+      content: this.myForm.value.content!,
+      dueDate: this.myForm.value.dateTime!.toString(),
+      mail: this.myForm.value.mail!
+    } satisfies INotification;
 
     this.sendingNotification.set(true);
-    this.notificationService.sendNotification().then(() => {
+    this.notificationService.sendNotification(notification).then(() => {
       console.log('Notification sent:', notification);
       this.myForm.reset();
     }).catch((err: unknown) => {

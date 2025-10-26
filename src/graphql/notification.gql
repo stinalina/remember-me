@@ -1,0 +1,7 @@
+mutation InsertNotification($objects: [dev_Notification_insert_input!]!) {
+  insert_dev_Notification(objects: $objects) {
+    returning {
+      Subject
+    }
+  }
+}
