@@ -13,13 +13,12 @@
         Los geht's!
       </h3>
       <ul class="menu menu-vertical lg:menu-horizontal bg-base-200 rounded-box">
-        <li><a routerLink="/">Home</a></li>
-        <li><a routerLink="/about">About</a></li>
-        <li><a routerLink="/free-notification">Ausprobieren</a></li>
+        <li><a [routerLink]="[RouterTokens.HOME]">Home</a></li>
+        <li><a [routerLink]="[RouterTokens.ABOUT]">About</a></li>
+        <li><a [routerLink]="[RouterTokens.FREE_NOTIFICATION]">Ausprobieren</a></li>
       </ul>
     </div>
   </header>
-  <reme-create-notification></reme-create-notification>
-  <!-- <router-outlet /> -->
+  <router-outlet />
 </div>
 <reme-footer></reme-footer>
