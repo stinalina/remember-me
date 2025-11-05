@@ -12,8 +12,11 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideApollo(() => {
       const httpLink = inject(HttpLink);
+      //  if (!environment.production && environment.HASURA_ADMIN_SECRET !== '') {
+      //   headers = new HttpHeaders({ 'x-hasura-admin-secret': environment.HASURA_ADMIN_SECRET });
+      // }
       return {
-        link: httpLink.create({ uri: 'http://localhost:8081/v1/graphql' }),
+        link: httpLink.create({ uri: 'http://localhost:8081/v1/graphql' }), //headers inside here
         cache: new InMemoryCache()
       };
     }),

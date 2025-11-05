@@ -1,12 +1,15 @@
+import { environment } from './../../../../environment';
 import { inject, Inject, Injectable } from "@angular/core";
 import { InsertNotificationGQL, InsertNotificationMutationVariables, InsertUserGQL } from "../../../graphql/generated";
 import { INotification, IUser } from "../models";
+import { HttpClient } from "@angular/common/http";
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
 
   private insertUser = inject(InsertUserGQL);
   private insertNotification = inject(InsertNotificationGQL);
+  private httpClient = inject(HttpClient);
 
   public sendNotification(notification: INotification): Promise<void> {
     const variables: InsertNotificationMutationVariables = {
@@ -24,6 +27,12 @@ export class NotificationService {
       this.insertNotification.mutate({variables}).subscribe({
       next: (result) => {
         console.log('Inserted notification:', result.data?.insert_dev_Notification?.returning);
+        this.httpClient.post(`${environment.SEND_WELCOME_MAIL_URL}/${notification.mail}`, {}).subscribe(
+          { 
+            next: () => console.log('Welcome email sent successfully.'), 
+            error: (err) => console.error('Error sending welcome email:', err) 
+          }
+        )
       },
       error: (error) => {
         console.error('Error inserting notification:', error);
