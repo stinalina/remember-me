@@ -2,8 +2,13 @@ mutation InsertUser($mail: String!, $name: String!) {
   insert_dev_User(objects: { Mail: $mail, Name: $name }) {
     returning {
       Id
-      Mail
-      Name
     }
+  }
+}
+
+query GetUserByMail($mail: String!) {
+  dev_User(where: {Mail: {_eq:$ mail}}) {
+    Id,
+    Name
   }
 }

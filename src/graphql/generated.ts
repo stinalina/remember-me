@@ -937,7 +937,14 @@ export type InsertUserMutationVariables = Exact<{
 }>;
 
 
-export type InsertUserMutation = { __typename?: 'mutation_root', insert_dev_User?: { __typename?: 'dev_User_mutation_response', returning: Array<{ __typename?: 'dev_User', Id: any, Mail: string, Name: string }> } | null };
+export type InsertUserMutation = { __typename?: 'mutation_root', insert_dev_User?: { __typename?: 'dev_User_mutation_response', returning: Array<{ __typename?: 'dev_User', Id: any }> } | null };
+
+export type GetUserByMailQueryVariables = Exact<{
+  mail: Scalars['String']['input'];
+}>;
+
+
+export type GetUserByMailQuery = { __typename?: 'query_root', dev_User: Array<{ __typename?: 'dev_User', Id: any, Name: string }> };
 
 export const InsertNotificationDocument = gql`
     mutation InsertNotification($objects: [dev_Notification_insert_input!]!) {
@@ -964,8 +971,6 @@ export const InsertUserDocument = gql`
   insert_dev_User(objects: {Mail: $mail, Name: $name}) {
     returning {
       Id
-      Mail
-      Name
     }
   }
 }
@@ -976,6 +981,25 @@ export const InsertUserDocument = gql`
   })
   export class InsertUserGQL extends Apollo.Mutation<InsertUserMutation, InsertUserMutationVariables> {
     document = InsertUserDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const GetUserByMailDocument = gql`
+    query GetUserByMail($mail: String!) {
+  dev_User(where: {Mail: {_eq: $mail}}) {
+    Id
+    Name
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetUserByMailGQL extends Apollo.Query<GetUserByMailQuery, GetUserByMailQueryVariables> {
+    document = GetUserByMailDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

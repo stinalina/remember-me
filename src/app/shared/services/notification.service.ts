@@ -1,52 +1,68 @@
 import { environment } from './../../../../environment';
 import { inject, Inject, Injectable } from "@angular/core";
-import { InsertNotificationGQL, InsertNotificationMutationVariables, InsertUserGQL } from "../../../graphql/generated";
+import { GetUserByMailGQL, InsertNotificationGQL, InsertNotificationMutationVariables, InsertUserGQL } from "../../../graphql/generated";
 import { INotification, IUser } from "../models";
 import { HttpClient } from "@angular/common/http";
+import { catchError, map, Observable, of, pipe, switchMap, tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
 
-  private insertUser = inject(InsertUserGQL);
-  private insertNotification = inject(InsertNotificationGQL);
-  private httpClient = inject(HttpClient);
+  private readonly httpClient = inject(HttpClient);
 
-  public sendNotification(notification: INotification): Promise<void> {
+  private readonly insertUser = inject(InsertUserGQL);
+  private readonly getUserByMail = inject(GetUserByMailGQL);
+  private readonly insertNotification = inject(InsertNotificationGQL);
+
+  public getUserByMailOrCreateUserIfNotExists(mail: string): Observable<string> {
+    return this.getUserByMail.fetch({ variables: { mail } }).pipe(
+      switchMap((result) => {
+        const userExists = result.data?.dev_User.length !== 0 && result.data?.dev_User[0].Id != null;
+        if (userExists) {
+          return of(result.data?.dev_User[0].Id);
+        } else {
+          return this.insertUser.mutate({ variables: { mail, name: 'Unknown' } }).pipe(
+            tap((res) => console.log(`Created new user with id: ${res.data?.insert_dev_User?.returning[0].Id}`)),
+            map((res) => res.data?.insert_dev_User?.returning[0].Id!)
+          );
+        }
+      })
+    );
+  }
+
+  /**
+   * Inserts notification and send email.
+   * @param notification 
+   * @returns a bollean indicating whether the operation was successful.
+   */
+  public createNotification(notification: INotification, userId: string): Observable<boolean> {
     const variables: InsertNotificationMutationVariables = {
       objects: [
         {
           Content: notification.content,
           DueDate: notification.dueDate,
-          UserId: 'c27b71b1-d3a1-4253-8079-712cc346a9a6',
+          UserId: userId, //'c27b71b1-d3a1-4253-8079-712cc346a9a6',
           Subject: notification.subject
         }
       ]
     };
-    return new Promise((resolve) => setTimeout(async () => {
-      //await this.createUserIfNotExists();
-      this.insertNotification.mutate({variables}).subscribe({
-      next: (result) => {
-        console.log('Inserted notification:', result.data?.insert_dev_Notification?.returning);
-        this.httpClient.post(`${environment.SEND_WELCOME_MAIL_URL}/${notification.mail}`, {}).subscribe(
-          { 
-            next: () => console.log('Welcome email sent successfully.'), 
-            error: (err) => console.error('Error sending welcome email:', err) 
-          }
+    return this.insertNotification.mutate({variables}).pipe(
+      catchError((error) => {
+        console.error(`Error inserting notification: ${JSON.stringify(error)}`);
+        return of(false);
+      }),
+      tap((result) => console.log(`Inserted notification: ${JSON.stringify(result)}`)),
+      switchMap(() =>
+        this.httpClient.post(`${environment.SEND_WELCOME_MAIL_URL}/${notification.mail}`, {}).pipe(
+          catchError((error) => {
+            console.error(`Error sending welcome email: ${JSON.stringify(error)}`);
+            return of(false);
+          }),
+          map(() => true),
         )
-      },
-      error: (error) => {
-        console.error('Error inserting notification:', error);
-      }
-    });
-      resolve(); //without this the promise never terminates aka resolves
-    } , 1000));
+      )
+    )
   }
-
-  // private createUserIfNotExists(user: IUser): Promise<void> {
-  //   return this.insertUser.mutate({ mail, name }).toPromise().then(() => {
-  //     console.log(`User with mail ${mail} created/exists.`);
-  //   });
-  // }
 }
     // return new Promise((resolve) => {
     //   setTimeout(() => {

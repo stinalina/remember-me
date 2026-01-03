@@ -4,6 +4,7 @@ import { Component, computed, inject, OnDestroy, OnInit, signal, viewChild } fro
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NotificationService } from '../services/notification.service';
 import { INotification } from '../models';
+import { switchMap, tap, finalize, catchError } from 'rxjs';
 
 @Component({
   selector: 'reme-create-notification',
@@ -56,26 +57,29 @@ export class CreateNotificationComponent implements OnDestroy {
     this.editor.destroy();
   }
 
-  public sendNotification(): void {
+  public createNotification(): void {
     if (!this.canSubmitForm()) {
       return;
     }
 
     const notification = {
-      subject: this.myForm.value.subject ||  this.placeholderSubject, // use placeholder if empty
+      subject: this.myForm.value.subject || this.placeholderSubject, // use placeholder if empty
       content: this.myForm.value.content!,
       dueDate: this.myForm.value.dateTime!.toString(),
       mail: this.myForm.value.mail!
     } satisfies INotification;
 
-    this.sendingNotification.set(true);
-    this.notificationService.sendNotification(notification).then(() => {
+    this.notificationService.getUserByMailOrCreateUserIfNotExists(notification.mail).pipe(
+      tap(() => this.sendingNotification.set(true)),
+      switchMap((userId: string) => this.notificationService.createNotification(notification, userId)),
+      catchError((error) => {
+        console.error('Error creating notification.');
+        throw error;
+      }),
+      finalize(() => this.sendingNotification.set(false))
+    ).subscribe(() => {
       console.log('Notification sent:', notification);
       this.myForm.reset();
-    }).catch((err: unknown) => {
-      console.error('Error sending notification:', err);
-    }).finally(() => {
-      this.sendingNotification.set(false);
     });
   }
 }
