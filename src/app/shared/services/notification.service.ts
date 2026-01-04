@@ -24,33 +24,22 @@ export class NotificationService {
           return of({
             mail,
             name: result.data?.dev_User[0].Name ?? '',
-            userId: result.data?.dev_User[0].Id
+            userId: result.data?.dev_User[0].Id,
+            newCreated: false
           } satisfies IUser);
         } else {
           return this.insertUser.mutate({ variables: { mail, name: this.unkownUserName } }).pipe(
             tap((res) => console.log(`Created new user with id: ${res.data?.insert_dev_User?.returning[0].Id}`)),
-            map((res) => res.data?.insert_dev_User?.returning[0].Id!)
-          );
+            map((res) => ({
+              mail,
+              name: res.data?.insert_dev_User?.returning[0].Name ?? '',
+              userId: res.data?.insert_dev_User?.returning[0].Id,
+              newCreated: true
+            } satisfies IUser)
+          ));
         }
       })
     );
-  }
-
-  /**
-   * subscribes to a post which sends a welcome mail. catchs the error and logs it.
-   * @param user 
-   */
-  public sendWelcomeMail(user: IUser): void {
-      const payload = {
-        Mail: user.mail,
-        Name: user.name === this.unkownUserName ? '' : user.name
-      };
-
-     this.httpClient.post(`${environment.SEND_WELCOME_MAIL_URL}`, payload)
-      .subscribe({
-        next: (response) => console.log('Welcome email sent successfully!', response),
-        error: (error) => console.error(`Error sending welcome email: ${JSON.stringify(error)}`)
-      });
   }
 
   /**
@@ -76,10 +65,29 @@ export class NotificationService {
       }),
       tap((result) => console.log(`Inserted notification: ${JSON.stringify(result)}`)),
       map(() => {
-        this.sendWelcomeMail(user);
+        if (user.newCreated === true) {
+          this.sendWelcomeMail(user);
+        }
         return true;
       })
     )
+  }
+
+  /**
+   * subscribes to a post which sends a welcome mail. catchs the error and logs it.
+   * @param user 
+   */
+  public sendWelcomeMail(user: IUser): void {
+      const payload = {
+        Mail: user.mail,
+        Name: user.name === this.unkownUserName ? '' : user.name
+      };
+
+     this.httpClient.post(`${environment.SEND_WELCOME_MAIL_URL}`, payload)
+      .subscribe({
+        next: (response) => console.log('Welcome email sent successfully!', response),
+        error: (error) => console.error(`Error sending welcome email: ${JSON.stringify(error)}`)
+      });
   }
 }
     // return new Promise((resolve) => {
