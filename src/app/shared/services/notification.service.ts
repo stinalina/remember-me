@@ -4,18 +4,20 @@ import { GetUserByMailGQL, InsertNotificationGQL, InsertNotificationMutationVari
 import { INotification, IUser } from "../models";
 import { HttpClient } from "@angular/common/http";
 import { catchError, map, Observable, of, pipe, switchMap, tap } from 'rxjs';
+import { ToastService, ToastSeverity } from 'daisyui-toaster';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
 
   private readonly httpClient = inject(HttpClient);
+  private readonly toastService = inject(ToastService);
 
   private readonly insertUser = inject(InsertUserGQL);
   private readonly getUserByMail = inject(GetUserByMailGQL);
   private readonly insertNotification = inject(InsertNotificationGQL);
 
   private readonly unkownUserName = 'Unknown';
-
+  
   public getUserByMailOrCreateUserIfNotExists(mail: string): Observable<IUser> {
     return this.getUserByMail.fetch({ variables: { mail } }).pipe(
       switchMap((result) => {
@@ -61,6 +63,7 @@ export class NotificationService {
     return this.insertNotification.mutate({variables}).pipe(
       catchError((error) => {
         console.error(`Error inserting notification: ${JSON.stringify(error)}`);
+        this.showToast('Oh nein! Das hat leider nicht geklappt!', ToastSeverity.Error);
         return of(false);
       }),
       tap((result) => console.log(`Inserted notification: ${JSON.stringify(result)}`)),
@@ -68,6 +71,7 @@ export class NotificationService {
         if (user.newCreated === true) {
           this.sendWelcomeMail(user);
         }
+        this.showToast('Notification created successfully!', ToastSeverity.Success);
         return true;
       })
     )
@@ -78,18 +82,30 @@ export class NotificationService {
    * @param user 
    */
   public sendWelcomeMail(user: IUser): void {
-      const payload = {
-        Mail: user.mail,
-        Name: user.name === this.unkownUserName ? '' : user.name
-      };
+    const payload = {
+      Mail: user.mail,
+      Name: user.name === this.unkownUserName ? '' : user.name
+    };
 
-     this.httpClient.post(`${environment.SEND_WELCOME_MAIL_URL}`, payload)
-      .subscribe({
-        next: (response) => console.log('Welcome email sent successfully!', response),
-        error: (error) => console.error(`Error sending welcome email: ${JSON.stringify(error)}`)
-      });
+    this.httpClient.post(`${environment.SEND_WELCOME_MAIL_URL}`, payload)
+    .subscribe({
+      next: (response) => console.log('Welcome email sent successfully!', response),
+      error: (error) => console.error(`Error sending welcome email: ${JSON.stringify(error)}`)
+    });
+  }
+
+  private showToast(message: string, kind: ToastSeverity): void {
+    this.toastService.add({
+      severity: kind,
+      detail: message,
+      // callback: (): void => {
+      //   alert('Toast clicked!');
+      // },
+    });
   }
 }
+
+//TODO show toast messages
     // return new Promise((resolve) => {
     //   setTimeout(() => {
     //   try {

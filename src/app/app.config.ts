@@ -7,6 +7,12 @@ import { provideApollo } from 'apollo-angular';
 import { InMemoryCache } from '@apollo/client';
 import { HttpLink } from 'apollo-angular/http';
 
+import {
+  provideToastService,
+  ToastHorizontalPosition,
+  ToastVerticalPosition,
+} from 'daisyui-toaster';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(),
@@ -22,6 +28,17 @@ export const appConfig: ApplicationConfig = {
     }),
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes)
+    provideRouter(routes),
+    provideToastService({
+      horizontalPosition: ToastHorizontalPosition.Right,
+      verticalPosition: ToastVerticalPosition.Top,
+      topOffset: 20,
+      rightOffset: 20,
+      zIndex: 1000,
+      defaultDuration: 3000,
+      defaultShowClose: true,
+      defaultCloseOnClick: false,
+      maxToasts: 5,
+    }),
   ]
 };

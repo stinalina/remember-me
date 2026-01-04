@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink } from '@angular/router';
 import { FooterComponent } from './shared/footer/footer.component';
 import { ROUTER_TOKENS } from './app.routes';
+import { DaisyUiToasterComponent } from 'daisyui-toaster';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, FooterComponent, RouterLink],
+  imports: [RouterOutlet, FooterComponent, RouterLink, DaisyUiToasterComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
