@@ -937,7 +937,7 @@ export type InsertUserMutationVariables = Exact<{
 }>;
 
 
-export type InsertUserMutation = { __typename?: 'mutation_root', insert_dev_User?: { __typename?: 'dev_User_mutation_response', returning: Array<{ __typename?: 'dev_User', Id: any }> } | null };
+export type InsertUserMutation = { __typename?: 'mutation_root', insert_dev_User?: { __typename?: 'dev_User_mutation_response', returning: Array<{ __typename?: 'dev_User', Id: any, Name: string }> } | null };
 
 export type GetUserByMailQueryVariables = Exact<{
   mail: Scalars['String']['input'];
@@ -971,6 +971,7 @@ export const InsertUserDocument = gql`
   insert_dev_User(objects: {Mail: $mail, Name: $name}) {
     returning {
       Id
+      Name
     }
   }
 }

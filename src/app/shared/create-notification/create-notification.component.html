@@ -62,7 +62,7 @@
       </button> -->
 
       <button type="submit" class="btn" id="create-notification-apply"
-        [class.btn-disabled]="!this.canSubmitForm() || this.sendingNotification()">
+        [class.btn-disabled]="(!this.canSubmitForm() || this.sendingNotification()) && !this.retry()">
         @if (this.sendingNotification()) {
           <span class="loading loading-spinner"></span>
         }

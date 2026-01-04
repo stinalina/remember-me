@@ -14,14 +14,20 @@ export class NotificationService {
   private readonly getUserByMail = inject(GetUserByMailGQL);
   private readonly insertNotification = inject(InsertNotificationGQL);
 
-  public getUserByMailOrCreateUserIfNotExists(mail: string): Observable<string> {
+  private readonly unkownUserName = 'Unknown';
+
+  public getUserByMailOrCreateUserIfNotExists(mail: string): Observable<IUser> {
     return this.getUserByMail.fetch({ variables: { mail } }).pipe(
       switchMap((result) => {
-        const userExists = result.data?.dev_User.length !== 0 && result.data?.dev_User[0].Id != null;
+        const userExists = result.data?.dev_User.length !== 0;
         if (userExists) {
-          return of(result.data?.dev_User[0].Id);
+          return of({
+            mail,
+            name: result.data?.dev_User[0].Name ?? '',
+            userId: result.data?.dev_User[0].Id
+          } satisfies IUser);
         } else {
-          return this.insertUser.mutate({ variables: { mail, name: 'Unknown' } }).pipe(
+          return this.insertUser.mutate({ variables: { mail, name: this.unkownUserName } }).pipe(
             tap((res) => console.log(`Created new user with id: ${res.data?.insert_dev_User?.returning[0].Id}`)),
             map((res) => res.data?.insert_dev_User?.returning[0].Id!)
           );
@@ -32,14 +38,19 @@ export class NotificationService {
 
   /**
    * subscribes to a post which sends a welcome mail. catchs the error and logs it.
-   * @param mail 
+   * @param user 
    */
-  public sendWelcomeMail(mail: string): void {
-    try {
-      this.httpClient.post(`${environment.SEND_WELCOME_MAIL_URL}?email=${mail}`, {}).subscribe();
-    } catch (error) {
-      console.error(`Error sending welcome email: ${JSON.stringify(error)}`);
-    }
+  public sendWelcomeMail(user: IUser): void {
+      const payload = {
+        Mail: user.mail,
+        Name: user.name === this.unkownUserName ? '' : user.name
+      };
+
+     this.httpClient.post(`${environment.SEND_WELCOME_MAIL_URL}`, payload)
+      .subscribe({
+        next: (response) => console.log('Welcome email sent successfully!', response),
+        error: (error) => console.error(`Error sending welcome email: ${JSON.stringify(error)}`)
+      });
   }
 
   /**
@@ -47,13 +58,13 @@ export class NotificationService {
    * @param notification 
    * @returns a bollean indicating whether the operation was successful.
    */
-  public createNotification(notification: INotification, userId: string): Observable<boolean> {
+  public createNotification(notification: INotification, user: IUser): Observable<boolean> {
     const variables: InsertNotificationMutationVariables = {
       objects: [
         {
           Content: notification.content,
           DueDate: notification.dueDate,
-          UserId: userId, //'c27b71b1-d3a1-4253-8079-712cc346a9a6',
+          UserId: user.userId,
           Subject: notification.subject
         }
       ]
@@ -65,7 +76,7 @@ export class NotificationService {
       }),
       tap((result) => console.log(`Inserted notification: ${JSON.stringify(result)}`)),
       map(() => {
-        this.sendWelcomeMail(notification.mail);
+        this.sendWelcomeMail(user);
         return true;
       })
     )

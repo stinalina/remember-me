@@ -1,7 +1,8 @@
 mutation InsertUser($mail: String!, $name: String!) {
   insert_dev_User(objects: { Mail: $mail, Name: $name }) {
     returning {
-      Id
+      Id,
+      Name
     }
   }
 }

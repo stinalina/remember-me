@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { Component, computed, inject, OnDestroy, OnInit, signal, viewChild } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NotificationService } from '../services/notification.service';
-import { INotification } from '../models';
+import { INotification, IUser } from '../models';
 import { switchMap, tap, finalize, catchError } from 'rxjs';
 
 @Component({
@@ -34,6 +34,7 @@ export class CreateNotificationComponent implements OnDestroy {
   });
 
   protected readonly now = this.getNextDay();
+  protected readonly retry = signal<boolean>(false);
   protected readonly sendingNotification = signal<boolean>(false);
   protected readonly placeholderSubject = 'Greetings from Notify!';
 
@@ -71,15 +72,19 @@ export class CreateNotificationComponent implements OnDestroy {
 
     this.notificationService.getUserByMailOrCreateUserIfNotExists(notification.mail).pipe(
       tap(() => this.sendingNotification.set(true)),
-      switchMap((userId: string) => this.notificationService.createNotification(notification, userId)),
+      switchMap((user: IUser) => this.notificationService.createNotification(notification, user)),
       catchError((error) => {
         console.error('Error creating notification.');
         throw error;
       }),
-      finalize(() => this.sendingNotification.set(false))
+      finalize(() => {
+        this.sendingNotification.set(false);
+        this.retry.set(true);
+      })
     ).subscribe(() => {
       console.log('Notification sent:', notification);
       this.myForm.reset();
+      this.retry.set(false);
     });
   }
 }

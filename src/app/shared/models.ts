@@ -8,5 +8,6 @@ export interface INotification {
 export interface IUser {
   mail: string;
   name: string;
+  userId: string;
 }
 //export type RememberMeNotificationWithoutMail = Omit<RememberMeNotification, 'mail'>;
