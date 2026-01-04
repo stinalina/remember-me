@@ -31,6 +31,18 @@ export class NotificationService {
   }
 
   /**
+   * subscribes to a post which sends a welcome mail. catchs the error and logs it.
+   * @param mail 
+   */
+  public sendWelcomeMail(mail: string): void {
+    try {
+      this.httpClient.post(`${environment.SEND_WELCOME_MAIL_URL}?email=${mail}`, {}).subscribe();
+    } catch (error) {
+      console.error(`Error sending welcome email: ${JSON.stringify(error)}`);
+    }
+  }
+
+  /**
    * Inserts notification and send email.
    * @param notification 
    * @returns a bollean indicating whether the operation was successful.
@@ -52,15 +64,10 @@ export class NotificationService {
         return of(false);
       }),
       tap((result) => console.log(`Inserted notification: ${JSON.stringify(result)}`)),
-      switchMap(() =>
-        this.httpClient.post(`${environment.SEND_WELCOME_MAIL_URL}/${notification.mail}`, {}).pipe(
-          catchError((error) => {
-            console.error(`Error sending welcome email: ${JSON.stringify(error)}`);
-            return of(false);
-          }),
-          map(() => true),
-        )
-      )
+      map(() => {
+        this.sendWelcomeMail(notification.mail);
+        return true;
+      })
     )
   }
 }
