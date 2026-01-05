@@ -6,16 +6,22 @@ import { IUser } from '../models';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
-  let service: NotificationService;
-  let mockGetUserByMailGQL: jasmine.SpyObj<GetUserByMailGQL>;
-  let mockInsertUserGQL: jasmine.SpyObj<InsertUserGQL>;
-  let mockInsertNotificationGQL: jasmine.SpyObj<InsertNotificationGQL>;
+   let service: NotificationService;
+  let mockGetUserByMailGQL: jest.Mocked<GetUserByMailGQL>;
+  let mockInsertUserGQL: jest.Mocked<InsertUserGQL>;
+  let mockInsertNotificationGQL: jest.Mocked<InsertNotificationGQL>;
 
   beforeEach(() => {
     // Create mock objects for the GraphQL services
-    mockGetUserByMailGQL = jasmine.createSpyObj('GetUserByMailGQL', ['fetch']);
-    mockInsertUserGQL = jasmine.createSpyObj('InsertUserGQL', ['mutate']);
-    mockInsertNotificationGQL = jasmine.createSpyObj('InsertNotificationGQL', ['mutate']);
+    mockGetUserByMailGQL = {
+      fetch: jest.fn()
+    } as unknown as jest.Mocked<GetUserByMailGQL>;
+    mockInsertUserGQL = {
+      mutate: jest.fn()
+    } as unknown as jest.Mocked<InsertUserGQL>;
+    mockInsertNotificationGQL = {
+      mutate: jest.fn()
+    } as unknown as jest.Mocked<InsertNotificationGQL>;
 
     TestBed.configureTestingModule({
       providers: [
@@ -35,7 +41,7 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
       const newUserId = 'user-123';
 
       // Mock: User doesn't exist
-      mockGetUserByMailGQL.fetch.and.returnValue(
+      mockGetUserByMailGQL.fetch.mockReturnValue(
         of({
           data: {
             dev_User: []
@@ -44,7 +50,7 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
       );
 
       // Mock: Insert user returns the new user with ID
-      mockInsertUserGQL.mutate.and.returnValue(
+      mockInsertUserGQL.mutate.mockReturnValue(
         of({
           data: {
             insert_dev_User: {
@@ -80,7 +86,7 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
     const existingUserName = 'John Doe';
 
     // Mock: User exists
-    mockGetUserByMailGQL.fetch.and.returnValue(
+    mockGetUserByMailGQL.fetch.mockReturnValue(
       of({
         data: {
           dev_User: [
@@ -110,7 +116,7 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
     const existingUserId = 'user-789';
 
     // Mock: User exists but name is null
-    mockGetUserByMailGQL.fetch.and.returnValue(
+    mockGetUserByMailGQL.fetch.mockReturnValue(
       of({
         data: {
           dev_User: [
@@ -135,7 +141,7 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
     const newUserId = 'user-error-123';
 
     // Mock: First fetch returns empty array (simulating error handling or no user found)
-    mockGetUserByMailGQL.fetch.and.returnValue(
+    mockGetUserByMailGQL.fetch.mockReturnValue(
       of({
         data: {
           dev_User: []
@@ -144,7 +150,7 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
     );
 
     // Mock: Insert user is successful
-    mockInsertUserGQL.mutate.and.returnValue(
+    mockInsertUserGQL.mutate.mockReturnValue(
       of({
         data: {
           insert_dev_User: {
@@ -170,7 +176,7 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
     const testMail = 'edge@example.com';
 
     // Mock: User doesn't exist
-    mockGetUserByMailGQL.fetch.and.returnValue(
+    mockGetUserByMailGQL.fetch.mockReturnValue(
       of({
         data: {
           dev_User: []
@@ -179,7 +185,7 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
     );
 
     // Mock: Insert returns minimal data
-    mockInsertUserGQL.mutate.and.returnValue(
+    mockInsertUserGQL.mutate.mockReturnValue(
       of({
         data: {
           insert_dev_User: {
@@ -204,7 +210,7 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
     const testMail = 'param@example.com';
 
     // Mock: User doesn't exist
-    mockGetUserByMailGQL.fetch.and.returnValue(
+    mockGetUserByMailGQL.fetch.mockReturnValue(
       of({
         data: {
           dev_User: []
@@ -213,7 +219,7 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
     );
 
     // Mock: Insert user
-    mockInsertUserGQL.mutate.and.returnValue(
+    mockInsertUserGQL.mutate.mockReturnValue(
       of({
         data: {
           insert_dev_User: {
