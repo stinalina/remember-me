@@ -1,4 +1,14 @@
-<div class="shadow-lg p-3 rounded-lg bg-white  border-2 border-gray-500">
-  Version 1.0.0<br>
-  Im Dev Mode
+<div class="hero bg-base-200 min-h-screen">
+  <div class="hero-content text-center">
+    <div class="max-w-md">
+      <h1 class="text-5xl font-bold">{{ this.currentSlogan().title}}</h1>
+      <div class="py-6">
+        <p>{{ this.currentSlogan().description }}</p>
+        <br/>
+        <p>{{ this.currentSlogan().fazit }}</p>
+      </div>
+      <progress class="progress w-56" [value]="this.progressPercentage()" max="100"></progress>
+      <!-- <button class="py-6 btn btn-primary">Jetzt loslegen!</button> -->
+    </div>
+  </div>
 </div>
