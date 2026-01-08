@@ -3,6 +3,7 @@ import { RouterOutlet, RouterLink } from '@angular/router';
 import { FooterComponent } from './shared/footer/footer.component';
 import { ROUTER_TOKENS } from './app.routes';
 import { DaisyUiToasterComponent } from 'daisyui-toaster';
+import { environment } from '../../environment';
 
 @Component({
   selector: 'app-root',
@@ -12,4 +13,6 @@ import { DaisyUiToasterComponent } from 'daisyui-toaster';
 })
 export class App {
   public readonly RouterTokens = ROUTER_TOKENS;
+  public readonly version = '1.0.0';
+  public readonly env = environment.production ? 'Prod Mode' : 'Dev Mode';
 }

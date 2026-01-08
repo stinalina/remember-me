@@ -1,24 +1,27 @@
-<!-- <div role="alert" class="alert alert-success alert-soft m-2">
-  <span>Your purchase has been confirmed!</span>
-</div> -->
 <daisyui-toaster></daisyui-toaster>
 <div class="grid grid-cols-2 items-center justify-center min-h-screen">
-  <div class="flex flex-columns items-center justify-end">
-    <img alt="Elefant" class="logo" src="assets/images/logo.svg" width="125" height="125" />
-    <div class="wrapper">
-      <h1 class="yellow">Willkommen!</h1>
-      <h3>
-        Ich bin <span class="yellow italic">Notify</span>
-        und geben dir rechtzeitig Bescheid, wenn deine Notizen fällig sind!<br/>
-        Los geht's!
-      </h3>
-      <ul class="menu menu-vertical lg:menu-horizontal bg-base-200 rounded-box">
-        <li><a [routerLink]="[RouterTokens.HOME]">Home</a></li>
-        <li><a [routerLink]="[RouterTokens.ABOUT]">About</a></li>
-        <li><a [routerLink]="[RouterTokens.FREE_NOTIFICATION]">Ausprobieren</a></li>
-      </ul>
+  <div class="flex flex-col">
+    <div class="flex flex-columns items-center justify-end">
+      <img alt="Elefant" class="logo" src="assets/images/logo.svg" width="125" height="125" />
+      <div class="wrapper">
+        <h1 class="yellow">Willkommen!</h1>
+        <h3>
+          Ich bin <span class="yellow italic">Notify</span>
+          und geben dir rechtzeitig Bescheid, wenn deine Notizen fällig sind!<br/>
+          Los geht's!
+        </h3>
+        <ul class="menu menu-vertical lg:menu-horizontal bg-base-200 rounded-box">
+          <li><a [routerLink]="[RouterTokens.HOME]">Home</a></li>
+          <li><a [routerLink]="[RouterTokens.ABOUT]">About</a></li>
+          <li><a [routerLink]="[RouterTokens.FREE_NOTIFICATION]">Ausprobieren</a></li>
+        </ul>
+      </div>
     </div>
-  </div>
+    <div class="fixed left-4 bottom-4 shadow-lg p-3 rounded-lg text-sm gap-2 z-50 w-full">
+      <p>{{ this.env }}</p>
+      <p>Version: {{ this.version }}</p>
+    </div>
+   </div>
   <div class="items-center justify-center m-4">
     <router-outlet />
   </div>
