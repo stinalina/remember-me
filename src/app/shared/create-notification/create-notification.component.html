@@ -1,17 +1,16 @@
 <form [formGroup]="this.myForm" (ngSubmit)="this.createNotification()"
-  class="shadow-lg p-3 rounded-lg bg-white
-  border-2 border-gray-500 min-w-2xs">
+  class="shadow-lg p-3 rounded-lg bg-base-100 border-1">
   <div class="flex flex-col gap-4 justify-around">
-    <label class="input">
+    <label class="input w-full">
       Subject
       <input type="text" id="create-notifcation-subject" 
         formControlName="subject"
-        class="grow" placeholder="{{ this.placeholderSubject }}" />
+        class="bg-white" placeholder="{{ this.placeholderSubject }}" />
     </label>
 
     <div class="NgxEditor__Wrapper">
-      <ngx-editor-menu [editor]="editor"> </ngx-editor-menu>
-      <ngx-editor id="create-notification-editor" class="min-h-full"
+      <ngx-editor-menu [editor]="editor"></ngx-editor-menu>
+      <ngx-editor id="create-notification-editor" class="h-full"
         [editor]="editor"
         outputFormat="html"
         formControlName="content"
@@ -19,21 +18,21 @@
       ></ngx-editor>
     </div>
 
-    <div class="flex flex-col w-full">
-      <label for="create-notification-date-time">
+    <div class="flex flex-col w-full align-start">
+      <label for="create-notification-date-time" class="text-left ml-1">
         Wann möchtest du erinnert werden?
       </label>
-      <input id="create-notification-date-time" class="input"
+      <input id="create-notification-date-time" class="input w-full bg-white"
         formControlName="dateTime"
         type="datetime-local"
         [min]="this.now"/>
     </div>
 
-    <div class="flex flex-col w-full">
-      <label for="create-notifcation-mail">
+    <div class="flex flex-col">
+      <label for="create-notifcation-mail" class="text-left ml-1">
         Sende Erinnerung an:
       </label>
-      <label class="input validator">
+      <label class="input validator w-full">
         <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
           <g
             stroke-linejoin="round"
@@ -47,13 +46,13 @@
           </g>
         </svg>
         <input id="create-notifcation-mail"
-          formControlName="mail"
+          formControlName="mail" class="bg-white"
           type="email" placeholder="mail@site.com" />
       </label>
       <div class="validator-hint hidden">Enter valid email address</div>
     </div>
 
-    <div class="flex justify-end">
+    <div class="flex justify-center">
       <!-- <button id="create-notification-apply"
         class="btn btn-outline"
         type="submit"

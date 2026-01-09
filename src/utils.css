@@ -26,3 +26,7 @@
   .logo {
     pointer-events: auto;
   }
+
+  .bg-base {
+    background-color: var(--color-base-100);
+  }
