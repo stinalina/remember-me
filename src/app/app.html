@@ -1,20 +1,26 @@
 <daisyui-toaster></daisyui-toaster>
 <div class="grid grid-cols-2 items-center justify-center min-h-screen">
   <div class="flex flex-col">
-    <div class="flex flex-columns items-center justify-end">
+    <div class="flex flex-columns items-center justify-end mr-2">
       <img alt="Elefant" class="logo" src="assets/images/logo.svg" width="125" height="125" />
       <div class="wrapper">
-        <h1 class="yellow">Willkommen!</h1>
-        <h3>
-          Ich bin <span class="yellow italic">Notify</span>
-          und geben dir rechtzeitig Bescheid, wenn deine Notizen fällig sind!<br/>
+        <h1 class="text-5xl font-bold yellow">Willkommen!</h1>
+        <p class="text-xl py-1">
+          Ich bin <span class="yellow italic">Notify</span> - dein smarter Erinnerungshelfer.<br/>
+          Ich gebe dir rechtzeitig Bescheid, wenn deine Notizen fällig sind!<br/>
           Los geht's!
-        </h3>
-        <ul class="menu menu-vertical lg:menu-horizontal bg-base-200 rounded-box">
-          <li><a [routerLink]="[RouterTokens.HOME]">Home</a></li>
-          <li><a [routerLink]="[RouterTokens.ABOUT]">About</a></li>
-          <li><a [routerLink]="[RouterTokens.FREE_NOTIFICATION]">Ausprobieren</a></li>
-        </ul>
+        </p>
+        <div class="flex gap-2 mt-3">
+          <a role="button" class="btn btn-lg"
+            [routerLink]="[RouterTokens.HOME]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }">
+            Home</a>
+          <a role="button" class="btn btn-lg"
+            [routerLink]="[RouterTokens.ABOUT]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }">
+            About</a>
+          <a role="button" class="btn btn-lg"
+            [routerLink]="[RouterTokens.FREE_NOTIFICATION]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }">
+            Ausprobieren</a>
+        </div>
       </div>
     </div>
     <div class="fixed left-2 bottom-1 p-1 text-sm">

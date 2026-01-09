@@ -20,7 +20,7 @@ export class HomePage implements OnInit, OnDestroy {
       fazit: "👉 Kein Kalender-Chaos. Kein Vergessen."
     },
     {
-      title: "To-dos raus aus dem Kalender. Klarheit rein.",
+      title: "Todo's raus aus dem Kalender. Klarheit rein.",
       description: "Dein Kalender ist für Termine da, nicht für Gedankenfetzen. Mit unseren Notizen bekommst du Erinnerungen genau dann, wenn sie relevant sind.",
       fazit: "👉 Ordnung, die mitdenkt."
     },
