@@ -20,11 +20,6 @@ export class HomePage implements OnInit, OnDestroy {
       fazit: "👉 Kein Kalender-Chaos. Kein Vergessen."
     },
     {
-      title: "Nicht alles ist ein Kalendereintrag.",
-      description: "Manche Dinge brauchen nur eine Erinnerung – keinen ganzen Termin. Schreib’s auf. Terminieren. Erledigt.", 
-      fazit: "👉 Mehr Überblick. Weniger Stress."
-    },
-    {
       title: "To-dos raus aus dem Kalender. Klarheit rein.",
       description: "Dein Kalender ist für Termine da, nicht für Gedankenfetzen. Mit unseren Notizen bekommst du Erinnerungen genau dann, wenn sie relevant sind.",
       fazit: "👉 Ordnung, die mitdenkt."
@@ -48,6 +43,11 @@ export class HomePage implements OnInit, OnDestroy {
       title: "Für alles, was nicht sofort wichtig ist – aber wichtig bleibt.",
       description: "Geschenkideen, Deadlines, Tickets, Rezepte. Ein Ort für Gedanken, die später zählen.",
       fazit: "👉 Erinnerungen, genau dann, wenn du sie brauchst."
+    },
+    {
+      title: "Aussäen mit System.",
+      description: "Ob Tomaten, Erdbeeren oder Kräuter: Wir erinnern dich pünktlich zum Start der Pflanzsaison, was dein Plan war. Ganz ohne Kalenderstress.",
+      fazit: "👉 Alles parat, wenn’s ans Säen geht."
     },
     {
       title: "Dein digitales Kurzzeitgedächtnis.",
@@ -78,11 +78,6 @@ export class HomePage implements OnInit, OnDestroy {
       title: "Merken ist einfach. Erinnern lassen ist smarter.",
       description: "Von Lernstoff bis Lieblingsrezept. Alles zur richtigen Zeit zurück.",
       fazit: "👉 Organisation, die sich an dich anpasst."
-    },
-    {
-      title: "Nicht alles ist dringend. Aber vieles ist wichtig.",
-      description: "Halte fest, was zählt – und entscheide selbst, wann du daran erinnert wirst.",
-      fazit: "👉 Kontrolle statt Chaos."
     }
   ];
 
@@ -90,9 +85,10 @@ export class HomePage implements OnInit, OnDestroy {
   private readonly updateFrequency = 50;   
 
   private progressInterval?: number;
-  private sloganIndex = Math.floor(Math.random() * this.slogans.length);
+  private availableSlogans: Slogan[] = this.slogans;
+  private sloganIndex: number = Math.floor(Math.random() * this.availableSlogans.length);
 
-  public readonly currentSlogan = signal<Slogan>(this.slogans[this.sloganIndex]);
+  public readonly currentSlogan = signal<Slogan>(this.availableSlogans[this.sloganIndex]);
   public readonly progressValue = signal<number>(0);
   private readonly elapsedTime = signal<number>(0);
 
@@ -105,11 +101,12 @@ export class HomePage implements OnInit, OnDestroy {
       this.elapsedTime.update(time => time + this.updateFrequency);
 
       if (this.elapsedTime() >= this.cycleDuration) {
-        const prevIndex = this.sloganIndex;
-        while (this.sloganIndex === prevIndex) { //prevent from accidently picking the same index as before
-          this.sloganIndex = Math.floor(Math.random() * this.slogans.length);
+        if (this.availableSlogans.length === 0) {
+          this.availableSlogans = this.slogans;
         }
-        this.currentSlogan.set(this.slogans[this.sloganIndex]);
+        this.sloganIndex = Math.floor(Math.random() * this.availableSlogans.length);
+        this.currentSlogan.set(this.availableSlogans[this.sloganIndex]);
+        this.availableSlogans = this.availableSlogans.filter((_, index) => index !== this.sloganIndex);
         this.elapsedTime.set(0);
       }
     }, this.updateFrequency);
