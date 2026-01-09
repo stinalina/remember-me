@@ -8,6 +8,7 @@ export enum ROUTER_TOKENS {
   ABOUT = 'about',
   FREE_NOTIFICATION = 'free-notification',
   CONTACT = 'G_PWP@ruv.de',
+  LOGIN = 'login',
 }
 
 export const routes: Routes = [
