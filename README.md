@@ -7,6 +7,7 @@
 - Erklärung, warum das Geld kostet
 - TechStack
   - https://sibiraj-s.github.io/ngx-editor/menu/
+  - https://github.com/WickyNilliams/cally
 - DB aufräumen (eine Dev und eine Prod Instanz)
 - Lizenzen prüfen
 - Meine Repos aufräumen

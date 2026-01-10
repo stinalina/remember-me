@@ -6,6 +6,7 @@ import { catchError, finalize, switchMap, tap } from 'rxjs';
 import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '../editor-config.token';
 import { INotification, IUser } from '../models';
 import { NotificationService } from '../services/notification.service';
+import { DatePipe } from '@angular/common';
 
 enum TypewriterActionType {
   TYPE = 'type',
@@ -62,16 +63,8 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
 
   private getNextDay(): string {
     const date = new Date();
-    const pad = (n: number) => n.toString().padStart(2, '0')
-    return (
-      date.getFullYear() +
-      '-' +
-      pad(date.getMonth() + 1) +
-      '-' +
-      pad(date.getDate() + 1) +
-      'T' +
-      '00:30'
-    )
+    const dateTime = new Date(date.getTime() + 24 * 60 * 60 * 1000); // add one day
+    return new DatePipe('en-US').transform(dateTime, 'yyyy-MM-dd')!;
   }
 
   public ngOnInit(): void {
