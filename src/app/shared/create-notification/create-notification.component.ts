@@ -1,23 +1,28 @@
-import { NgxEditorComponent, NgxEditorMenuComponent, Editor } from 'ngx-editor';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Component, computed, inject, OnDestroy, OnInit, signal, viewChild } from '@angular/core';
+import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { NotificationService } from '../services/notification.service';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Editor, NgxEditorComponent, NgxEditorMenuComponent, Toolbar } from 'ngx-editor';
+import { catchError, finalize, switchMap, tap } from 'rxjs';
+import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '../editor-config.token';
 import { INotification, IUser } from '../models';
-import { switchMap, tap, finalize, catchError } from 'rxjs';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'reme-create-notification',
   templateUrl: 'create-notification.component.html',
-  styles: [],
-  standalone: true,
-  imports: [NgxEditorComponent, NgxEditorMenuComponent,
-    ReactiveFormsModule] // to get access to FormGroup and the formControlName directive.
+  styleUrl: 'create-notification.component.scss',
+  imports: [
+    NgxEditorComponent,
+    NgxEditorMenuComponent,
+    ReactiveFormsModule // to get access to FormGroup and the formControlName directive.
+  ] 
 })
 export class CreateNotificationComponent implements OnDestroy {
-
   private readonly notificationService = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
+
+  public readonly editor: Editor = new Editor();
+  public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);
   
   protected readonly myForm = this.fb.group({
     subject: [''],
@@ -37,8 +42,6 @@ export class CreateNotificationComponent implements OnDestroy {
   protected readonly retry = signal<boolean>(false);
   protected readonly sendingNotification = signal<boolean>(false);
   protected readonly placeholderSubject = 'Greetings from Notify!';
-
-  public editor: Editor = new Editor();
 
   private getNextDay(): string {
     const date = new Date();

@@ -1,6 +1,4 @@
-import { NgxEditorComponent, NgxEditorMenuComponent, Editor } from 'ngx-editor';
-import { FormsModule } from '@angular/forms';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CreateNotificationComponent } from '../../shared/create-notification/create-notification.component';
 
 @Component({

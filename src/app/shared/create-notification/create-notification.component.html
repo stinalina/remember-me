@@ -9,12 +9,13 @@
     </label>
 
     <div class="NgxEditor__Wrapper">
-      <ngx-editor-menu [editor]="editor"></ngx-editor-menu>
-      <ngx-editor id="create-notification-editor" class="h-full"
+      <ngx-editor-menu [editor]="editor"[toolbar]="toolbar" ></ngx-editor-menu>
+      <ngx-editor id="create-notification-editor"
+        class="h-100"
         [editor]="editor"
-        outputFormat="html"
         formControlName="content"
-        [placeholder]="'Type here...'"
+        outputFormat="html"
+        [placeholder]="'Im März diesmal wirklich dran denken Tickets für das Sommerfestival zu kaufen. Manu auch einladen. Für Lisa die Mütze mitbringen, die sie beim Weihnachtsmarktbesuch vergessen hat...'"
       ></ngx-editor>
     </div>
 
