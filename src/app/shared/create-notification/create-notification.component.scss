@@ -3,3 +3,24 @@
   overflow: auto !important;
   text-align: left !important;
 }
+
+.typewriter-placeholder {
+  position: absolute;
+  margin: 8px;
+  color: #888;    
+  pointer-events: none;
+  font-size: 1rem;  
+  z-index: 2;
+  white-space: pre-line; 
+  transition: opacity 0.2s;
+}
+
+.typewriter-cursor {
+  display: inline-block;
+  width: 1.5em;
+  color: #aaa;
+  font-weight: bold;
+  letter-spacing: 2px;
+  font-size: 1.2em;
+  vertical-align: middle;
+}

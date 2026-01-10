@@ -15,8 +15,13 @@
         [editor]="editor"
         formControlName="content"
         outputFormat="html"
-        [placeholder]="'Im März diesmal wirklich dran denken Tickets für das Sommerfestival zu kaufen. Manu auch einladen. Für Lisa die Mütze mitbringen, die sie beim Weihnachtsmarktbesuch vergessen hat...'"
-      ></ngx-editor>
+        placeholder=""
+        (focusIn)="this.showPlaceholderAnimation = false"
+      >
+        @if(this.showPlaceholderAnimation) {
+          <span class="typewriter-placeholder" [innerHTML]="typedPlaceholder"></span>
+        }
+      </ngx-editor>
     </div>
 
     <div class="flex flex-col w-full align-start">
