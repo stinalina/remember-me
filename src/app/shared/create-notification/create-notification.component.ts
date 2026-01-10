@@ -7,6 +7,7 @@ import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '../editor-config.token';
 import { INotification, IUser } from '../models';
 import { NotificationService } from '../services/notification.service';
 import { DatePipe } from '@angular/common';
+import { LOCAL_STORAGE } from '../storage.token';
 
 enum TypewriterActionType {
   TYPE = 'type',
@@ -33,6 +34,7 @@ type TypewriterAction =
 export class CreateNotificationComponent implements OnInit, OnDestroy {
   private readonly notificationService = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
+  private readonly localStorage = inject(LOCAL_STORAGE);
 
   public readonly editor: Editor = new Editor();
   public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);
@@ -68,29 +70,41 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.actions = [
-      { type: TypewriterActionType.PAUSE, duration: 1000 },
-      { type: TypewriterActionType.TYPE, text: 'Im März diesmal wirklich dran denken Tickets für das Sommerfes' },
-      { type: TypewriterActionType.PAUSE, duration: 3000 },
-      { type: TypewriterActionType.DELETE, count: 13 },
-      { type: TypewriterActionType.TYPE, text: 'Rock am Ring zu kaufen.' },
-      { type: TypewriterActionType.LINEBREAK },
-      { type: TypewriterActionType.PAUSE, duration: 500 },
-      { type: TypewriterActionType.TYPE, text: ' Manu auc' },
-      { type: TypewriterActionType.DELETE, count: 3 },
-      { type: TypewriterActionType.TYPE, text: 'und <u>Felix</u> auch einladen.' },
-      { type: TypewriterActionType.LINEBREAK },
-      { type: TypewriterActionType.PAUSE, duration: 2000 },
-      { type: TypewriterActionType.TYPE, text: ' Für Lisa die <strong>Mütze</strong> mitbringen, die sie beim Weihnachtsmarktbesuch vergessen hat.' },
-      { type: TypewriterActionType.PAUSE, duration: 3000 },
-      { type: TypewriterActionType.LINEBREAK },
-      { type: TypewriterActionType.TYPE, text: ' Deadline ist der <strong>14.03</strong>!' },
-    ];
-    this.animatePlaceholder();
+    this.restoreDraftIfExists();
+    if (this.showPlaceholderAnimation) {
+      this.actions = [
+        { type: TypewriterActionType.PAUSE, duration: 1000 },
+        { type: TypewriterActionType.TYPE, text: 'Im März diesmal wirklich dran denken Tickets für das Sommerfes' },
+        { type: TypewriterActionType.PAUSE, duration: 3000 },
+        { type: TypewriterActionType.DELETE, count: 13 },
+        { type: TypewriterActionType.TYPE, text: 'Rock am Ring zu kaufen.' },
+        { type: TypewriterActionType.LINEBREAK },
+        { type: TypewriterActionType.PAUSE, duration: 500 },
+        { type: TypewriterActionType.TYPE, text: ' Manu auc' },
+        { type: TypewriterActionType.DELETE, count: 3 },
+        { type: TypewriterActionType.TYPE, text: 'und <u>Felix</u> auch einladen.' },
+        { type: TypewriterActionType.LINEBREAK },
+        { type: TypewriterActionType.PAUSE, duration: 2000 },
+        { type: TypewriterActionType.TYPE, text: ' Für Lisa die <strong>Mütze</strong> mitbringen, die sie beim Weihnachtsmarktbesuch vergessen hat.' },
+        { type: TypewriterActionType.PAUSE, duration: 3000 },
+        { type: TypewriterActionType.LINEBREAK },
+        { type: TypewriterActionType.TYPE, text: ' Deadline ist der <strong>14.03</strong>!' },
+      ];
+      this.animatePlaceholder();
+    }
   }
 
   public ngOnDestroy(): void {
+    this.localStorage.setItem('notificationDraft', JSON.stringify(this.myForm.value));
     this.editor.destroy();
+  }
+
+  private restoreDraftIfExists(): void {
+    const draft = this.localStorage.getItem('notificationDraft');
+    if (draft) {
+      this.myForm.setValue(JSON.parse(draft));
+      this.showPlaceholderAnimation = false;
+    }
   }
 
   public createNotification(): void {
