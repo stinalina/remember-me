@@ -12,6 +12,7 @@
 - Meine Repos aufräumen
 - Social Media für Notify => Namen finalisieren
 - Die Uhrzeit fürs erinnern rauswerfen!
+- prüfen ob auch responsive fürs handy!
 
 # Lizenzpflichten
 Was bedeutet die MIT-Lizenz?

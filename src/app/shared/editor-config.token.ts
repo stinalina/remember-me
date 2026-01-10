@@ -49,5 +49,6 @@ export const EDITOR_TOOLBAR_EXTENDEND_CONFIG_TOKEN = new InjectionToken<Toolbar>
       ['superscript', 'subscript'],
       ['undo', 'redo'],
       //TODO emojis, anhänge etc.
+      // https://www.builtatlightspeed.com/theme/scttcper-ngx-emoji-mart
     ]
   });

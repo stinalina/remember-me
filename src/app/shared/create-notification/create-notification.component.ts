@@ -10,12 +10,14 @@ import { NotificationService } from '../services/notification.service';
 enum TypewriterActionType {
   TYPE = 'type',
   DELETE = 'delete',
-  PAUSE = 'pause'
+  PAUSE = 'pause',
+  LINEBREAK = '<br/>',
 }
 type TypewriterAction =
   | { type: TypewriterActionType.TYPE; text: string }
   | { type: TypewriterActionType.DELETE; count: number }
-  | { type: TypewriterActionType.PAUSE; duration: number };
+  | { type: TypewriterActionType.PAUSE; duration: number }
+  | { type: TypewriterActionType.LINEBREAK };
 
 @Component({
   selector: 'reme-create-notification',
@@ -78,12 +80,18 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
       { type: TypewriterActionType.TYPE, text: 'Im März diesmal wirklich dran denken Tickets für das Sommerfes' },
       { type: TypewriterActionType.PAUSE, duration: 3000 },
       { type: TypewriterActionType.DELETE, count: 13 },
-      { type: TypewriterActionType.TYPE, text: 'Rock am Ring zu kaufen.</br>' },
+      { type: TypewriterActionType.TYPE, text: 'Rock am Ring zu kaufen.' },
+      { type: TypewriterActionType.LINEBREAK },
       { type: TypewriterActionType.PAUSE, duration: 500 },
-      { type: TypewriterActionType.TYPE, text: ' Manu auch einladen.</br>' },
+      { type: TypewriterActionType.TYPE, text: ' Manu auc' },
+      { type: TypewriterActionType.DELETE, count: 3 },
+      { type: TypewriterActionType.TYPE, text: 'und <u>Felix</u> auch einladen.' },
+      { type: TypewriterActionType.LINEBREAK },
       { type: TypewriterActionType.PAUSE, duration: 2000 },
-      { type: TypewriterActionType.TYPE, text: ' Für Lisa die Mütze mitbringen, die sie beim Weihnachtsmarktbesuch vergessen hat.' },
-      { type: TypewriterActionType.PAUSE, duration: 1000 }
+      { type: TypewriterActionType.TYPE, text: ' Für Lisa die <strong>Mütze</strong> mitbringen, die sie beim Weihnachtsmarktbesuch vergessen hat.' },
+      { type: TypewriterActionType.PAUSE, duration: 3000 },
+      { type: TypewriterActionType.LINEBREAK },
+      { type: TypewriterActionType.TYPE, text: ' Deadline ist der <strong>14.03</strong>!' },
     ];
     this.animatePlaceholder();
   }
@@ -128,7 +136,10 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     const typingSpeed = 100; // ms pro Buchstabe
 
     const nextAction = () => {
-      if (i >= this.actions.length) return;
+      if (i >= this.actions.length){
+        this.typedPlaceholder = text;
+        return
+      };
       const action = this.actions[i];
 
       switch (action.type) {
@@ -185,6 +196,12 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
               nextAction();
             }
           }, typingSpeed);
+          break;
+        case TypewriterActionType.LINEBREAK:
+          text += TypewriterActionType.LINEBREAK;
+          this.typedPlaceholder = text;
+          i++;
+          nextAction();
           break;
       }
     };
