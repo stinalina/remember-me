@@ -25,9 +25,9 @@ export class HomePage implements OnInit, OnDestroy {
       fazit: "👉 Ordnung, die mitdenkt."
     },
     {
-      title: "Ein Gedanke. Ein Zeitpunkt. Eine Erinnerung.",
-      description: "Halte Ideen fest und lass sie automatisch zurückkommen. Ohne Alarme. Ohne Chaos. Ohne Überladung im Kalender.",
-      fazit: "👉 Einfach merken lassen."
+      title: "Reisepläne? Erstmal festhalten.",
+      description: "Du weißt schon, wohin die nächste Reise gehen soll, aber buchen ist noch zu früh? Schreib auf, wohin es geht und welche Highlights du erleben willst – wir erinnern dich rechtzeitig.",
+      fazit: "👉 Inspiration sichern. Sehenswürdigkeiten nicht verpassen."
     },
     {
       title: "Vergessen war gestern.",

@@ -7,7 +7,7 @@ import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '../editor-config.token';
 import { INotification, IUser } from '../models';
 import { NotificationService } from '../services/notification.service';
 import { DatePipe } from '@angular/common';
-import { LOCAL_STORAGE } from '../storage.token';
+import { LOCAL_STORAGE, SESSION_STORAGE } from '../storage.token';
 
 enum TypewriterActionType {
   TYPE = 'type',
@@ -34,7 +34,7 @@ type TypewriterAction =
 export class CreateNotificationComponent implements OnInit, OnDestroy {
   private readonly notificationService = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
-  private readonly localStorage = inject(LOCAL_STORAGE);
+  private readonly sessionStorage = inject(SESSION_STORAGE);
 
   public readonly editor: Editor = new Editor();
   public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);
@@ -95,12 +95,12 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.localStorage.setItem('notificationDraft', JSON.stringify(this.myForm.value));
+    this.sessionStorage.setItem('notificationDraft', JSON.stringify(this.myForm.value));
     this.editor.destroy();
   }
 
   private restoreDraftIfExists(): void {
-    const draft = this.localStorage.getItem('notificationDraft');
+    const draft = this.sessionStorage.getItem('notificationDraft');
     if (draft) {
       this.myForm.setValue(JSON.parse(draft));
       this.showPlaceholderAnimation = false;
