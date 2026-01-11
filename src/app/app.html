@@ -23,9 +23,16 @@
         </div>
       </div>
     </div>
-    <div class="fixed left-2 bottom-1 p-1 text-sm">
-      <p>{{ this.env }}</p>
-      <p>Version: {{ this.version }}</p>
+    <div class="fixed flex flex-row items-end p-1 gap-3 left-2 bottom-1 text-sm">
+      <div>
+        <p>{{ this.env }}</p>
+        <p>Version: {{ this.version }}</p>
+      </div>
+      <div class="submenu flex gap-2">
+        <a [routerLink]="[RouterTokens.IMPRESSUM]">Impressum</a>
+        <a [routerLink]="[RouterTokens.AGB]">AGB</a>
+        <a [routerLink]="[RouterTokens.DATENSCHUTZ]">Datenschutz</a>
+      </div>
     </div>
    </div>
   <div class="items-center justify-center">

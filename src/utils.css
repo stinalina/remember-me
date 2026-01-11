@@ -23,10 +23,11 @@
   padding: 3px;
 }
 
-  .logo {
-    pointer-events: auto;
-  }
+.logo {
+  pointer-events: auto;
+}
 
-  .bg-base {
-    background-color: var(--color-base-100);
-  }
+.bg-base {
+  background-color: var(--color-base-100);
+}
+

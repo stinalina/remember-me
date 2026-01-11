@@ -1,10 +1,10 @@
-import { environment } from './../../../../environment';
-import { inject, Inject, Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { inject, Injectable } from "@angular/core";
+import { ToastService, ToastSeverity } from 'daisyui-toaster';
+import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
 import { GetUserByMailGQL, InsertNotificationGQL, InsertNotificationMutationVariables, InsertUserGQL } from "../../../graphql/generated";
 import { INotification, IUser } from "../models";
-import { HttpClient } from "@angular/common/http";
-import { catchError, map, Observable, of, pipe, switchMap, tap } from 'rxjs';
-import { ToastService, ToastSeverity } from 'daisyui-toaster';
+import { environment } from './../../../../environment';
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
@@ -104,25 +104,3 @@ export class NotificationService {
     });
   }
 }
-
-//TODO show toast messages
-    // return new Promise((resolve) => {
-    //   setTimeout(() => {
-    //   try {
-    //     toast.success('Congratulations!\nErinnerung erfolgreich erstellt!', {
-    //       position: 'top-right',
-    //       autoClose: 5000,
-    //       hideProgressBar: false,
-    //       closeOnClick: true,
-    //     });
-    //     resolve();
-    //   } catch (err: unknown) {
-    //     toast.error(`Holy smokes!\n${(err as Error).message}`, {
-    //       position: 'top-right',
-    //       autoClose: 5000,
-    //       hideProgressBar: false,
-    //       closeOnClick: true,
-    //     });
-    //   } catch (err: unknown) {
-    //     toast.error(`Holy smokes!\n${(err as Error).message}`, {
-    //       position: 'top-right',
