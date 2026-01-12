@@ -95,8 +95,11 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.sessionStorage.setItem('notificationDraft', JSON.stringify(this.myForm.value));
-    this.editor.destroy();
+    const form = this.myForm.value;
+    if (form.content && form.content.length > 0) {
+      this.sessionStorage.setItem('notificationDraft', JSON.stringify(this.myForm.value));
+      this.editor.destroy();
+    }
   }
 
   private restoreDraftIfExists(): void {
