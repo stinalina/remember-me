@@ -1,13 +1,13 @@
+import { DatePipe } from '@angular/common';
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Editor, NgxEditorComponent, NgxEditorMenuComponent, Toolbar } from 'ngx-editor';
+import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 import { catchError, finalize, switchMap, tap } from 'rxjs';
 import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '../editor-config.token';
 import { INotification, IUser } from '../models';
 import { NotificationService } from '../services/notification.service';
-import { DatePipe } from '@angular/common';
-import { LOCAL_STORAGE, SESSION_STORAGE } from '../storage.token';
+import { SESSION_STORAGE } from '../storage.token';
 
 enum TypewriterActionType {
   TYPE = 'type',
@@ -26,8 +26,7 @@ type TypewriterAction =
   templateUrl: 'create-notification.component.html',
   styleUrl: 'create-notification.component.scss',
   imports: [
-    NgxEditorComponent,
-    NgxEditorMenuComponent,
+    NgxEditorModule,
     ReactiveFormsModule // to get access to FormGroup and the formControlName directive.
   ] 
 })
@@ -43,7 +42,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     subject: [''],
     content: ['', Validators.required],
     mail: ['', [Validators.required, Validators.email]],
-    dateTime: [this.getNextDay(), Validators.required],
+    dateTime: [this.nextDay, Validators.required],
   });
 
   protected readonly formStatus = toSignal(this.myForm.statusChanges, {
@@ -53,7 +52,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     return this.formStatus() === 'VALID';
   });
 
-  protected readonly now = this.getNextDay();
+  protected readonly now = this.nextDay;
   protected readonly retry = signal<boolean>(false);
   protected readonly sendingNotification = signal<boolean>(false);
   protected readonly placeholderSubject = 'Greetings from Notify!';
@@ -63,7 +62,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   private actions: TypewriterAction[] = [];
   private readonly cursorHtml = '<span class="typewriter-cursor">|</span>';
 
-  private getNextDay(): string {
+  private get nextDay(): string {
     const date = new Date();
     const dateTime = new Date(date.getTime() + 24 * 60 * 60 * 1000); // add one day
     return new DatePipe('en-US').transform(dateTime, 'yyyy-MM-dd')!;
@@ -98,8 +97,8 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     const form = this.myForm.value;
     if (form.content && form.content.length > 0) {
       this.sessionStorage.setItem('notificationDraft', JSON.stringify(this.myForm.value));
-      this.editor.destroy();
     }
+    this.editor.destroy();
   }
 
   private restoreDraftIfExists(): void {
