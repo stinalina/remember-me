@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>{{subject}}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      background-color: var(--root-bg, oklch(98% .003 247.858));
+      color: oklch(40% .123 38.172);
+    }
+    a {
+      text-decoration: none;
+      color: oklch(40% .123 38.172);
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-size: 3rem;
+      line-height: var(--tw-leading, 1);
+      color: oklch(79.5% .184 86.047);
+      padding: 3px;
+      text-decoration: none;
+      transition: all .4s;
+      font-weight: 700;
+      margin: 0 0 0 -20px;
+    }
+    .content-box {
+      padding:24px 0 0 0;
+    }
+
+    /* Mobile Devices */
+    @media (max-width: 600px) {
+      body {
+        padding: 0;
+      }
+      .main-container {
+        max-width: 98vw !important;
+        padding: 12px !important;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      img {
+        width: 80px !important;
+        height: 80px !important;
+        margin-right: 8px !important;
+      }
+      p, small {
+        font-size: 1rem !important;
+      }
+      .content-box {
+        min-height: 120px !important;
+        padding: 8px !important;
+        font-size: 1rem !important;
+      }
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#f7f7f7;">
+  <div style="background-color:oklch(98% .016 73.684); min-height:100vh;  text-align:center;">
+    <div style="max-width:400px; margin:0 auto;">
+      <div style="display:flex; align-items:flex-end; justify-content:center;">
+        <img src="https://mailsend-email-assets.mailtrap.io/9an8unhhe46aucjg29t69eb3wl6r.jpg" alt="Elefant" width="125" height="125" style="margin-right:16px;">
+        <h1>RememberMe</h1>
+      </div>
+      <div class="content-box">
+        <p style="margin:0 0 18px 0; font-size:1.1rem;">
+          Hey <i>{{username}}</i>!</br>Anbei deine Erinnerung von RememberMe!
+        </p>
+        <p style="border:2px solid; margin:0 auto 18px auto; min-height:300px; max-width:100%; padding:12px; font-size:1.1rem; text-align:left;">
+         {{{content}}}
+        </p>
+      </div>
+      <small style="display:block; margin-top:32px">
+        © 2026 <a href="#">RememberMe</a> – Dein smarter Erinnerungshelfer
+      </small>
+    </div>
+  </div>
+</body>
+</html>
