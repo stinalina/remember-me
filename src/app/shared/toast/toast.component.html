@@ -1,0 +1,9 @@
+@if (this.toastService.toastIds().length > 0) {
+  <div class="toast toast-top toast-end">
+    @for (toast of this.toastService.toastIds(); track $index) {
+      <div class="alert alert-success alert-soft">
+        <span>Message sent successfully.</span>
+      </div>
+    }
+  </div>
+}

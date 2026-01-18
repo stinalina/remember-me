@@ -6,7 +6,7 @@ import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 import { catchError, finalize, switchMap, tap } from 'rxjs';
 import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '../editor-config.token';
 import { INotification, IUser } from '../models';
-import { NotificationService } from '../services/notification.service';
+import { NotificationService } from '../../services/notification.service';
 import { SESSION_STORAGE } from '../storage.token';
 
 enum TypewriterActionType {

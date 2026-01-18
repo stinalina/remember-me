@@ -1,15 +1,17 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
-import { ToastService, ToastSeverity } from 'daisyui-toaster';
-import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
-import { GetUserByMailGQL, InsertNotificationGQL, InsertNotificationMutationVariables, InsertUserGQL } from "../../../graphql/generated";
-import { INotification, IUser } from "../models";
-import { environment } from './../../../../environment';
+import { ToastService as DaisyToaster, ToastSeverity } from 'daisyui-toaster';
+import { catchError, EMPTY, map, Observable, of, switchMap, tap } from 'rxjs';
+import { GetUserByMailGQL, InsertNotificationGQL, InsertNotificationMutationVariables, InsertUserGQL } from "../../graphql/generated";
+import { INotification, IUser } from "../shared/models";
+import { environment } from '../../../environment';
+import { ToastService } from "./toast.service";
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
 
   private readonly httpClient = inject(HttpClient);
+  private readonly toastServiceDaisy = inject(DaisyToaster);
   private readonly toastService = inject(ToastService);
 
   private readonly insertUser = inject(InsertUserGQL);
@@ -60,21 +62,23 @@ export class NotificationService {
         }
       ]
     };
-    return this.insertNotification.mutate({variables}).pipe(
-      catchError((error) => {
-        console.error(`Error inserting notification: ${JSON.stringify(error)}`);
-        this.showToast('Oh nein! Das hat leider nicht geklappt!', ToastSeverity.Error);
-        return of(false);
-      }),
-      tap((result) => console.log(`Inserted notification: ${JSON.stringify(result)}`)),
-      map(() => {
-        if (user.newCreated === true) {
-          this.sendWelcomeMail(user);
-        }
-        this.showToast('Notification created successfully!', ToastSeverity.Success);
-        return true;
-      })
-    )
+    this.showToast('Notification created successfully!', ToastSeverity.Success);
+    return EMPTY;
+    // return this.insertNotification.mutate({variables}).pipe(
+    //   catchError((error) => {
+    //     console.error(`Error inserting notification: ${JSON.stringify(error)}`);
+    //     this.showToast('Oh nein! Das hat leider nicht geklappt!', ToastSeverity.Error);
+    //     return of(false);
+    //   }),
+    //   tap((result) => console.log(`Inserted notification: ${JSON.stringify(result)}`)),
+    //   map(() => {
+    //     if (user.newCreated === true) {
+    //       this.sendWelcomeMail(user);
+    //     }
+    //     this.showToast('Notification created successfully!', ToastSeverity.Success);
+    //     return true;
+    //   })
+    // )
   }
 
   /**
@@ -95,12 +99,13 @@ export class NotificationService {
   }
 
   private showToast(message: string, kind: ToastSeverity): void {
-    this.toastService.add({
-      severity: kind,
-      detail: message,
-      // callback: (): void => {
-      //   alert('Toast clicked!');
-      // },
-    });
+    // this.toastService.add({
+    //   severity: kind,
+    //   detail: message,
+    //   callback: (): void => {
+    //     alert('Toast clicked!');
+    //   },
+    // });
+    this.toastService.showToast();
   }
 }
