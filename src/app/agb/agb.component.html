@@ -1,0 +1,25 @@
+<div class="hero bg-base-200 h-min-screen">
+  <div class="hero-content text-center">
+    <div class="max-w-md">
+      <div class="flex items-end">
+        <img alt="Elefant" src="assets/images/logo.svg" width="125" height="125" />
+        <h1 class="text-5xl font-bold yellow">RememberMe</h1>
+      </div>
+      <div class="py-6">
+        <p>Hey {{this.userName}}! Anbei deine Erinnerung von RememberMe!</p>
+        <p [innerHTML]="this.content" class="border-2 m-3 min-h-100"></p>
+      </div>
+       <small>© 2026 <a href="#">RememberMe</a> – Dein smarter Erinnerungshelfer</small>
+    </div>
+  </div>
+</div>
+
+<style>
+  a:hover {
+    text-decoration: underline;
+  }
+
+  h1 {
+    margin-left: -20px;
+  }
+</style>

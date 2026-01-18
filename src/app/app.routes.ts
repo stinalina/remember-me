@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { HomePage } from './home/home-page.component';
 import { AboutComponent } from './about/about.component';
 import { ImpressumComponent } from './impressum/impressum.component';
+import { AGBComponent } from './agb/agb.component';
 
 export enum ROUTER_TOKENS {
   HOME = 'home',
@@ -34,7 +35,7 @@ export const routes: Routes = [
   },
   {
     path: ROUTER_TOKENS.AGB,
-    loadComponent: () => ImpressumComponent
+    loadComponent: () => AGBComponent
   },
   {
     path: ROUTER_TOKENS.DATENSCHUTZ,
