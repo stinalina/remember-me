@@ -1,6 +1,6 @@
 
-import { Component, inject, output } from "@angular/core";
-import { ToastService } from "../../services/toast.service";
+import { Component, inject } from "@angular/core";
+import { ToastService, ToastType } from "../../services/toast.service";
 
 @Component({
   'selector': 'reme-toast',
@@ -9,4 +9,5 @@ import { ToastService } from "../../services/toast.service";
 })
 export class ToastComponent {
   public readonly toastService = inject(ToastService);
+  public readonly ToastType = ToastType;
 }
