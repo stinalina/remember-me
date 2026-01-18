@@ -36,3 +36,9 @@
 :host ::ng-deep .NgxEditor__Content [style*="text-align: right"] {
   text-align: right !important;
 }
+:host ::ng-deep .NgxEditor__Content p:not([style*="color"]):not([style*="margin"]) {
+  margin-block-start: 0 !important;
+  margin-block-end: 8px !important;
+  margin-top: 0 !important;
+  margin-bottom: 8px !important;
+}

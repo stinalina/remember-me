@@ -31,7 +31,6 @@
     "@angular/router": "^20.3.0",
     "@apollo/client": "^4.0.7",
     "apollo-angular": "^12.1.0",
-    "daisyui-toaster": "^1.1.0",
     "graphql": "^16.11.0",
     "ngx-editor": "^19.0.0-beta.1",
     "postcss": "^8.5.6",

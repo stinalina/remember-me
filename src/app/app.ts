@@ -1,13 +1,17 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
-import { FooterComponent } from './shared/footer/footer.component';
-import { ROUTER_TOKENS } from './app.routes';
-import { DaisyUiToasterComponent } from 'daisyui-toaster';
+import { RouterModule } from '@angular/router';
 import { environment } from '../../environment';
+import { ROUTER_TOKENS } from './app.routes';
+import { FooterComponent } from './shared/footer/footer.component';
+import { ToastComponent } from './shared/toast/toast.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterModule, FooterComponent, RouterLink, DaisyUiToasterComponent, RouterLinkActive],
+  imports: [
+    FooterComponent,
+    ToastComponent,
+    RouterModule,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
