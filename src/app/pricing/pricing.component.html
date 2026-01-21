@@ -1,0 +1,42 @@
+<div class="hero bg-base-200 min-h-screen">
+  <div class="hero-content text-center">
+    <div class="max-w-md">
+      <h1 class="text-5xl font-bold">Pricing</h1>
+      <div class="overflow-x-auto py-6">
+        <table class="table">
+          <!-- head -->
+          <thead>
+            <tr>
+              @for (item of this.pricings; track $index) {
+                <th scope="col">{{item.title}} Plan</th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              @for (item of this.pricings; track $index) {
+                <td>
+                  <ul class="list">
+                    <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Enthalten</li>
+                    @for (feature of item.features; track $index) {
+                      <li class="list-row">{{feature}}</li>
+                    }
+                  </ul>
+                </td>
+              }
+            </tr>
+          </tbody>
+          <!-- foot -->
+          <tfoot>
+            <tr>
+              @for (item of this.pricings; track $index) {
+                <td>{{item.costPerMonth}} € pro Monat</td>
+              }
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <!-- <progress class="progress w-56" [value]="this.progressPercentage()" max="100"></progress> -->
+    </div>
+  </div>
+</div>
