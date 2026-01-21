@@ -43,4 +43,7 @@ export class PricingComponent {
       costPerMonth: 10
     }
   ];
+
+  private readonly maxFeaturesIndex = Math.max(...this.pricings.map(item => item.features.length));
+  public readonly indexArray = new Array(this.maxFeaturesIndex).fill(0);
 }

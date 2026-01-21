@@ -1,6 +1,6 @@
 <div class="hero bg-base-200 min-h-screen">
   <div class="hero-content text-center">
-    <div class="max-w-md">
+    <div class="max-w-xl">
       <h1 class="text-5xl font-bold">Pricing</h1>
       <div class="overflow-x-auto py-6">
         <table class="table">
@@ -8,29 +8,26 @@
           <thead>
             <tr>
               @for (item of this.pricings; track $index) {
-                <th scope="col">{{item.title}} Plan</th>
+                <th class="text-center text-xl" scope="col">{{item.title}}</th>
               }
             </tr>
           </thead>
           <tbody>
-            <tr>
-              @for (item of this.pricings; track $index) {
-                <td>
-                  <ul class="list">
-                    <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Enthalten</li>
-                    @for (feature of item.features; track $index) {
-                      <li class="list-row">{{feature}}</li>
-                    }
-                  </ul>
-                </td>
-              }
-            </tr>
+            @for (_ of this.indexArray; track $index; let outerIndex = $index) {
+              <tr>
+                @for (item of this.pricings; track $index) {
+                  <td class="list-row self-start">
+                    {{item.features.length < $index ? '' : item.features[outerIndex]}}
+                  </td>
+                }
+              </tr>
+            }
           </tbody>
           <!-- foot -->
           <tfoot>
             <tr>
               @for (item of this.pricings; track $index) {
-                <td>{{item.costPerMonth}} € pro Monat</td>
+                <td class="text-center">{{item.costPerMonth}} € pro Monat</td>
               }
             </tr>
           </tfoot>
