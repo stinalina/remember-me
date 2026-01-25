@@ -4,6 +4,7 @@ import { HomePage } from './home/home-page.component';
 import { AboutComponent } from './about/about.component';
 import { ImpressumComponent } from './impressum/impressum.component';
 import { AGBComponent } from './agb/agb.component';
+import { PricingComponent } from './pricing/pricing.component';
 
 export enum ROUTER_TOKENS {
   HOME = 'home',
@@ -13,7 +14,8 @@ export enum ROUTER_TOKENS {
   LOGIN = 'login',
   IMPRESSUM = 'impressum',
   AGB = 'agb',
-  DATENSCHUTZ = 'datenschutz'
+  DATENSCHUTZ = 'datenschutz',
+  PRICING = 'pricing'
 }
 
 export const routes: Routes = [
@@ -40,6 +42,10 @@ export const routes: Routes = [
   {
     path: ROUTER_TOKENS.DATENSCHUTZ,
     loadComponent: () => ImpressumComponent
+  },
+  {
+    path: ROUTER_TOKENS.PRICING,
+    loadComponent: () => PricingComponent
   },
   {
     path: '',

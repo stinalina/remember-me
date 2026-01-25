@@ -23,6 +23,10 @@
   padding: 3px;
 }
 
+.bg-yellow {
+  background-color: var(--color-yellow-500);
+}
+
 .logo {
   pointer-events: auto;
 }
