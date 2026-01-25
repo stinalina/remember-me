@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import {NgTemplateOutlet} from '@angular/common';
 
 type PricingModel = {
   title: string,
@@ -9,36 +10,38 @@ type PricingModel = {
 @Component({
   selector: 'reme-pricing',
   templateUrl: 'pricing.component.html',
-  styles: [],
+  styleUrl: 'pricing.component.scss',
   imports: [
-  ] 
+    NgTemplateOutlet
+  ]  
 })
 export class PricingComponent {
+  public activeCardIndex: number = 1;
+  
   public readonly pricings: PricingModel[] = [
     {
       title: 'Free',
       features: [
-        '3 Erinnerungen pro Monat erstellen',
-        'Erinnerungen bearbeiten und löschen'
+        '3 Erinnerungen pro Monat',
+        'Erinnerungen jederzeit bearbeiten & löschen'
       ],
       costPerMonth: 0
     },
     {
       title: 'Basic',
       features: [
-        '5 Erinnerungen pro Monat erstellen',
-        'Schalte die gesamte Bearbeitungspalette im Editor frei',
-        'Deine Erinnerungen werden archiviert, sodass du sie wieder rehydrieren kannst'
+        '5 Erinnerungen pro Monat',
+        'Voller Zugriff auf alle Editor-Tools',
+        'Erinnerungen archivieren & jederzeit reaktivieren'
       ],
       costPerMonth: 5
     },
     {
       title: 'Premium',
       features: [
-        'Unbegrenzt viele Erinnerungen erstellen',
-        'Pinne einen Anhang an deine Erinnerungsmail',
-        'Schalte Emojis für deine Erinnerungen frei',
-        'Setzte Freunde ins CC'
+        'Unbegrenzte Erinnerungen',
+        'Anhänge und Standorte nutzen',
+        'Freunde einfach ins CC setzen'
       ],
       costPerMonth: 10
     }

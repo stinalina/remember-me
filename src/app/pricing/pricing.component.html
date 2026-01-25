@@ -1,39 +1,48 @@
 <div class="hero bg-base-200 min-h-screen">
   <div class="hero-content text-center">
-    <div class="max-w-xl">
+    <div class="max-w-2xl">
       <h1 class="text-5xl font-bold">Pricing</h1>
-      <div class="overflow-x-auto py-6">
-        <table class="table">
-          <!-- head -->
-          <thead>
-            <tr>
-              @for (item of this.pricings; track $index) {
-                <th class="text-center text-xl" scope="col">{{item.title}}</th>
-              }
-            </tr>
-          </thead>
-          <tbody>
-            @for (_ of this.indexArray; track $index; let outerIndex = $index) {
-              <tr>
-                @for (item of this.pricings; track $index) {
-                  <td class="list-row self-start">
-                    {{item.features.length < $index ? '' : item.features[outerIndex]}}
-                  </td>
-                }
-              </tr>
-            }
-          </tbody>
-          <!-- foot -->
-          <tfoot>
-            <tr>
-              @for (item of this.pricings; track $index) {
-                <td class="text-center">{{item.costPerMonth}} € pro Monat</td>
-              }
-            </tr>
-          </tfoot>
-        </table>
+      <div class="py-10 grid grid-cols-3 gap-3">
+        @for (pricing of this.pricings; track $index; let i = $index) {
+          <ng-content *ngTemplateOutlet="pricingCard; context: { pricing: pricing }"></ng-content>
+        }
       </div>
-      <!-- <progress class="progress w-56" [value]="this.progressPercentage()" max="100"></progress> -->
     </div>
   </div>
 </div>
+
+<!-- Das erste pricing ist wie die variable im template heißt. Das zweite ist der Schlüssel im Kontext-Objekt beim übergeben -->
+<ng-template #pricingCard let-pricing="pricing">
+@let isBasic = pricing.title === "Basic";
+<div class="card sw-96 shadow-sm border-1"
+  [class.middle-card]="isBasic"
+  [class.bg-yellow]="isBasic"
+  [class.bg-base-100]="!isBasic">
+  <!-- Card Header -->
+  <div class="relative flex flex-col items-center justify-center pt-8 pb-6 rounded-t-2xl bg-gradient-to-b"
+    [class.from-gray-200]="isBasic"
+    [class.from-yellow-500]="!isBasic">
+    <h2 class="text-lg font-semibold text-white tracking-wide uppercase mb-2">{{pricing.title}}</h2>
+    <div class="flex flex-col items-center">
+      <span class="text-4xl font-bold text-white">{{pricing.costPerMonth}} €</span>
+      <span class="text-base text-white opacity-80 mt-1">pro Monat</span>
+    </div>
+    @if (isBasic) {
+      <span class="absolute top-3 right-3 badge badge-warning badge-xs">Most Popular</span>
+    }
+  </div>
+  <div class="card-body flex flex-col justify-between">    
+    <ul class="mt-6 text-s">
+      @for (item of pricing.features; track $index) {
+        <li class="flex flex-row text-start" [class.mt-2]="!$first">
+          <svg xmlns="http://www.w3.org/2000/svg" class="size-4 me-2 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+          <span>{{item}}</span>
+        </li>
+      }
+    </ul>
+    <div class="card-actions mt-20 justify-self-end">
+      <button class="btn btn-block">Nehm ich!</button>
+    </div>
+  </div>
+</div>
+</ng-template>
