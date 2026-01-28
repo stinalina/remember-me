@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import * as agbs from '../../assets/text/agb.txt';
 
 @Component({
   selector: 'reme-agb',
@@ -8,5 +9,5 @@ import { Component } from "@angular/core";
 })
 export class AGBComponent {
   public readonly userName = 'Alice';
-  public readonly content = '<strong>Important</strong> Test <u>content</u>';
+  public readonly content = agbs.default;
 }
