@@ -1,0 +1,43 @@
+1. Geltungsbereich
+Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für die Nutzung der Website und/oder mobilen App [Name der Website/App] (im Folgenden „Anbieter“), die von [Firmenname, Adresse, ggf. Handelsregistereintrag] betrieben wird.
+
+2. Leistungsbeschreibung
+Der Anbieter stellt Nutzern verschiedene Funktionen und Inhalte im Rahmen eines Abomodells zur Verfügung. Es stehen folgende Modelle zur Auswahl:
+- Free-Plan (kostenlos, eingeschränkter Funktionsumfang)
+- Basic (5 € pro Monat, erweiterter Funktionsumfang)
+- Premium (10 € pro Monat, vollständiger Funktionsumfang)
+
+3. Registrierung und Vertragsschluss
+Die Nutzung der Dienste setzt eine Registrierung voraus. Mit Abschluss der Registrierung und Bestätigung dieser AGB kommt ein Nutzungsvertrag zustande.
+
+4. Vertragslaufzeit und Kündigung
+Der Free-Plan ist zeitlich unbegrenzt und kann jederzeit ohne Angabe von Gründen beendet werden.
+Die kostenpflichtigen Abos (Basic, Premium) werden jeweils für einen Monat abgeschlossen und verlängern sich automatisch um einen weiteren Monat, sofern sie nicht mit einer Frist von [z.B. 3 Tagen] zum Ende des jeweiligen Abrechnungszeitraums gekündigt werden.
+Die Kündigung kann über die Kontoeinstellungen oder in Textform (z.B. E-Mail) erfolgen.
+
+5. Preise und Zahlungsbedingungen
+Die Preise für die kostenpflichtigen Abos betragen:
+ - Basic: 5 € pro Monat
+ - Premium: 10 € pro Monat
+Die Abrechnung erfolgt monatlich im Voraus.
+Die Zahlung kann per [z.B. Kreditkarte, PayPal, SEPA-Lastschrift] erfolgen.
+
+6. Widerrufsrecht für Verbraucher
+Verbrauchern steht ein gesetzliches Widerrufsrecht zu. Die Einzelheiten hierzu sind in der Widerrufsbelehrung geregelt.
+
+7. Nutzungsrechte
+Mit dem Erwerb eines Abos erhält der Nutzer das einfache, nicht übertragbare Recht, die angebotenen Inhalte und Funktionen im Rahmen des gewählten Abos zu nutzen.
+
+8. Haftung
+Der Anbieter haftet nur für Vorsatz und grobe Fahrlässigkeit. Für leichte Fahrlässigkeit haftet der Anbieter nur bei Verletzung wesentlicher Vertragspflichten (Kardinalpflichten).
+
+9. Änderungen der AGB
+Der Anbieter behält sich vor, diese AGB mit Wirkung für die Zukunft zu ändern. Änderungen werden dem Nutzer rechtzeitig mitgeteilt.
+
+10. Schlussbestimmungen
+Es gilt das Recht der Bundesrepublik Deutschland. Gerichtsstand ist, soweit gesetzlich zulässig, [Sitz des Anbieters].
+
+Widerrufsbelehrung (Muster):
+Du hast das Recht, binnen 14 Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt 14 Tage ab dem Tag des Vertragsschlusses. Um dein Widerrufsrecht auszuüben, musst du uns ([Name, Adresse, E-Mail]) mittels einer eindeutigen Erklärung (z.B. per E-Mail) über deinen Entschluss informieren.
+
+RememberMe – Dein smarter Erinnerungshelfer
