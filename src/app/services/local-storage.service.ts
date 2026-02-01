@@ -27,7 +27,7 @@ export class LocalStorageService {
 
   /**
    * Count will be reseted when new month starts
-   * @param limit - max count; count won't increase when limit is reached
+   * @param limit - default is 3; count won't increase when limit is reached
    */
   public increaseSendedNotificationCount(limit: number = 3): void {
     const value = this.stoarge.getItem(this.SENDED_NOTIFICATIONS_COUNT_TOKEN);
