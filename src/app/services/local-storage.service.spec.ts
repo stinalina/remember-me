@@ -20,8 +20,16 @@ describe('Local Stoarge Service', () => {
   });
 
   it('should increase sended notification count by 1', () => {
-    service.increaseSendedNotificationCount();
-    const count = service.getSendedNotificationCount();
-    expect(count).toEqual(1);
+    let count = service.getSendedNotificationCount();
+    service.increaseSendedNotificationCount(42);
+    let newCount = service.getSendedNotificationCount();
+    expect(newCount).toEqual(count+1);
+  });
+
+  it('should not increase count when limit if reached', () => {
+    let count = service.getSendedNotificationCount();
+    service.increaseSendedNotificationCount(count);
+    let newCount = service.getSendedNotificationCount();
+    expect(newCount).toEqual(count);
   });
 });

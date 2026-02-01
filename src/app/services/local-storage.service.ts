@@ -1,5 +1,6 @@
 import { inject, Injectable } from "@angular/core";
 import { LOCAL_STORAGE } from "../shared/storage.token";
+import { DatePipe } from "@angular/common";
 
 @Injectable ({ providedIn: 'root' })
 export class LocalStorageService {
@@ -17,12 +18,30 @@ export class LocalStorageService {
   }
 
   public getSendedNotificationCount(): number {
-    const count = this.stoarge.getItem(this.SENDED_NOTIFICATIONS_COUNT_TOKEN);
-    return count ? Number(count) : 0;
+    const value = this.stoarge.getItem(this.SENDED_NOTIFICATIONS_COUNT_TOKEN);
+    if (value) {
+      return Number(value?.split('_')[0]);
+    }
+    return 0;
   }
 
-  public increaseSendedNotificationCount(): void {
-    let count = this.getSendedNotificationCount();
-    this.stoarge.setItem(this.SENDED_NOTIFICATIONS_COUNT_TOKEN, (count+1).toString());
+  /**
+   * Count will be reseted when new month starts
+   * @param limit - max count; count won't increase when limit is reached
+   */
+  public increaseSendedNotificationCount(limit: number = 3): void {
+    const value = this.stoarge.getItem(this.SENDED_NOTIFICATIONS_COUNT_TOKEN);
+    let count = 0;
+    let month = new Date().getMonth();
+    if (value) {
+      const lastMonth = Number(value?.split('_')[1]);
+      count =  Number(value?.split('_')[0]);
+      if (month === lastMonth && count < limit) {
+        count++;
+      }
+    }
+    
+    const newValue = `${count}_${month}`;
+    this.stoarge.setItem(this.SENDED_NOTIFICATIONS_COUNT_TOKEN, newValue);
   }
 }
