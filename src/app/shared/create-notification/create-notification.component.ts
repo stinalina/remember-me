@@ -6,10 +6,11 @@ import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 import { catchError, finalize, switchMap, tap } from 'rxjs';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { NotificationService } from '../../services/notification.service';
-import { ToastService } from '../../services/toast.service';
+import { ToastService, ToastType } from '../../services/toast.service';
 import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '../editor-config.token';
 import { INotification, IUser } from '../models';
 import { SESSION_STORAGE } from '../storage.token';
+import { UserService } from '../../services/user.service';
 
 enum TypewriterActionType {
   TYPE = 'type',
@@ -61,7 +62,8 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   protected readonly sendingNotification = signal<boolean>(false);
   protected readonly placeholderSubject = 'Greetings from Notify!';
 
-  public readonly limitReached = signal<boolean>(false);
+  private readonly freeNotificationsLimit = inject(UserService).freeNotificationsLimit;
+  private readonly limitReached = signal<boolean>(false);
 
   public typedPlaceholder = '';
   public showPlaceholderAnimation = true;
@@ -79,8 +81,6 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
       const limitReached = this.limitReached();
       if (limitReached) {
         this.myForm.disable();
-        this.showPlaceholderAnimation = true;
-
         this.actions = [
           { type: TypewriterActionType.PAUSE, duration: 1000 },
           { type: TypewriterActionType.TYPE, text: 'Maximum of free notifications reached for this month. So this editor is disabled.' },
@@ -90,7 +90,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
           { type: TypewriterActionType.LINEBREAK },
           { type: TypewriterActionType.TYPE, text: ' Login and ugrade your Abo!' },
         ];
-
+        this.showPlaceholderAnimation = true;
         this.animatePlaceholder();
       }
     });
@@ -166,17 +166,27 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
         this.localStorageService.setUserMail(notification.mail);
         this.localStorageService.increaseSendedNotificationCount(); //TODO limit should set based on pricing when user is logged in!
         this.checkIfMaxSendedNotificationCountIsReached();
+        if (this.limitReached()) {
+          this.toastService.showToast(
+            'Max amount of notifications reached this month',
+            ToastType.Warning
+          );
+        }
       })
     ).subscribe(() => {
-      console.log('Notification sent:', notification);
-      this.myForm.reset();
+      this.myForm.reset({
+        subject: '',
+        content: '',
+        mail: this.localStorageService.getUserMail() ?? '',
+        dateTime: this.nextDay
+      });
       this.retry.set(false);
     });
   }
 
   private checkIfMaxSendedNotificationCountIsReached(): void {
     const count = this.localStorageService.getSendedNotificationCount();
-    this.limitReached.set(count >= 0);
+    this.limitReached.set(count >= this.freeNotificationsLimit());
   }
 
   private animatePlaceholder(): void {

@@ -31,7 +31,7 @@ export class LocalStorageService {
    */
   public increaseSendedNotificationCount(limit: number = 3): void {
     const value = this.stoarge.getItem(this.SENDED_NOTIFICATIONS_COUNT_TOKEN);
-    let count = 0;
+    let count = 1;
     let month = new Date().getMonth();
     if (value) {
       const lastMonth = Number(value?.split('_')[1]);
