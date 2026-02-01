@@ -1,13 +1,16 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 import { catchError, finalize, switchMap, tap } from 'rxjs';
+import { LocalStorageService } from '../../services/local-storage.service';
+import { NotificationService } from '../../services/notification.service';
+import { ToastService, ToastType } from '../../services/toast.service';
 import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '../editor-config.token';
 import { INotification, IUser } from '../models';
-import { NotificationService } from '../../services/notification.service';
 import { SESSION_STORAGE } from '../storage.token';
+import { UserService } from '../../services/user.service';
 
 enum TypewriterActionType {
   TYPE = 'type',
@@ -34,6 +37,8 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   private readonly notificationService = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
   private readonly sessionStorage = inject(SESSION_STORAGE);
+  private readonly localStorageService = inject(LocalStorageService);
+  private readonly toastService = inject(ToastService);
 
   public readonly editor: Editor = new Editor();
   public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);
@@ -41,7 +46,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   protected readonly myForm = this.fb.group({
     subject: [''],
     content: ['', Validators.required],
-    mail: ['', [Validators.required, Validators.email]],
+    mail: [this.localStorageService.getUserMail() ?? '', [Validators.required, Validators.email]],
     dateTime: [this.nextDay, Validators.required],
   });
 
@@ -56,7 +61,10 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   protected readonly retry = signal<boolean>(false);
   protected readonly sendingNotification = signal<boolean>(false);
   protected readonly placeholderSubject = 'Greetings from Notify!';
-  
+
+  private readonly freeNotificationsLimit = inject(UserService).freeNotificationsLimit;
+  private readonly limitReached = signal<boolean>(false);
+
   public typedPlaceholder = '';
   public showPlaceholderAnimation = true;
   private actions: TypewriterAction[] = [];
@@ -68,8 +76,31 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     return new DatePipe('en-US').transform(dateTime, 'yyyy-MM-dd')!;
   }
 
+  constructor() {
+    effect(() => {
+      const limitReached = this.limitReached();
+      if (limitReached) {
+        this.myForm.disable();
+        this.actions = [
+          { type: TypewriterActionType.PAUSE, duration: 1000 },
+          { type: TypewriterActionType.TYPE, text: 'Maximum of free notifications reached for this month. So this editor is disabled.' },
+          { type: TypewriterActionType.LINEBREAK },
+          { type: TypewriterActionType.PAUSE, duration: 2000 },
+          { type: TypewriterActionType.TYPE, text: ' Do you want to create more notificatins?' },
+          { type: TypewriterActionType.LINEBREAK },
+          { type: TypewriterActionType.TYPE, text: ' Login and ugrade your Abo!' },
+        ];
+        this.showPlaceholderAnimation = true;
+        this.animatePlaceholder();
+      }
+    });
+  }
+
   public ngOnInit(): void {
-    this.restoreDraftIfExists();
+    this.checkIfMaxSendedNotificationCountIsReached();
+    if (!this.limitReached()) {
+      this.restoreDraftIfExists();
+    
     if (this.showPlaceholderAnimation) {
       this.actions = [
         { type: TypewriterActionType.PAUSE, duration: 1000 },
@@ -90,6 +121,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
         { type: TypewriterActionType.TYPE, text: ' Deadline ist der <strong>14.03</strong>!' },
       ];
       this.animatePlaceholder();
+      }
     }
   }
 
@@ -131,12 +163,30 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
       finalize(() => {
         this.sendingNotification.set(false);
         this.retry.set(true);
+        this.localStorageService.setUserMail(notification.mail);
+        this.localStorageService.increaseSendedNotificationCount(); //TODO limit should set based on pricing when user is logged in!
+        this.checkIfMaxSendedNotificationCountIsReached();
+        if (this.limitReached()) {
+          this.toastService.showToast(
+            'Max amount of notifications reached this month',
+            ToastType.Warning
+          );
+        }
       })
     ).subscribe(() => {
-      console.log('Notification sent:', notification);
-      this.myForm.reset();
+      this.myForm.reset({
+        subject: '',
+        content: '',
+        mail: this.localStorageService.getUserMail() ?? '',
+        dateTime: this.nextDay
+      });
       this.retry.set(false);
     });
+  }
+
+  private checkIfMaxSendedNotificationCountIsReached(): void {
+    const count = this.localStorageService.getSendedNotificationCount();
+    this.limitReached.set(count >= this.freeNotificationsLimit());
   }
 
   private animatePlaceholder(): void {
