@@ -9,6 +9,7 @@ describe('Local Stoarge Service', () => {
       providers: [LocalStorageService]
     });
     service = TestBed.inject(LocalStorageService);
+    window.localStorage.clear(); //same condition as in worker job
   });
 
   it('should set and get mail von local storage', () => {
@@ -20,15 +21,15 @@ describe('Local Stoarge Service', () => {
 
   it('should increase sended notification count by 1', () => {
     let count = service.getSendedNotificationCount();
-    service.increaseSendedNotificationCount(42);
+    service.increaseSendedNotificationCount(10000);
     let newCount = service.getSendedNotificationCount();
     expect(newCount).toEqual(count+1);
   });
 
-  it('should not increase count when limit if reached', () => {
+  it('should not increase count when limit if reached but min 1 when limit was 0', () => {
     let count = service.getSendedNotificationCount();
     service.increaseSendedNotificationCount(count);
     let newCount = service.getSendedNotificationCount();
-    expect(newCount).toEqual(count);
+    expect(newCount).toEqual(count === 0 ? 1 : count);
   });
 });
