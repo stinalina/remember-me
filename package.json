@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "test-workflow": "ng test --browsers=ChromeHeadless --watch=false",
+    "test-workflow": "ng test --browsers=ChromeHeadless --watch=false --code-coverage",
     "codegen": "graphql-codegen --config codegen.ts"
   },
   "prettier": {
