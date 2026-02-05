@@ -17,4 +17,4 @@ jobs:
       run: npm ci
 
     - name: Run unit tests
-      run: ng test --browsers=ChromeHeadless --watch=falset
+      run: npm run test-workflow
