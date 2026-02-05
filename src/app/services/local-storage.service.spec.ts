@@ -20,7 +20,7 @@ describe('Local Stoarge Service', () => {
 
   it('should increase sended notification count by 1', () => {
     let count = service.getSendedNotificationCount();
-    service.increaseSendedNotificationCount(42);
+    service.increaseSendedNotificationCount(10000);
     let newCount = service.getSendedNotificationCount();
     expect(newCount).toEqual(count+1);
   });
