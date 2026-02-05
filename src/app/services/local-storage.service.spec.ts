@@ -9,7 +9,7 @@ describe('Local Stoarge Service', () => {
       providers: [LocalStorageService]
     });
     service = TestBed.inject(LocalStorageService);
-    window.localStorage.clear();
+    window.localStorage.clear(); //same condition as in worker job
   });
 
   it('should set and get mail von local storage', () => {

@@ -60,11 +60,6 @@ export class NotificationService {
       ]
     };
     return this.insertNotification.mutate({variables}).pipe(
-      catchError((error) => {
-        console.error(`Error inserting notification: ${JSON.stringify(error)}`);
-        this.toastService.showToast('Oh nein! Das hat leider nicht geklappt!', ToastType.Error);
-        return of(false);
-      }),
       tap((result) => console.log(`Inserted notification: ${JSON.stringify(result)}`)),
       map(() => {
         if (user.newCreated === true) {
@@ -72,6 +67,11 @@ export class NotificationService {
         }
         this.toastService.showToast('Notification created successfully!', ToastType.Success);
         return true;
+      }),
+      catchError((error) => {
+        console.error(`Error inserting notification: ${JSON.stringify(error)}`);
+        this.toastService.showToast('Oh nein! Das hat leider nicht geklappt!', ToastType.Error);
+        return of(false);
       })
     )
   }
