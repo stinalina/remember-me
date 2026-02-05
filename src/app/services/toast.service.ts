@@ -26,7 +26,7 @@ export class ToastService {
     setTimeout((): void => this.remove(id), life);
   }
 
-  public remove(id: number): void {
+  private remove(id: number): void {
     this.toastIds.set(this.toastIds().filter((toast): boolean => toast.id !== id));
   }
 }

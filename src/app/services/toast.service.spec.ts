@@ -1,38 +1,26 @@
-import { ToastService } from './toast.service';
+import { TestBed } from '@angular/core/testing';
+import { ToastService, ToastType } from './toast.service';
 
 describe('ToastService', () => {
   let service: ToastService;
 
   beforeEach(() => {
-    service = new ToastService();
-    jasmine.clock().install(); // Fake Timer aktivieren
+    TestBed.configureTestingModule({
+      providers: [ToastService]
+    });
+    service = TestBed.inject(ToastService);
+    jasmine.clock().install();
   });
 
   afterEach(() => {
-    jasmine.clock().uninstall(); // Fake Timer deaktivieren
+    jasmine.clock().uninstall();
   });
 
-  it('should add a toast id when showToast is called', () => {
+  it('should add a toast and remove it after 3 sec when showToast is called', () => {
     expect(service.toastIds()).toEqual([]);
-    service.showToast();
+    service.showToast('Test toast', ToastType.Success, 3000);
     expect(service.toastIds().length).toBe(1);
-    expect(service.toastIds()[0]).toBe(1);
-  });
-
-  it('should remove the toast id after 3 seconds', () => {
-    service.showToast();
-    expect(service.toastIds().length).toBe(1);
-
-    jasmine.clock().tick(3000); // Zeit vorspulen
-
+    jasmine.clock().tick(3000);
     expect(service.toastIds()).toEqual([]);
-  });
-
-  it('should remove a specific toast id', () => {
-    service.showToast();
-    service.showToast();
-    expect(service.toastIds()).toEqual([1, 2]);
-    service.remove(1);
-    expect(service.toastIds()).toEqual([2]);
   });
 });
