@@ -1,6 +1,5 @@
 import { inject, Injectable } from "@angular/core";
 import { LOCAL_STORAGE } from "../shared/storage.token";
-import { DatePipe } from "@angular/common";
 
 @Injectable ({ providedIn: 'root' })
 export class LocalStorageService {
@@ -22,7 +21,7 @@ export class LocalStorageService {
     if (value) {
       return Number(value?.split('_')[0]);
     }
-    return 0;
+    return 0
   }
 
   /**
