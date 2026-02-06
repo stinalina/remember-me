@@ -1,15 +1,12 @@
-import { FreeNotificationComponent } from './components/free-notification/free-notification.component';
 import { Routes } from '@angular/router';
-import { HomePage } from './home/home-page.component';
-import { AboutComponent } from './about/about.component';
-import { ImpressumComponent } from './impressum/impressum.component';
-import { AGBComponent } from './agb/agb.component';
-import { PricingComponent } from './pricing/pricing.component';
-import { DSGVOComponent } from './dsgvo/dsgvo.component';
-import { TextFrameComponent } from './shared/text-frame/text-frame.component';
-import { Title } from '@angular/platform-browser';
-import * as dsgvo from '../assets/text/dsgvo.txt';
 import * as agb from '../assets/text/agb.txt';
+import * as dsgvo from '../assets/text/dsgvo.txt';
+import { AboutComponent } from './about/about.component';
+import { FreeNotificationComponent } from './components/free-notification/free-notification.component';
+import { HomePage } from './home/home-page.component';
+import { ImpressumComponent } from './impressum/impressum.component';
+import { PricingComponent } from './pricing/pricing.component';
+import { TextFrameComponent } from './shared/text-frame/text-frame.component';
 
 export enum ROUTER_TOKENS {
   HOME = 'home',
