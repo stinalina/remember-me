@@ -6,6 +6,10 @@ import { ImpressumComponent } from './impressum/impressum.component';
 import { AGBComponent } from './agb/agb.component';
 import { PricingComponent } from './pricing/pricing.component';
 import { DSGVOComponent } from './dsgvo/dsgvo.component';
+import { TextFrameComponent } from './shared/text-frame/text-frame.component';
+import { Title } from '@angular/platform-browser';
+import * as dsgvo from '../assets/text/dsgvo.txt';
+import * as agb from '../assets/text/agb.txt';
 
 export enum ROUTER_TOKENS {
   HOME = 'home',
@@ -38,11 +42,19 @@ export const routes: Routes = [
   },
   {
     path: ROUTER_TOKENS.AGB,
-    loadComponent: () => AGBComponent
+    loadComponent: () => TextFrameComponent,
+    resolve: {
+      title: () => 'Allgemeine Geschäftsbedingungen',
+      content: () => agb.default
+    }
   },
   {
     path: ROUTER_TOKENS.DATENSCHUTZ,
-    loadComponent: () => DSGVOComponent
+    loadComponent: () => TextFrameComponent,
+    resolve: {
+      title: () => 'Datenschutzerklärung',
+      content: () => dsgvo.default
+    }
   },
   {
     path: ROUTER_TOKENS.PRICING,
