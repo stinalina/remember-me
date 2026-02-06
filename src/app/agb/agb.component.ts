@@ -8,6 +8,5 @@ import * as agbs from '../../assets/text/agb.txt';
   imports: []
 })
 export class AGBComponent {
-  public readonly userName = 'Alice';
   public readonly content = agbs.default;
 }
