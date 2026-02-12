@@ -15,9 +15,10 @@ export class NotificationService {
   private readonly getUserByMail_Dev = inject(GetUserByMail_DevGQL);
   private readonly insertNotification_Dev = inject(InsertNotification_DevGQL);
 
-  private readonly insertUser_Prod = inject(InsertUser_ProdGQL);
-  private readonly getUserByMail_Prod = inject(GetUserByMail_ProdGQL);
-  private readonly insertNotification_Prod = inject(InsertNotification_ProdGQL);
+  // Optional true prevents injection errors in case the production GQL services are not provided in the testing module
+  private readonly insertUser_Prod = inject(InsertUser_ProdGQL, { optional: true });
+  private readonly getUserByMail_Prod = inject(GetUserByMail_ProdGQL, { optional: true });
+  private readonly insertNotification_Prod = inject(InsertNotification_ProdGQL, { optional: true });
 
   private readonly unkownUserName = 'Unknown';
   
@@ -82,7 +83,7 @@ export class NotificationService {
   }
 
   private getUserByMailOrCreateUserIfNotExists_Prod(mail: string): Observable<IUser> {
-    return this.getUserByMail_Prod.fetch({ variables: { mail } }).pipe(
+    return this.getUserByMail_Prod!.fetch({ variables: { mail } }).pipe(
       switchMap((result) => {
         const userExists = result.data?.prod_User.length !== 0;
         if (userExists) {
@@ -93,7 +94,7 @@ export class NotificationService {
             newCreated: false
           } satisfies IUser);
         } else {
-          return this.insertUser_Prod.mutate({ variables: { mail, name: this.unkownUserName } }).pipe(
+          return this.insertUser_Prod!.mutate({ variables: { mail, name: this.unkownUserName } }).pipe(
             tap((res) => console.log(`Created new user with id: ${res.data?.insert_prod_User?.returning[0].Id}`)),
             map((res) => ({
               mail,
@@ -147,7 +148,7 @@ export class NotificationService {
       ]
     };
 
-    return this.insertNotification_Prod.mutate({variables}).pipe(
+    return this.insertNotification_Prod!.mutate({variables}).pipe(
       tap((result) => console.log(`Inserted notification: ${JSON.stringify(result)}`)),
       map(() => {
         if (user.newCreated === true) {
