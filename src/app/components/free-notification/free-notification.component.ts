@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CreateNotificationComponent } from '../../shared/create-notification/create-notification.component';
+import { CreateNotificationComponent } from '@shared/create-notification/create-notification.component';
 
 @Component({
   selector: 'reme-free-notification',

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { environment } from '../../environment';
-import { ROUTER_TOKENS } from './app.routes';
-import { FooterComponent } from './shared/footer/footer.component';
-import { ToastComponent } from './shared/toast/toast.component';
+import { FooterComponent } from '@shared/footer/footer.component';
+import { ToastComponent } from '@shared/toast/toast.component';
+import { environment } from '@environments/environment';
+import { ROUTER_TOKENS } from '@app/app.routes';
 
 @Component({
   selector: 'app-root',
