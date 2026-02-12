@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
-import { environment } from '../../../environment';
-import { GetUserByMail_DevGQL, GetUserByMail_ProdGQL, InsertNotification_DevGQL, InsertNotification_DevMutationVariables, InsertNotification_ProdGQL, InsertNotification_ProdMutationVariables, InsertUser_DevGQL, InsertUser_ProdGQL } from "../../graphql/generated";
-import { INotification, IUser } from "../shared/models";
+import { GetUserByMail_DevGQL, GetUserByMail_ProdGQL, InsertNotification_DevGQL, InsertNotification_DevMutationVariables, InsertNotification_ProdGQL, InsertNotification_ProdMutationVariables, InsertUser_DevGQL, InsertUser_ProdGQL } from "@hasura/generated";
+import { INotification, IUser } from "@shared/models";
 import { ToastService, ToastType } from "./toast.service";
+import { environment } from "@environments/environment";
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {

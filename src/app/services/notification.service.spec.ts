@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { GetUserByMail_DevGQL, InsertNotification_DevGQL, InsertUser_DevGQL } from '../../graphql/generated';
-import { INotification, IUser } from '../shared/models';
+import { GetUserByMail_DevGQL, InsertNotification_DevGQL, InsertUser_DevGQL } from '@hasura/generated';
+import { INotification, IUser } from '@shared/models';
 import { NotificationService } from './notification.service';
 
 describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {

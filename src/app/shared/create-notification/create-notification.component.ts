@@ -4,13 +4,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 import { catchError, finalize, switchMap, tap } from 'rxjs';
-import { LocalStorageService } from '../../services/local-storage.service';
-import { NotificationService } from '../../services/notification.service';
-import { ToastService, ToastType } from '../../services/toast.service';
-import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '../editor-config.token';
-import { INotification, IUser } from '../models';
-import { SESSION_STORAGE } from '../storage.token';
-import { UserService } from '../../services/user.service';
+import { LocalStorageService } from '@services/local-storage.service';
+import { NotificationService } from '@services/notification.service';
+import { ToastService, ToastType } from '@services/toast.service';
+import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '@shared/editor-config.token';
+import { INotification, IUser } from '@shared/models';
+import { SESSION_STORAGE } from '@shared/storage.token';
+import { UserService } from '@services/user.service';
 
 enum TypewriterActionType {
   TYPE = 'type',

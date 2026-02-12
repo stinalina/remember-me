@@ -1,5 +1,5 @@
 import { inject, Injectable } from "@angular/core";
-import { LOCAL_STORAGE } from "../shared/storage.token";
+import { LOCAL_STORAGE } from "@shared/storage.token";
 
 @Injectable ({ providedIn: 'root' })
 export class LocalStorageService {

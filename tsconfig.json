@@ -16,11 +16,17 @@
     "target": "ES2022",
     "module": "preserve",
     "paths": {
+      "@app/*": [
+        "./src/app/*"
+      ],
       "@hasura/*": [
         "./src/graphql/*"
       ],
       "@assets/*": [
         "./src/assets/*"
+      ],
+      "@environments/*": [
+        "./src/environments/*"
       ],
       "@shared/*": [
         "./src/app/shared/*"
