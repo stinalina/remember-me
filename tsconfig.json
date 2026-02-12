@@ -5,7 +5,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "strict": true,
+    "sourceMap": true,
     "noImplicitOverride": true,
+    "noImplicitAny": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
@@ -14,7 +16,9 @@
     "experimentalDecorators": true,
     "importHelpers": true,
     "target": "ES2022",
-    "module": "preserve",
+    "module": "esnext",
+    "lib": ["ES2020", "DOM"],
+    "moduleResolution": "node",
     "paths": {
       "@app/*": [
         "./src/app/*"
@@ -47,6 +51,7 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "typeCheckHostBindings": true,
+    "fullttemplateTypeCheck": true,
     "strictTemplates": true
   },
   "files": [],
