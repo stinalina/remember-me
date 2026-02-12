@@ -17,9 +17,15 @@ export class LocalStorageService {
   }
 
   public getSendedNotificationCount(): number {
-    const value = this.stoarge.getItem(this.SENDED_NOTIFICATIONS_COUNT_TOKEN);
+    const value = this.stoarge.getItem(this.SENDED_NOTIFICATIONS_COUNT_TOKEN)?.split('_');
     if (value) {
-      return Number(value?.split('_')[0]);
+      let month = new Date().getMonth();
+      const lastMonth = Number(value[1]);
+      if (month !== lastMonth) {
+        this.stoarge.setItem(this.SENDED_NOTIFICATIONS_COUNT_TOKEN, `0_${month}`);
+        return 0;
+      }
+      return Number(value[0]);
     }
     return 0
   }
@@ -29,12 +35,12 @@ export class LocalStorageService {
    * @param limit - default is 3; count won't increase when limit is reached
    */
   public increaseSendedNotificationCount(limit: number = 3): void {
-    const value = this.stoarge.getItem(this.SENDED_NOTIFICATIONS_COUNT_TOKEN);
+    const value = this.stoarge.getItem(this.SENDED_NOTIFICATIONS_COUNT_TOKEN)?.split('_');
     let count = 1;
     let month = new Date().getMonth();
     if (value) {
-      const lastMonth = Number(value?.split('_')[1]);
-      count =  Number(value?.split('_')[0]);
+      const lastMonth = Number(value[1]);
+      count =  Number(value[0]);
       if (month === lastMonth && count < limit) {
         count++;
       }
