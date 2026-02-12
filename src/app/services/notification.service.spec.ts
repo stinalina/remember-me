@@ -1,17 +1,16 @@
-import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
-import { NotificationService } from './notification.service';
-import { GetUserByMailGQL, InsertNotificationGQL, InsertUserGQL } from '../../graphql/generated';
-import { of, throwError } from 'rxjs';
-import { INotification, IUser } from '../shared/models';
 import { HttpClient } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
+import { of, throwError } from 'rxjs';
+import { GetUserByMail_DevGQL, InsertNotification_DevGQL, InsertUser_DevGQL } from '../../graphql/generated';
+import { INotification, IUser } from '../shared/models';
+import { NotificationService } from './notification.service';
 
 describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
   let service: NotificationService;
 
-  let mockGetUserByMailGQL: jasmine.SpyObj<GetUserByMailGQL>;
-  let mockInsertUserGQL: jasmine.SpyObj<InsertUserGQL>;
-  let mockInsertNotificationGQL: jasmine.SpyObj<InsertNotificationGQL>;
+  let mockGetUserByMailGQL: jasmine.SpyObj<GetUserByMail_DevGQL>;
+  let mockInsertUserGQL: jasmine.SpyObj<InsertUser_DevGQL>;
+  let mockInsertNotificationGQL: jasmine.SpyObj<InsertNotification_DevGQL>;
   let httpMock: jasmine.SpyObj<HttpClient>;
 
   const mail = 'test@mail.de';
@@ -49,9 +48,9 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
       providers: [
         NotificationService,
         { provide: HttpClient, useValue: httpMock },
-        { provide: GetUserByMailGQL, useValue: mockGetUserByMailGQL },
-        { provide: InsertUserGQL, useValue: mockInsertUserGQL },
-        { provide: InsertNotificationGQL, useValue: mockInsertNotificationGQL }
+        { provide: GetUserByMail_DevGQL, useValue: mockGetUserByMailGQL },
+        { provide: InsertUser_DevGQL, useValue: mockInsertUserGQL },
+        { provide: InsertNotification_DevGQL, useValue: mockInsertNotificationGQL }
       ]
     });
 
