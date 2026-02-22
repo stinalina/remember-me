@@ -25,8 +25,8 @@ jobs:
       uses: Azure/static-web-apps-deploy@v1
       with:
         azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PROUD_BUSH_059117B03 }}
-        repo_token: ${{ secrets.GITHUB_TOKEN }}
         action: 'upload'
         app_location: '/dist/remember-me'
         output_location: ''
-        skip_app_build: true
+        github_id_token: ${{ steps.idtoken.outputs.result }}
+        ###### End of Repository/Build Configurations ######
