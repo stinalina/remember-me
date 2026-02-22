@@ -5,23 +5,23 @@
       Subject
       <input type="text" id="create-notifcation-subject" 
         formControlName="subject"
-        class="bg-white" placeholder="{{ this.placeholderSubject }}" />
+        class="bg-white pl-1" placeholder="{{ this.placeholderSubject }}" />
     </label>
 
     <div class="NgxEditor__Wrapper">
-      <ngx-editor-menu [editor]="editor"[toolbar]="toolbar" ></ngx-editor-menu>
       <ngx-editor id="create-notification-editor"
-        class="h-100"
-        [editor]="editor"
-        formControlName="content"
-        outputFormat="html"
-        placeholder=""
-        (focusIn)="this.showPlaceholderAnimation = false"
+      class="h-100"
+      [editor]="editor"
+      formControlName="content"
+      outputFormat="html"
+      placeholder=""
+      (focusIn)="this.showPlaceholderAnimation = false"
       >
-        @if(this.showPlaceholderAnimation) {
-          <span class="typewriter-placeholder" [innerHTML]="typedPlaceholder"></span>
-        }
-      </ngx-editor>
+      @if(this.showPlaceholderAnimation) {
+        <span class="typewriter-placeholder" [innerHTML]="typedPlaceholder"></span>
+      }
+    </ngx-editor>
+    <ngx-editor-menu [editor]="editor"[toolbar]="toolbar" ></ngx-editor-menu>
     </div>
 
     <div class="flex flex-col w-full align-start">
@@ -52,7 +52,7 @@
           </g>
         </svg>
         <input id="create-notifcation-mail"
-          formControlName="mail" class="bg-white"
+          formControlName="mail" class="bg-white pl-1"
           type="email" placeholder="mail@site.com" />
       </label>
       <div class="validator-hint hidden">Enter valid email address</div>

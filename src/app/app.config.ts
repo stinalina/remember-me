@@ -1,17 +1,11 @@
 import { ApplicationConfig, inject, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
 import { provideApollo } from 'apollo-angular';
 import { InMemoryCache } from '@apollo/client';
 import { HttpLink } from 'apollo-angular/http';
-
-import {
-  provideToastService,
-  ToastHorizontalPosition,
-  ToastVerticalPosition,
-} from 'daisyui-toaster';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -28,17 +22,6 @@ export const appConfig: ApplicationConfig = {
     }),
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes),
-    provideToastService({
-      horizontalPosition: ToastHorizontalPosition.Right,
-      verticalPosition: ToastVerticalPosition.Top,
-      topOffset: 20,
-      rightOffset: 20,
-      zIndex: 1000,
-      defaultDuration: 3000,
-      defaultShowClose: true,
-      defaultCloseOnClick: false,
-      maxToasts: 5,
-    }),
+    provideRouter(routes, withComponentInputBinding())
   ]
 };
