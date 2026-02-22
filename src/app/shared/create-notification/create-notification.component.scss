@@ -4,6 +4,11 @@
   text-align: left !important;
 }
 
+:host ::ng-deep .NgxEditor__Content {
+  min-height: 100%;
+  padding: 8px;
+}
+
 .typewriter-placeholder {
   position: absolute;
   margin: 8px;
