@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 import { catchError, finalize, switchMap, tap } from 'rxjs';
 import { LocalStorageService } from '@services/local-storage.service';
@@ -11,6 +11,7 @@ import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '@shared/editor-config.token';
 import { INotification, IUser } from '@shared/models';
 import { SESSION_STORAGE } from '@shared/storage.token';
 import { UserService } from '@services/user.service';
+import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
 
 enum TypewriterActionType {
   TYPE = 'type',
@@ -45,7 +46,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   
   protected readonly myForm = this.fb.group({
     subject: [''],
-    content: ['', Validators.required],
+    content: ['', htmlContentValidator()],
     mail: [this.localStorageService.getUserMail() ?? '', [Validators.required, Validators.email]],
     dateTime: [this.nextDay, Validators.required],
   });
