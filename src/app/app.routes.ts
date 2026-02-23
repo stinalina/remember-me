@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { LoginComponent } from '@app/components/login/login.component';
 import * as agb from '@assets/text/agb.txt';
 import * as dsgvo from '@assets/text/dsgvo.txt';
 import { FreeNotificationComponent } from '@components/free-notification/free-notification.component';
@@ -24,6 +25,10 @@ export const routes: Routes = [
   {
     path: ROUTER_TOKENS.HOME,
     component: HomePage,
+  },
+  {
+    path: ROUTER_TOKENS.LOGIN,
+    component: LoginComponent,
   },
   {
     path: ROUTER_TOKENS.FREE_NOTIFICATION,
