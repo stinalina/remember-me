@@ -34,7 +34,7 @@ export const routes: Routes = [
   },
   {
     path: ROUTER_TOKENS.REGISTER,
-    loadComponent: () => RegisterComponent,
+    component: RegisterComponent
   },
   {
     path: ROUTER_TOKENS.FREE_NOTIFICATION,

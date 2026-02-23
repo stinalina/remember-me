@@ -35,3 +35,6 @@
   background-color: var(--color-base-100);
 }
 
+.reme-link:hover {
+  text-decoration: underline
+}
