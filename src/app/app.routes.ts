@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from '@app/components/login/login.component';
+import { RegisterComponent } from '@app/components/register/register.component';
 import * as agb from '@assets/text/agb.txt';
 import * as dsgvo from '@assets/text/dsgvo.txt';
 import { FreeNotificationComponent } from '@components/free-notification/free-notification.component';
@@ -15,6 +16,7 @@ export enum ROUTER_TOKENS {
   FREE_NOTIFICATION = 'free-notification',
   CONTACT = 'G_PWP@ruv.de',
   LOGIN = 'login',
+  REGISTER = 'register',
   IMPRESSUM = 'impressum',
   AGB = 'agb',
   DATENSCHUTZ = 'dsgvo',
@@ -29,6 +31,10 @@ export const routes: Routes = [
   {
     path: ROUTER_TOKENS.LOGIN,
     component: LoginComponent,
+  },
+  {
+    path: ROUTER_TOKENS.REGISTER,
+    component: RegisterComponent
   },
   {
     path: ROUTER_TOKENS.FREE_NOTIFICATION,
