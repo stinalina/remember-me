@@ -5,7 +5,6 @@ import { CreateNotificationComponent } from '@shared/create-notification/create-
   selector: 'reme-free-notification',
   templateUrl: 'free-notification.component.html',
   styles: [],
-  standalone: true,
   imports: [CreateNotificationComponent],
 })
 export class FreeNotificationComponent {
