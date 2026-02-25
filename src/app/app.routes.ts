@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from '@app/components/login/login.component';
-import { RegisterComponent } from '@app/components/register/resgiter.component';
+import { RegisterComponent } from '@app/components/register/register.component';
 import * as agb from '@assets/text/agb.txt';
 import * as dsgvo from '@assets/text/dsgvo.txt';
 import { FreeNotificationComponent } from '@components/free-notification/free-notification.component';

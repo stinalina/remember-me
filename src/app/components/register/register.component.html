@@ -7,7 +7,7 @@
         <reme-password></reme-password>
         <reme-password></reme-password>
         <reme-checkbox>
-          Akzeptiere AGB & DSGVO
+          Akzeptiere <a class="reme-link" onclick="agb.showModal()">AGB</a> & <a class="reme-link" onclick="dsgvo.showModal()">DSGVO</a>
         </reme-checkbox>
         <button class="btn bg-white mx-5">
           Loslegen!
@@ -16,3 +16,11 @@
     </div>
   </div>
 </div>
+
+<reme-modal modalId="agb">
+  <reme-text-frame [title]="'Allgemeine Geschäftsbedingungen'" [content]="this.AgbText"></reme-text-frame>
+</reme-modal>
+
+<reme-modal modalId="dsgvo">
+  <reme-text-frame [title]="'Datenschutzerklärung'" [content]="this.DsgvoText"></reme-text-frame>
+</reme-modal>
