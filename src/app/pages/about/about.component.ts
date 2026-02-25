@@ -4,7 +4,6 @@ import { Component } from "@angular/core";
   selector: 'reme-about',
   templateUrl: 'about.component.html',
   styles: [],
-  standalone: true,
   imports: []
 })
 export class AboutComponent {
