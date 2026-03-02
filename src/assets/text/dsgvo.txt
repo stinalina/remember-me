@@ -12,14 +12,13 @@ Folgende Informationen werden dabei ohne Ihr Zutun erfasst und bis zur automatis
  - IP-Adresse des anfragenden Rechners
  - Datum und Uhrzeit des Zugriffs
  - Name und URL der abgerufenen Datei
- - Website, von der aus der Zugriff erfolgt (Referrer-URL) verwendeter Browser und ggf. das Betriebssystem Ihres Rechners sowie der Name Ihres Access-Providers
 
 Die genannten Daten werden durch uns zu folgenden Zwecken verarbeitet:
  - Gewährleistung eines reibungslosen Verbindungsaufbaus der Website
- - Gewährleistung einer komfortablen Nutzung unserer Website
  - Auswertung der Systemsicherheit und -stabilität sowie zu weiteren administrativen Zwecken
 
 Rechtsgrundlage für die Datenverarbeitung ist Art. 6 Abs. 1 S. 1 lit. f DSGVO.
+
 b) Bei Registrierung und Nutzung der Dienste
 Für die Nutzung unserer Dienste (z.B. Anlegen eines Kontos, Erinnerungen anlegen, Bearbeiten und Archivieren) ist eine Registrierung erforderlich.
 Dabei werden folgende personenbezogene Daten erhoben:
@@ -36,8 +35,6 @@ Die Verarbeitung dieser Daten erfolgt,
  - zur Abrechnung und Zahlungsabwicklung.
 
 Rechtsgrundlage ist Art. 6 Abs. 1 S. 1 lit. b DSGVO.
-c) Bei Nutzung unseres Kontaktformulars
-Bei Fragen jeglicher Art bieten wir Ihnen die Möglichkeit, mit uns über ein auf der Website bereitgestelltes Formular Kontakt aufzunehmen. Dabei ist die Angabe einer gültigen E-Mail-Adresse erforderlich.
 
 3. Weitergabe von Daten
 Eine Übermittlung Ihrer persönlichen Daten an Dritte zu anderen als den im Folgenden aufgeführten Zwecken findet nicht statt.
@@ -49,6 +46,7 @@ dies gesetzlich zulässig und nach Art. 6 Abs. 1 S. 1 lit. b DSGVO für die Abwi
 
 4. Cookies und Tracking
 Unsere Website verwendet Cookies. Nähere Informationen dazu finden Sie in unserer Cookie-Richtlinie.
+
 5. Betroffenenrechte
 Sie haben das Recht:
  - gemäß Art. 15 DSGVO Auskunft über Ihre von uns verarbeiteten personenbezogenen Daten zu verlangen;
