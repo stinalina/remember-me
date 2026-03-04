@@ -10,18 +10,17 @@
 
     <div class="NgxEditor__Wrapper">
       <ngx-editor id="create-notification-editor"
-      class="h-100"
-      [editor]="editor"
-      formControlName="content"
-      outputFormat="html"
-      placeholder=""
-      (focusIn)="this.showPlaceholderAnimation = false"
-      >
-      @if(this.showPlaceholderAnimation) {
-        <span class="typewriter-placeholder" [innerHTML]="typedPlaceholder"></span>
-      }
-    </ngx-editor>
-    <ngx-editor-menu [editor]="editor"[toolbar]="toolbar" ></ngx-editor-menu>
+        class="h-100"
+        [editor]="editor"
+        formControlName="content"
+        outputFormat="html"
+        placeholder=""
+        (focusIn)="this.showPlaceholderAnimation = false" >
+        @if(this.showPlaceholderAnimation) {
+          <span class="typewriter-placeholder" [innerHTML]="typedPlaceholder"></span>
+        }
+      </ngx-editor>
+      <ngx-editor-menu [editor]="editor"[toolbar]="toolbar" ></ngx-editor-menu>
     </div>
 
     <div class="flex flex-col w-full align-start">
