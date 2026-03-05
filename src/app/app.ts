@@ -4,6 +4,7 @@ import { FooterComponent } from '@shared/footer/footer.component';
 import { ToastComponent } from '@shared/toast/toast.component';
 import { environment } from '@environments/environment';
 import { ROUTER_TOKENS } from '@app/app.routes';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +12,7 @@ import { ROUTER_TOKENS } from '@app/app.routes';
     FooterComponent,
     ToastComponent,
     RouterModule,
+    NgTemplateOutlet
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'
