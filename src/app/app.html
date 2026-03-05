@@ -26,21 +26,21 @@
         </div>
       </div>
     </div>
-    <div class="fixed flex flex-row items-end p-1 gap-3 left-2 bottom-1 text-sm">
-      <div>
-        <p>{{ this.env }}</p>
-        <p>Version: {{ this.version }}</p>
-      </div>
-      <div class="submenu flex gap-2">
-        <a [routerLink]="[RouterTokens.IMPRESSUM]">Impressum</a>
-        <a [routerLink]="[RouterTokens.AGB]">AGB</a>
-        <a [routerLink]="[RouterTokens.DATENSCHUTZ]">Datenschutz</a>
-        <a [routerLink]="[RouterTokens.PRICING]">Pricing</a>
-      </div>
-    </div>
    </div>
   <div class="h-auto lg:h-screen items-center justify-center" #outletContainer>
     <router-outlet />
   </div>
-  <reme-footer></reme-footer>
+  <div class="lg:fixed flex flex-col lg:flex-row lg:items-end p-1 gap-3 lg:left-2 lg:bottom-1 text-sm w-full lg:w-auto px-4 lg:px-0">
+    <div class="hidden lg:block">
+      <p>{{ this.env }}</p>
+      <p>Version: {{ this.version }}</p>
+    </div>
+    <div class="submenu flex flex-row gap-2">
+      <a [routerLink]="[RouterTokens.IMPRESSUM]">Impressum</a>
+      <a [routerLink]="[RouterTokens.AGB]">AGB</a>
+      <a [routerLink]="[RouterTokens.DATENSCHUTZ]">Datenschutz</a>
+      <a [routerLink]="[RouterTokens.PRICING]">Pricing</a>
+    </div>
+  </div>
+  <reme-footer class="hidden lg:block"></reme-footer>
 </div>
