@@ -1,23 +1,23 @@
 <reme-toast></reme-toast>
 <div class="grid lg:grid-cols-2 items-center justify-center min-h-screen">
-  <div class="flex flex-col">
-    <div class="flex flex-columns items-center justify-end lg:mr-2">
+  <div class="flex flex-col items-center justify-center min-h-screen lg:min-h-auto h-auto lg:h-screen">
+    <div class="flex flex-col lg:flex-row items-center lg:justify-end w-full lg:mr-2">
       <img alt="Elefant" class="logo" src="assets/images/logo.svg" width="125" height="125" />
-      <div class="wrapper">
+      <div class="wrapper text-center lg:text-left px-4 lg:px-0">
         <h1 class="lg:text-5xl text-2xl font-bold yellow">Willkommen!</h1>
         <p class="lg:text-xl text-base py-1">
           Ich bin <span class="yellow italic">Notify</span> - dein smarter Erinnerungshelfer.<br/>
           Ich gebe dir rechtzeitig Bescheid, wenn deine Notizen fällig sind!<br/>
           Los geht's!
         </p>
-        <div class="flex gap-2 lg:mt-3 mt-2">
-          <a role="button" class="btn btn-lg"
+        <div class="flex flex-col lg:flex-row gap-2 lg:mt-3 mt-2">
+          <a role="button" class="btn lg:btn-lg"
             [routerLink]="[RouterTokens.HOME]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }">
             Home</a>
-          <a role="button" class="btn btn-lg"
+          <a role="button" class="btn lg:btn-lg"
             [routerLink]="[RouterTokens.FREE_NOTIFICATION]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }">
             Ausprobieren</a>
-          <a role="button" class="btn btn-lg"
+          <a role="button" class="btn lg:btn-lg"
             [routerLink]="[RouterTokens.LOGIN]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }">
             Dran bleiben</a>
         </div>
@@ -36,7 +36,7 @@
       </div>
     </div>
    </div>
-  <div class="items-center justify-center">
+  <div class="h-auto lg:h-screen items-center justify-center">
     <router-outlet />
   </div>
   <reme-footer></reme-footer>
