@@ -1,8 +1,8 @@
 <div class="hero bg-base-200 min-h-screen">
   <div class="hero-content text-center">
     <div class="max-w-2xl">
-      <h1 class="text-5xl font-bold">Pricing</h1>
-      <div class="py-10 grid grid-cols-3 gap-3">
+      <h1 class="lg:text-5xl text-2xl font-bold">Pricing</h1>
+      <div class="lg:py-10 py-6 grid grid-cols-1 lg:grid-cols-3 gap-3">
         @for (pricing of this.pricings; track $index; let i = $index) {
           <ng-content *ngTemplateOutlet="pricingCard; context: { pricing: pricing }"></ng-content>
         }
@@ -19,12 +19,12 @@
   [class.bg-yellow]="isBasic"
   [class.bg-base-100]="!isBasic">
   <!-- Card Header -->
-  <div class="relative flex flex-col items-center justify-center pt-8 pb-6 rounded-t-2xl bg-gradient-to-b"
+  <div class="relative flex flex-col items-center justify-center lg:pt-8 lg:pb-6 pt-4 pb-3 rounded-t-2xl bg-gradient-to-b"
     [class.from-gray-200]="isBasic"
     [class.from-yellow-500]="!isBasic">
-    <h2 class="text-lg font-semibold text-white tracking-wide uppercase mb-2">{{pricing.title}}</h2>
+    <h2 class="lg:text-lg text-base font-semibold text-white tracking-wide uppercase mb-2">{{pricing.title}}</h2>
     <div class="flex flex-col items-center">
-      <span class="text-4xl font-bold text-white">{{pricing.costPerMonth}} €</span>
+      <span class="lg:text-4xl text-2xl font-bold text-white">{{pricing.costPerMonth}} €</span>
       <span class="text-base text-white opacity-80 mt-1">pro Monat</span>
     </div>
     @if (isBasic) {
@@ -32,7 +32,7 @@
     }
   </div>
   <div class="card-body flex flex-col justify-between">    
-    <ul class="mt-6 text-s">
+    <ul class="lg:mt-6 mt-3 text-s">
       @for (item of pricing.features; track $index) {
         <li class="flex flex-row text-start" [class.mt-2]="!$first">
           <svg xmlns="http://www.w3.org/2000/svg" class="size-4 me-2 text-success" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
@@ -40,7 +40,7 @@
         </li>
       }
     </ul>
-    <div class="card-actions mt-20 justify-self-end">
+    <div class="card-actions lg:mt-20 mt-10 justify-self-end">
       <button class="btn btn-block">Nehm ich!</button>
     </div>
   </div>
