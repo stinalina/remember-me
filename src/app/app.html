@@ -1,25 +1,25 @@
 <reme-toast></reme-toast>
-<div class="grid lg:grid-cols-2 items-center justify-center min-h-screen">
-  <div class="flex flex-col items-center justify-center min-h-screen lg:min-h-auto h-auto lg:h-screen">
-  <div class="flex flex-col lg:flex-row items-center lg:justify-end w-full lg:mr-2 lg:grow">
+<div class="grid md:grid-cols-2 xl:grid-cols-2 items-center justify-center min-h-screen md:min-h-auto xl:min-h-screen">
+  <div class="flex flex-col items-center justify-center min-h-screen md:min-h-auto xl:min-h-auto h-auto md:h-auto xl:h-screen">
+  <div class="flex flex-col md:flex-row xl:flex-row items-center md:justify-end xl:justify-end w-full md:mr-1 xl:mr-2 md:grow xl:grow">
     <img alt="Elefant" class="logo" src="assets/images/logo.svg" width="125" height="125" />
-    <div class="wrapper text-center lg:text-left px-4 lg:px-0">
-      <h1 class="lg:text-5xl text-2xl font-bold yellow">Willkommen!</h1>
-      <p class="lg:text-xl text-base py-1">
+    <div class="wrapper text-center md:text-left xl:text-left px-4 md:px-2 xl:px-0">
+      <h1 class="md:text-4xl xl:text-5xl text-2xl font-bold yellow">Willkommen!</h1>
+      <p class="md:text-lg xl:text-xl text-base py-1">
         Ich bin <span class="yellow italic">Notify</span> - dein smarter Erinnerungshelfer.<br/>
         Ich gebe dir rechtzeitig Bescheid, wenn deine Notizen fällig sind!<br/>
         Los geht's!
       </p>
-      <div class="flex flex-col lg:flex-row gap-2 lg:mt-3 mt-2">
-        <a role="button" class="btn lg:btn-lg"
+      <div class="flex flex-col md:flex-row xl:flex-row gap-2 md:mt-2 xl:mt-3 mt-2">
+        <a role="button" class="btn md:btn-md xl:btn-lg"
           [routerLink]="[RouterTokens.HOME]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }"
           (click)="scrollToOutlet()">
           Home</a>
-        <a role="button" class="btn lg:btn-lg"
+        <a role="button" class="btn md:btn-md xl:btn-lg"
           [routerLink]="[RouterTokens.FREE_NOTIFICATION]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }"
           (click)="scrollToOutlet()">
           Ausprobieren</a>
-        <a role="button" class="btn lg:btn-lg"
+        <a role="button" class="btn md:btn-md xl:btn-lg"
           [routerLink]="[RouterTokens.LOGIN]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }"
           (click)="scrollToOutlet()">
           Dran bleiben</a>
@@ -28,15 +28,15 @@
   </div>
  
   </div>
-  <div class="h-auto lg:h-screen items-center justify-center" #outletContainer>
+  <div class="h-auto md:h-auto xl:h-screen items-center justify-center" #outletContainer>
     <router-outlet />
   </div>
   <ng-content *ngTemplateOutlet="submenu"></ng-content>
-  <reme-footer class="hidden lg:block"></reme-footer>
+  <reme-footer class="hidden md:block xl:block"></reme-footer>
 </div>
 
 <ng-template #submenu>
-  <div class="lg:fixed lg:flex flex-row lg:items-end p-1 gap-3 lg:left-2 lg:bottom-1 text-sm lg:w-auto lg:px-0">
+  <div class="md:absolute md:flex flex-row md:items-end p-1 gap-3 md:left-2 md:bottom-1 text-sm md:w-auto md:px-0 xl:fixed xl:flex xl:flex-row xl:items-end xl:gap-3 xl:left-2 xl:bottom-1 xl:text-sm xl:w-auto xl:px-0">
   <div>
     <p>{{ this.env }}</p>
     <p>Version: {{ this.version }}</p>

@@ -1,16 +1,16 @@
 <form [formGroup]="this.myForm" (ngSubmit)="this.createNotification()"
-  class="shadow-lg lg:p-3 p-2 rounded-lg bg-base-100 border-1 max-h-screen lg:max-h-none overflow-y-auto lg:overflow-y-visible">
-  <div class="flex flex-col lg:gap-4 gap-2 justify-around">
-    <label class="input input-sm lg:input-md w-full">
+  class="shadow-lg md:p-2.5 xl:p-3 p-2 rounded-lg bg-base-100 border-1 max-h-screen md:max-h-[50vh] xl:max-h-none overflow-y-auto md:overflow-y-auto xl:overflow-y-visible">
+  <div class="flex flex-col md:gap-3 xl:gap-4 gap-2 justify-around">
+    <label class="input input-sm md:input-sm xl:input-md w-full">
       Subject
       <input type="text" id="create-notifcation-subject" 
         formControlName="subject"
         class="bg-white pl-1" placeholder="{{ this.placeholderSubject }}" />
     </label>
 
-    <div class="NgxEditor__Wrapper max-h-[30vh] lg:max-h-none overflow-hidden text-sm lg:text-base">
+    <div class="NgxEditor__Wrapper max-h-[30vh] md:max-h-[20vh] xl:max-h-none overflow-hidden text-sm md:text-sm xl:text-base">
       <ngx-editor id="create-notification-editor"
-        class="h-[25vh] lg:h-100 text-sm lg:text-base"
+        class="h-[25vh] md:h-[18vh] xl:h-100 text-sm md:text-sm xl:text-base"
         [editor]="editor"
         formControlName="content"
         outputFormat="html"
@@ -21,25 +21,25 @@
         }
       </ngx-editor>
       @if(this.toolbar) {
-        <ngx-editor-menu class="hidden lg:block" [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+        <ngx-editor-menu class="hidden md:block" [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
       }
     </div>
 
-    <div class="flex flex-col w-full align-start text-sm lg:text-base">
-      <label for="create-notification-date-time" class="text-left lg:ml-1 mb-1">
+    <div class="flex flex-col w-full align-start text-sm md:text-sm xl:text-base">
+      <label for="create-notification-date-time" class="text-left md:ml-0.5 xl:ml-1 mb-1">
         Wann möchtest du erinnert werden?
       </label>
-      <input id="create-notification-date-time" class="input input-sm lg:input-md w-full bg-white"
+      <input id="create-notification-date-time" class="input input-sm md:input-sm xl:input-md w-full bg-white"
         formControlName="dateTime"
         type="date"
         [min]="this.now"/>
     </div>
 
-    <div class="flex flex-col text-sm lg:text-base">
-      <label for="create-notifcation-mail" class="text-left lg:ml-1 mb-1">
+    <div class="flex flex-col text-sm md:text-sm xl:text-base">
+      <label for="create-notifcation-mail" class="text-left md:ml-0.5 xl:ml-1 mb-1">
         Sende Erinnerung an:
       </label>
-      <label class="input input-sm lg:input-md validator w-full">
+      <label class="input input-sm md:input-sm xl:input-md validator w-full">
         <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
           <g
             stroke-linejoin="round"
@@ -67,7 +67,7 @@
         {{ sendingNotification ? 'Sending...' : 'Create Notification' }}
       </button> -->
 
-      <button type="submit" class="btn btn-sm lg:btn-md" id="create-notification-apply"
+      <button type="submit" class="btn btn-sm md:btn-sm xl:btn-md" id="create-notification-apply"
         [class.btn-disabled]="(!this.canSubmitForm() || this.sendingNotification()) && !this.retry()">
         @if (this.sendingNotification()) {
           <span class="loading loading-spinner"></span>

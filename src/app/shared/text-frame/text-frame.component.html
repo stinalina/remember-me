@@ -1,9 +1,9 @@
-<div class="hero bg-base-200 min-h-screen">
+<div class="hero bg-base-200 min-h-screen md:min-h-auto xl:min-h-screen">
   <div class="hero-content text-center">
     <div class="flex flex-col gap-2 max-w-3xl h-full">
-      <h1 class="lg:text-5xl text-2xl font-bold mb-6">{{ this.title() }}</h1>
-      <div class="lg:p-4 p-2 lg:pr-0 pr-0 border-2 rounded-md bg-base-100 text-justify text-sm lg:text-base">
-        <pre class="overflow-auto text-wrap max-h-[70vh] text-xs lg:text-sm">{{ this.content() }}</pre>
+      <h1 class="md:text-4xl xl:text-5xl text-2xl font-bold mb-6">{{ this.title() }}</h1>
+      <div class="md:p-3 xl:p-4 p-2 xl:pr-0 pr-0 border-2 rounded-md bg-base-100 text-justify text-sm md:text-sm xl:text-base">
+        <pre class="overflow-auto text-wrap max-h-[70vh] md:max-h-[40vh] xl:max-h-[70vh] text-xs md:text-xs xl:text-sm">{{ this.content() }}</pre>
       </div>
     </div>
   </div>
