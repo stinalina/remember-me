@@ -1,10 +1,19 @@
 <div class="hero bg-base-200 min-h-screen">
   <div class="hero-content text-center">
-    <div class="max-w-2xl">
+    <div class="max-w-2xl w-full">
       <h1 class="lg:text-5xl text-2xl font-bold">Pricing</h1>
-      <div class="lg:py-10 py-6 grid grid-cols-1 lg:grid-cols-3 gap-3">
+      <!-- Desktop Grid -->
+      <div class="lg:py-10 py-6 hidden lg:grid grid-cols-3 gap-3">
         @for (pricing of this.pricings; track $index; let i = $index) {
           <ng-content *ngTemplateOutlet="pricingCard; context: { pricing: pricing }"></ng-content>
+        }
+      </div>
+      <!-- Mobile Carousel -->
+      <div class="lg:py-10 py-6 carousel w-full lg:hidden gap-2">
+        @for (pricing of this.pricings; track $index) {
+          <div class="carousel-item w-50 px-1">
+            <ng-content *ngTemplateOutlet="pricingCard; context: { pricing: pricing }"></ng-content>
+          </div>
         }
       </div>
     </div>
