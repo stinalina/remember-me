@@ -12,13 +12,16 @@
         </p>
         <div class="flex flex-col lg:flex-row gap-2 lg:mt-3 mt-2">
           <a role="button" class="btn lg:btn-lg"
-            [routerLink]="[RouterTokens.HOME]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }">
+            [routerLink]="[RouterTokens.HOME]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }"
+            (click)="scrollToOutlet()">
             Home</a>
           <a role="button" class="btn lg:btn-lg"
-            [routerLink]="[RouterTokens.FREE_NOTIFICATION]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }">
+            [routerLink]="[RouterTokens.FREE_NOTIFICATION]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }"
+            (click)="scrollToOutlet()">
             Ausprobieren</a>
           <a role="button" class="btn lg:btn-lg"
-            [routerLink]="[RouterTokens.LOGIN]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }">
+            [routerLink]="[RouterTokens.LOGIN]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }"
+            (click)="scrollToOutlet()">
             Dran bleiben</a>
         </div>
       </div>
@@ -36,7 +39,7 @@
       </div>
     </div>
    </div>
-  <div class="h-auto lg:h-screen items-center justify-center">
+  <div class="h-auto lg:h-screen items-center justify-center" #outletContainer>
     <router-outlet />
   </div>
   <reme-footer></reme-footer>
