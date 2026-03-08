@@ -1,13 +1,13 @@
-<div class="hero bg-base-200 min-h-screen">
+<div class="hero bg-base-200 min-h-screen md:min-h-screen xl:min-h-screen">
   <div class="hero-content text-center">
     <div class="max-w-md">
-      <h1 class="text-5xl font-bold">{{ this.currentSlogan().title}}</h1>
-      <div class="py-6">
+      <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">{{ this.currentSlogan().title}}</h1>
+      <div class="md:py-4 xl:py-6 py-3">
         <p>{{ this.currentSlogan().description }}</p>
         <br/>
         <p>{{ this.currentSlogan().fazit }}</p>
       </div>
-      <progress class="progress w-56" [value]="this.progressPercentage()" max="100"></progress>
+      <progress class="progress w-full md:w-48 xl:w-56" [value]="this.progressPercentage()" max="100"></progress>
     </div>
   </div>
 </div>

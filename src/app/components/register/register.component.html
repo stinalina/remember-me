@@ -1,15 +1,15 @@
-<div class="hero bg-base-200 min-h-screen">
+<div class="hero bg-base-200 min-h-screen md:min-h-screen xl:min-h-screen">
   <div class="hero-content text-center">
     <div class="max-w-md">
-      <h1 class="text-5xl font-bold">Registrieren & <br/> Loslegen!</h1>
-      <div class="py-6 flex flex-col gap-3 justify-center">
+      <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">Registrieren & <br/> Loslegen!</h1>
+      <div class="md:py-4 xl:py-6 py-3 flex flex-col gap-3 justify-center">
         <reme-mail></reme-mail>
         <reme-password></reme-password>
         <reme-password></reme-password>
         <reme-checkbox preId="register-agb-dsgvo">
           Akzeptiere <a class="reme-link" onclick="agb.showModal()">AGB</a> & <a class="reme-link" onclick="dsgvo.showModal()">DSGVO</a>
         </reme-checkbox>
-        <button class="btn bg-white mx-5">
+        <button class="btn bg-white md:mx-4 xl:mx-5 mx-2">
           Loslegen!
         </button>
       </div>
