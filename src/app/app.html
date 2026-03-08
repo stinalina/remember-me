@@ -1,43 +1,76 @@
 <reme-toast></reme-toast>
-<div class="grid grid-cols-2 items-center justify-center min-h-screen">
-  <div class="flex flex-col">
-    <div class="flex flex-columns items-center justify-end mr-2">
-      <img alt="Elefant" class="logo" src="assets/images/logo.svg" width="125" height="125" />
-      <div class="wrapper">
-        <h1 class="text-5xl font-bold yellow">Willkommen!</h1>
-        <p class="text-xl py-1">
-          Ich bin <span class="yellow italic">Notify</span> - dein smarter Erinnerungshelfer.<br/>
-          Ich gebe dir rechtzeitig Bescheid, wenn deine Notizen fällig sind!<br/>
-          Los geht's!
-        </p>
-        <div class="flex gap-2 mt-3">
-          <a role="button" class="btn btn-lg"
-            [routerLink]="[RouterTokens.HOME]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }">
-            Home</a>
-          <a role="button" class="btn btn-lg"
-            [routerLink]="[RouterTokens.FREE_NOTIFICATION]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }">
-            Ausprobieren</a>
-          <a role="button" class="btn btn-lg"
-            [routerLink]="[RouterTokens.LOGIN]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }">
-            Dran bleiben</a>
-        </div>
+<div class="
+    grid md:grid-cols-2 xl:grid-cols-2 
+    items-center justify-center 
+    min-h-screen md:min-h-screen xl:min-h-screen"
+  >
+  <div class="
+    flex flex-col items-center justify-center 
+    min-h-screen md:min-h-auto xl:min-h-auto 
+    h-auto md:h-screen xl:h-screen"
+    >
+  <div class="
+    flex 
+    flex-col md:flex-row xl:flex-row 
+    items-center 
+    w-full 
+    md:justify-end xl:justify-end 
+    md:mr-1 xl:mr-2 
+    md:grow xl:grow"
+    >
+    <img alt="Elefant" class="logo" src="assets/images/logo.svg" width="125" height="125" />
+    <div class="
+      wrapper 
+      text-center md:text-left xl:text-left 
+      px-4 md:px-0 xl:px-0"
+      >
+      <h1 class="text-2xl md:text-3xl xl:text-5xl font-bold yellow">Willkommen!</h1>
+      <p class="xl:text-xl text-base py-1">
+        Ich bin <span class="yellow italic">Notify</span> - dein smarter Erinnerungshelfer.<br/>
+        Ich gebe dir rechtzeitig Bescheid, wenn deine Notizen fällig sind!<br/>
+        Los geht's!
+      </p>
+      <div class="
+        flex 
+        flex-col md:flex-row xl:flex-row 
+        gap-2
+        mt-2 xl:mt-3"
+        >
+        <a role="button" class="btn btn-sm xl:btn-lg"
+          [routerLink]="[RouterTokens.HOME]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }"
+          (click)="scrollToOutlet()">
+          Home</a>
+        <a role="button" class="btn btn-sm xl:btn-lg"
+          [routerLink]="[RouterTokens.FREE_NOTIFICATION]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }"
+          (click)="scrollToOutlet()">
+          Ausprobieren</a>
+        <a role="button" class="btn btn-sm xl:btn-lg"
+          [routerLink]="[RouterTokens.LOGIN]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }"
+          (click)="scrollToOutlet()">
+          Dran bleiben</a>
       </div>
     </div>
-    <div class="fixed flex flex-row items-end p-1 gap-3 left-2 bottom-1 text-sm">
-      <div>
-        <p>{{ this.env }}</p>
-        <p>Version: {{ this.version }}</p>
-      </div>
-      <div class="submenu flex gap-2">
-        <a [routerLink]="[RouterTokens.IMPRESSUM]">Impressum</a>
-        <a [routerLink]="[RouterTokens.AGB]">AGB</a>
-        <a [routerLink]="[RouterTokens.DATENSCHUTZ]">Datenschutz</a>
-        <a [routerLink]="[RouterTokens.PRICING]">Pricing</a>
-      </div>
-    </div>
-   </div>
-  <div class="items-center justify-center">
+  </div>
+ 
+  </div>
+  <div class="h-auto md:h-screen xl:h-screen items-center justify-center" #outletContainer>
     <router-outlet />
   </div>
-  <reme-footer></reme-footer>
+  <ng-content *ngTemplateOutlet="submenu"></ng-content>
+  <reme-footer class="hidden xl:block"></reme-footer>
+
+
+<ng-template #submenu>
+  <div class="md:absolute md:flex flex-row md:items-end p-1 gap-3 md:left-2 md:bottom-1 text-sm md:w-auto md:px-0 xl:fixed xl:flex xl:flex-row xl:items-end xl:gap-3 xl:left-2 xl:bottom-1 xl:text-sm xl:w-auto xl:px-0">
+  <div>
+    <p>{{ this.env }}</p>
+    <p>Version: {{ this.version }}</p>
+  </div>
+  <div class="submenu flex flex-row gap-2">
+    <a [routerLink]="[RouterTokens.IMPRESSUM]">Impressum</a>
+    <a [routerLink]="[RouterTokens.AGB]">AGB</a>
+    <a [routerLink]="[RouterTokens.DATENSCHUTZ]">Datenschutz</a>
+    <a [routerLink]="[RouterTokens.PRICING]">Pricing</a>
+  </div>
 </div>
+</ng-template>

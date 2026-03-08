@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FooterComponent } from '@shared/footer/footer.component';
 import { ToastComponent } from '@shared/toast/toast.component';
 import { environment } from '@environments/environment';
 import { ROUTER_TOKENS } from '@app/app.routes';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
   selector: 'app-root',
@@ -11,12 +12,27 @@ import { ROUTER_TOKENS } from '@app/app.routes';
     FooterComponent,
     ToastComponent,
     RouterModule,
+    NgTemplateOutlet
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
+  @ViewChild('outletContainer') outletContainer!: ElementRef;
   public readonly RouterTokens = ROUTER_TOKENS;
   public readonly version = '1.0.0';
   public readonly env = environment.production ? 'Prod Mode' : 'Dev Mode';
+
+  scrollToOutlet() {
+    setTimeout(() => {
+      const element = this.outletContainer?.nativeElement;
+      if (element) {
+        const offset = element.offsetTop;
+        window.scrollTo({
+          top: offset,
+          behavior: 'smooth'
+        });
+      }
+    }, 150);
+  }
 }
