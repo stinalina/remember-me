@@ -22,6 +22,7 @@ export class App {
   public readonly RouterTokens = ROUTER_TOKENS;
   public readonly version = '1.0.0';
   public readonly env = environment.production ? 'Prod Mode' : 'Dev Mode';
+  public readonly contactMail = environment.CONTACT_MAIL; 
 
   scrollToOutlet() {
     setTimeout(() => {
