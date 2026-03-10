@@ -12,6 +12,7 @@ import { INotification, IUser } from '@shared/models';
 import { SESSION_STORAGE } from '@shared/storage.token';
 import { UserService } from '@services/user.service';
 import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
+import { environment } from '@environments/environment';
 
 enum TypewriterActionType {
   TYPE = 'type',
@@ -40,6 +41,8 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   private readonly sessionStorage = inject(SESSION_STORAGE);
   private readonly localStorageService = inject(LocalStorageService);
   private readonly toastService = inject(ToastService);
+
+  public readonly MVP_Mode = environment.MVP_Mode;
 
   public readonly editor: Editor = new Editor();
   public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);

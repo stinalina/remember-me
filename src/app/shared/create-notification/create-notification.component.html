@@ -73,8 +73,9 @@
         {{ sendingNotification ? 'Sending...' : 'Create Notification' }}
       </button> -->
 
+      @let disabled = (!this.canSubmitForm() || this.sendingNotification()) && !this.retry();
       <button type="submit" class="btn btn-sm md:btn-sm xl:btn-md" id="create-notification-apply"
-        [class.btn-disabled]="(!this.canSubmitForm() || this.sendingNotification()) && !this.retry()">
+        [class.btn-disabled]="this.MVP_Mode || disabled">
         @if (this.sendingNotification()) {
           <span class="loading loading-spinner"></span>
         }

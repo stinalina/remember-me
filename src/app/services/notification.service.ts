@@ -39,6 +39,19 @@ export class NotificationService {
       : this.createNotification_Dev(notification, user);
   }
 
+  public storeUserAsInterestedParty(mail: string): Observable<void> {
+    const payload = {
+      Mail: mail,
+      Name: this.unkownUserName
+    };
+    return this.httpClient.post(`${environment.SEND_REGISTER_INTERESTED_PARTY_MAIL_URL}`, payload).pipe(
+      tap({
+        next: (response) => console.log('Register interested party email sent successfully!', response),
+        error: (error) => console.error(`Error sending register interested party email: ${JSON.stringify(error)}`)
+      }),
+      map(() => void 0));
+  }
+
   /**
    * subscribes to a post which sends a welcome mail. catchs the error and logs it.
    * @param user 
