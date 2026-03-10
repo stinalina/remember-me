@@ -66,13 +66,13 @@
     <p>{{ this.env }}</p>
     <p>Version: {{ this.version }}</p>
   </div>
-  <ng-content *ngTemplateOutlet="contact"></ng-content> 
   <div class="submenu flex flex-row gap-2">
     <a [routerLink]="[RouterTokens.IMPRESSUM]">Impressum</a>
     <a [routerLink]="[RouterTokens.AGB]">AGB</a>
     <a [routerLink]="[RouterTokens.DATENSCHUTZ]">Datenschutz</a>
     <a [routerLink]="[RouterTokens.PRICING]">Pricing</a>
   </div>
+  <ng-content *ngTemplateOutlet="contact"></ng-content> 
 </div>
 </ng-template>
 
@@ -81,14 +81,14 @@
     class="tooltip envelope-icon" 
     data-tip="Feedback oder Fragen? Schreib mir gerne!">
     <!-- Geschlossener Umschlag -->
-    <svg class="h-[1em] md:h-[1.5em] opacity-50 envelope-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <svg class="h-[1em] md:h-[1.25em] opacity-50 envelope-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
       <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
         <rect width="20" height="16" x="2" y="4" rx="2"></rect>
         <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
       </g>
     </svg>
     <!-- Geöffneter Umschlag -->
-    <svg class="h-[1em] md:h-[1.5em] opacity-50 envelope-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <svg class="h-[1em] md:h-[1.25em] opacity-50 envelope-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
       <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
         <path d="M22 12v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8"></path>
         <path d="m2 7 8.97 5.7a1.94 1.94 0 0 0 2.06 0L22 7"></path>
