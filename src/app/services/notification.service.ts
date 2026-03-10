@@ -44,7 +44,9 @@ export class NotificationService {
       Mail: mail,
       Name: this.unkownUserName
     };
-    return this.httpClient.post(`${environment.SEND_REGISTER_INTERESTED_PARTY_MAIL_URL}`, payload).pipe(
+
+    const url = `${environment.BACKEND_URL}${environment.SEND_REGISTER_INTERESTED_PARTY_MAIL_URL}`;
+    return this.httpClient.post(url, payload).pipe(
       tap({
         next: (response) => console.log('Register interested party email sent successfully!', response),
         error: (error) => console.error(`Error sending register interested party email: ${JSON.stringify(error)}`)
@@ -62,7 +64,8 @@ export class NotificationService {
       Name: user.name === this.unkownUserName ? '' : user.name
     };
 
-    this.httpClient.post(`${environment.SEND_WELCOME_MAIL_URL}`, payload)
+    const url = environment.BACKEND_URL + environment.SEND_WELCOME_MAIL_URL;
+    this.httpClient.post(url, payload)
     .subscribe({
       next: (response) => console.log('Welcome email sent successfully!', response),
       error: (error) => console.error(`Error sending welcome email: ${JSON.stringify(error)}`)
