@@ -1,9 +1,9 @@
 export const environment = {
-  production: false,
+  production: true,
 
-  BACKEND_URL: 'http://localhost:7072',
-  SEND_WELCOME_MAIL_URL: '/api/sendWelcomeMail',
+  BACKEND_URL: 'fa-rememberme-backend-cchucab0bsdpepb5.germanywestcentral-01.azurewebsites.net',
   SEND_REGISTER_INTERESTED_PARTY_MAIL_URL: '/api/registerInterest',
+
   CONTACT_MAIL: 'stina.boehmig@gmx.de',
-  MVP_Mode: true
+  MVP_Mode: true,
 };
