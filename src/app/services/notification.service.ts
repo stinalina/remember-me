@@ -6,6 +6,11 @@ import { INotification, IUser } from "@shared/models";
 import { ToastService, ToastType } from "./toast.service";
 import { environment } from "@environments/environment";
 
+type UserRegistrationResponse = {
+  success: boolean;
+  callCount: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
   private readonly httpClient = inject(HttpClient);
@@ -39,6 +44,21 @@ export class NotificationService {
       : this.createNotification_Dev(notification, user);
   }
 
+  public storeUserAsInterestedParty(mail: string): Observable<number> {
+    const payload = {
+      Mail: mail,
+      Name: this.unkownUserName
+    };
+
+    const url = `${environment.BACKEND_URL}${environment.SEND_REGISTER_INTERESTED_PARTY_MAIL_URL}`;
+    return this.httpClient.post<UserRegistrationResponse>(url, payload).pipe(
+      tap({
+        next: (response) => console.log('Register interested party email sent successfully!', response),
+        error: (error) => console.error(`Error sending register interested party email: ${JSON.stringify(error)}`)
+      }),
+      map((response: UserRegistrationResponse) => response.callCount));
+  }
+
   /**
    * subscribes to a post which sends a welcome mail. catchs the error and logs it.
    * @param user 
@@ -49,7 +69,8 @@ export class NotificationService {
       Name: user.name === this.unkownUserName ? '' : user.name
     };
 
-    this.httpClient.post(`${environment.SEND_WELCOME_MAIL_URL}`, payload)
+    const url = environment.BACKEND_URL + environment.SEND_WELCOME_MAIL_URL;
+    this.httpClient.post(url, payload)
     .subscribe({
       next: (response) => console.log('Welcome email sent successfully!', response),
       error: (error) => console.error(`Error sending welcome email: ${JSON.stringify(error)}`)

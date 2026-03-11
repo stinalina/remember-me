@@ -53,3 +53,39 @@
   margin-top: 0 !important;
   margin-bottom: 8px !important;
 }
+
+// Theme ngx-editor for dark/light mode
+:host ::ng-deep .NgxEditor__MenuBar {
+  background-color: var(--color-base-200);
+  border-color: var(--color-base-300);
+}
+
+:host ::ng-deep .NgxEditor {
+  background-color: var(--color-base-100);
+  color: var(--color-base-content);
+  border-color: var(--color-base-300);
+}
+
+:host ::ng-deep .NgxEditor__MenuItem--Icon {
+  background-color: transparent;
+  color: var(--color-base-content);
+  border: none;
+  border-radius: var(--radius-btn, 0.5rem);
+  cursor: pointer;
+  height: 1.5rem;
+  min-height: 1.5rem;
+  padding-inline: 0.5rem;
+  font-size: 0.75rem;
+
+  &:hover {
+    background-color: var(--color-base-300);
+  }
+}
+
+:host ::ng-deep .NgxEditor__MenuItem--Icon svg {
+  fill: currentColor;
+}
+
+:host ::ng-deep .NgxEditor__Seperator {
+  border-color: var(--color-base-300);
+}

@@ -14,7 +14,7 @@
     flex-col md:flex-row xl:flex-row 
     items-center 
     w-full 
-    md:justify-end xl:justify-end 
+    md:justify-center xl:justify-center 
     md:mr-1 xl:mr-2 
     md:grow xl:grow"
     >
@@ -37,18 +37,25 @@
         mt-2 xl:mt-3"
         >
         <a role="button" class="btn btn-sm xl:btn-lg"
-          [routerLink]="[RouterTokens.HOME]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="[RouterTokens.HOME]" routerLinkActive="md:btn-soft" [routerLinkActiveOptions]="{ exact: true }"
           (click)="scrollToOutlet()">
           Home</a>
         <a role="button" class="btn btn-sm xl:btn-lg"
-          [routerLink]="[RouterTokens.FREE_NOTIFICATION]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="[RouterTokens.FREE_NOTIFICATION]" routerLinkActive="md:btn-soft" [routerLinkActiveOptions]="{ exact: true }"
           (click)="scrollToOutlet()">
           Ausprobieren</a>
         <a role="button" class="btn btn-sm xl:btn-lg"
-          [routerLink]="[RouterTokens.LOGIN]" routerLinkActive="btn-soft" [routerLinkActiveOptions]="{ exact: true }"
+          [routerLink]="[RouterTokens.LOGIN]" routerLinkActive="md:btn-soft" [routerLinkActiveOptions]="{ exact: true }"
           (click)="scrollToOutlet()">
-          Dran bleiben</a>
+          Interessiert?</a>
       </div>
+      @if (this.MVP_Mode) {
+        <p class="text-sm mt-2 italic">* Noch in der Entwicklung - aber bald verfügbar!
+          @if (this.showThemeToggle) {
+            <reme-theme-toggle></reme-theme-toggle>
+          } 
+        </p>
+      }
     </div>
   </div>
  
@@ -72,5 +79,29 @@
     <a [routerLink]="[RouterTokens.DATENSCHUTZ]">Datenschutz</a>
     <a [routerLink]="[RouterTokens.PRICING]">Pricing</a>
   </div>
+  <ng-content *ngTemplateOutlet="contact"></ng-content> 
 </div>
+</ng-template>
+
+<ng-template #contact>
+  <a href="mailto:{{this.contactMail}}" 
+    class="tooltip envelope-icon" 
+    data-tip="Feedback oder Fragen? Schreib mir gerne!">
+    <!-- Geschlossener Umschlag -->
+    <svg class="h-[1em] md:h-[1.25em] opacity-50 envelope-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+      </g>
+    </svg>
+    <!-- Geöffneter Umschlag -->
+    <svg class="h-[1em] md:h-[1.25em] opacity-50 envelope-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+        <path d="M22 12v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8"></path>
+        <path d="m2 7 8.97 5.7a1.94 1.94 0 0 0 2.06 0L22 7"></path>
+        <path d="M2 7V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2l-10 6.35L2 7Z"></path>
+      </g>
+    </svg>
+  </a>
+  <span class="md:hidden"> Feedback oder Fragen? Schreib mir gerne!</span>
 </ng-template>
