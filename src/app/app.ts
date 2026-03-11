@@ -5,6 +5,7 @@ import { ToastComponent } from '@shared/toast/toast.component';
 import { environment } from '@environments/environment';
 import { ROUTER_TOKENS } from '@app/app.routes';
 import { NgTemplateOutlet } from '@angular/common';
+import { ThemeToggleComponent } from '@app/shared/theme-toggle/theme-toggle.component';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,8 @@ import { NgTemplateOutlet } from '@angular/common';
     FooterComponent,
     ToastComponent,
     RouterModule,
-    NgTemplateOutlet
+    NgTemplateOutlet,
+    ThemeToggleComponent
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'
@@ -24,6 +26,7 @@ export class App {
   public readonly env = environment.production ? 'Prod Mode' : 'Dev Mode';
   public readonly contactMail = environment.CONTACT_MAIL; 
   public readonly MVP_Mode = environment.MVP_Mode;
+  public readonly showThemeToggle = !environment.production;
 
   scrollToOutlet() {
     setTimeout(() => {

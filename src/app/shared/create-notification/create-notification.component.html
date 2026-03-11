@@ -11,7 +11,7 @@
       Subject
       <input type="text" id="create-notifcation-subject" 
         formControlName="subject"
-        class="bg-white pl-1" placeholder="{{ this.placeholderSubject }}" />
+        class="pl-1" placeholder="{{ this.placeholderSubject }}" />
     </label>
 
     <div class="NgxEditor__Wrapper max-h-[30vh] xl:max-h-none overflow-hidden text-sm md:text-sm xl:text-base">
@@ -35,7 +35,7 @@
       <label for="create-notification-date-time" class="text-left md:ml-0.5 xl:ml-1 mb-1">
         Wann möchtest du erinnert werden?
       </label>
-      <input id="create-notification-date-time" class="input input-sm md:input-sm xl:input-md w-full bg-white"
+      <input id="create-notification-date-time" class="input input-sm md:input-sm xl:input-md w-full"
         formControlName="dateTime"
         type="date"
         [min]="this.now"/>
@@ -59,7 +59,7 @@
           </g>
         </svg>
         <input id="create-notifcation-mail"
-          formControlName="mail" class="bg-white pl-1"
+          formControlName="mail" class="pl-1"
           type="email" placeholder="mail@site.com" />
       </label>
       <div class="validator-hint hidden">Enter valid email address</div>
