@@ -81,7 +81,7 @@ export class HomePage implements OnInit, OnDestroy {
     }
   ];
 
-  private readonly cycleDuration = 5000;      
+  private cycleDuration = 5000;      
   private readonly updateFrequency = 50;   
 
   private progressInterval?: number;
@@ -107,6 +107,9 @@ export class HomePage implements OnInit, OnDestroy {
         this.sloganIndex = Math.floor(Math.random() * this.availableSlogans.length);
         this.currentSlogan.set(this.availableSlogans[this.sloganIndex]);
         this.availableSlogans = this.availableSlogans.filter((_, index) => index !== this.sloganIndex);
+        if (this.currentSlogan().description.length > 100) {
+          this.cycleDuration = 7000;
+        }
         this.elapsedTime.set(0);
       }
     }, this.updateFrequency);

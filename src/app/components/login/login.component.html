@@ -1,18 +1,39 @@
 <div class="hero bg-base-200 min-h-screen md:min-h-screen xl:min-h-screen">
   <div class="hero-content text-center">
     <div class="max-w-md">
-      <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">Einloggen & <br/> Dran bleiben!</h1>
-      <div class="md:py-4 xl:py-6 py-3 flex flex-col gap-3">
-        <reme-mail></reme-mail>
-        <reme-password></reme-password>
-         <reme-checkbox preId="login-remember-me">
-          Angemeldet bleiben
-        </reme-checkbox>
-        <button class="btn bg-white md:mx-6 xl:mx-10 mx-2">
-          Einloggen
-        </button>
-      </div>
-      <span>👉 Noch nicht dabei?  <a [routerLink]="['/', RouterTokens.REGISTER]" class="reme-link">Registriere dich</a> noch heute!</span>
+      @if (this.MVP_Mode) {
+        <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">Halte mich auf dem Laufenden!</h1>
+        <div class="md:py-4 xl:py-6 py-3 flex flex-col gap-3">
+          <p>Trage dich ein und sei der Erste der erfährt, wenn es losgeht!</p>
+          <reme-mail #mail></reme-mail>
+          <ul class="list">
+            <li class="list-row"><span class="font-bold italic">Du</span>erhälst einen Freimonat, um alle Features zu testen.</li>
+            <li class="list-row"><span class="font-bold italic">Ich</span>erhalte Nutzerfeedback, ob überhaupt Bedarf besteht.</li>
+          </ul>
+          <button class="bg-white mx-2 self-center
+            btn btn-sm xl:btn-md
+            md:mx-6 xl:mx-10
+            w-[20rem] xl:w-[15rem]"
+            [disabled]="!mail.mailControl.valid"
+            (click)="this.registerUserForInterestedParty(mail.mailControl.value)">
+            Interesse bekunden
+          </button>
+          <p><span class="font-bold italic">{{ this.countOfInterestedParties() }}</span> Interessierte sind schon dabei!</p>
+        </div>
+      } @else {
+        <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">Einloggen & <br/> Dran bleiben!</h1>
+        <div class="md:py-4 xl:py-6 py-3 flex flex-col gap-3">
+          <reme-mail></reme-mail>
+          <reme-password></reme-password>
+           <reme-checkbox preId="login-remember-me">
+            Angemeldet bleiben
+          </reme-checkbox>
+          <button class="btn bg-white md:mx-6 xl:mx-10 mx-2">
+            Einloggen
+          </button>
+        </div>
+        <span>👉 Noch nicht dabei?  <a [routerLink]="['/', RouterTokens.REGISTER]" class="reme-link">Registriere dich</a> noch heute!</span>
+      }
     </div>
   </div>
 </div>
