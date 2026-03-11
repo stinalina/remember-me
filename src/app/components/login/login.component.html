@@ -18,7 +18,7 @@
             (click)="this.registerUserForInterestedParty(mail.mailControl.value)">
             Interesse bekunden
           </button>
-          <p>x Leute sind schon dabei!</p>
+          <p><span class="font-bold italic">{{ this.countOfInterestedParties() }}</span> Interessierte sind schon dabei!</p>
         </div>
       } @else {
         <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">Einloggen & <br/> Dran bleiben!</h1>
