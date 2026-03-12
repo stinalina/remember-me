@@ -12,13 +12,12 @@
           </ul>
           <button class="mx-2 self-center
             btn btn-sm xl:btn-md
-            md:mx-6 xl:mx-10
+            md:mx-6 xl:mx-20
             w-[20rem] xl:w-[15rem]"
-            [disabled]="!mail.mailControl.valid"
+            [disabled]="!mail.mailControl.valid || this.alreadyRegistered()"
             (click)="this.registerUserForInterestedParty(mail.mailControl.value)">
             Interesse bekunden
           </button>
-          <p><span class="font-bold italic">{{ this.countOfInterestedParties() }}</span> Interessierte sind schon dabei!</p>
         </div>
       } @else {
         <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">Einloggen & <br/> Dran bleiben!</h1>

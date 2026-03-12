@@ -1,5 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, inject, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LocalStorageService } from '@app/services/local-storage.service';
 
@@ -9,6 +8,7 @@ import { LocalStorageService } from '@app/services/local-storage.service';
   imports: [ReactiveFormsModule]
 })
 export class MailComponent {
+  public readonly inputLabel = input<string>();
   private readonly localStorageService = inject(LocalStorageService);
   
   public mailControl = new FormControl(
