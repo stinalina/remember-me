@@ -20,7 +20,6 @@ export enum ROUTER_TOKENS {
   IMPRESSUM = 'impressum',
   AGB = 'agb',
   DATENSCHUTZ = 'dsgvo',
-  PRICING = 'pricing'
 }
 
 export const routes: Routes = [
@@ -63,10 +62,6 @@ export const routes: Routes = [
       title: () => 'Datenschutzerklärung',
       content: () => dsgvo.default
     }
-  },
-  {
-    path: ROUTER_TOKENS.PRICING,
-    loadComponent: () => PricingComponent
   },
   {
     path: '',
