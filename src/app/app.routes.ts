@@ -1,13 +1,11 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from '@app/components/login/login.component';
 import { RegisterComponent } from '@app/components/register/register.component';
-import * as agb from '@assets/text/agb.txt';
 import * as dsgvo from '@assets/text/dsgvo.txt';
 import { FreeNotificationComponent } from '@components/free-notification/free-notification.component';
 import { AboutComponent } from '@pages/about/about.component';
 import { HomePage } from '@pages/home/home-page.component';
 import { ImpressumComponent } from '@pages/impressum/impressum.component';
-import { PricingComponent } from '@pages/pricing/pricing.component';
 import { TextFrameComponent } from '@shared/text-frame/text-frame.component';
 
 export enum ROUTER_TOKENS {
@@ -18,7 +16,6 @@ export enum ROUTER_TOKENS {
   LOGIN = 'login',
   REGISTER = 'register',
   IMPRESSUM = 'impressum',
-  AGB = 'agb',
   DATENSCHUTZ = 'dsgvo',
 }
 
@@ -46,14 +43,6 @@ export const routes: Routes = [
   {
     path: ROUTER_TOKENS.IMPRESSUM,
     loadComponent: () => ImpressumComponent
-  },
-  {
-    path: ROUTER_TOKENS.AGB,
-    loadComponent: () => TextFrameComponent,
-    resolve: {
-      title: () => 'Allgemeine Geschäftsbedingungen',
-      content: () => agb.default
-    }
   },
   {
     path: ROUTER_TOKENS.DATENSCHUTZ,
