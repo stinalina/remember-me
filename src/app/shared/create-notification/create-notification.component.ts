@@ -160,7 +160,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     this.notificationService.getUserByMailOrCreateUserIfNotExists(notification.mail).pipe(
       switchMap((user: IUser) => this.notificationService.createNotification(notification, user)),
       catchError((error) => {
-        console.error('Error creating notification.');
+        console.error(`Error creating notification.\n Error message: ${error.message}\n Stack trace: ${error.stack}`);
         this.toastService.showToast('Error creating notification. Please try again.', ToastType.Error);
         this.retry.set(true);
         return EMPTY;
