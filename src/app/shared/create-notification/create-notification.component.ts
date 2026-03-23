@@ -101,8 +101,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.checkIfMaxSendedNotificationCountIsReached();
-    if (!this.limitReached()) {
+    if (!this.checkIfMaxSendedNotificationCountIsReached()) {
       this.restoreDraftIfExists();
     
     if (this.showPlaceholderAnimation) {
@@ -163,20 +162,13 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
       catchError((error) => {
         console.error('Error creating notification.');
         this.toastService.showToast('Error creating notification. Please try again.', ToastType.Error);
+        this.retry.set(true);
         return EMPTY;
       }),
       finalize(() => {
         this.sendingNotification.set(false);
-        this.retry.set(true);
+        this.retry.set(false);
         this.localStorageService.setUserMail(notification.mail);
-        this.localStorageService.increaseSendedNotificationCount(); //TODO limit should set based on pricing when user is logged in!
-        this.checkIfMaxSendedNotificationCountIsReached();
-        if (this.limitReached()) {
-          this.toastService.showToast(
-            'Max amount of notifications reached this month',
-            ToastType.Warning
-          );
-        }
       })
     ).subscribe(() => {
       this.myForm.reset({
@@ -185,13 +177,23 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
         mail: this.localStorageService.getUserMail() ?? '',
         dateTime: this.nextDay
       });
-      this.retry.set(false);
+
+      this.localStorageService.increaseSendedNotificationCount(); //TODO limit should set based on pricing when user is logged in!
+      
+      if (this.checkIfMaxSendedNotificationCountIsReached()) {
+        this.toastService.showToast(
+          'Max amount of notifications reached this month',
+          ToastType.Warning
+        );
+      }
     });
   }
 
-  private checkIfMaxSendedNotificationCountIsReached(): void {
+  private checkIfMaxSendedNotificationCountIsReached(): boolean {
     const count = this.localStorageService.getSendedNotificationCount();
-    this.limitReached.set(count >= this.freeNotificationsLimit());
+    const limitReached = count >= this.freeNotificationsLimit();
+    this.limitReached.set(limitReached);
+    return limitReached;
   }
 
   private animatePlaceholder(): void {
