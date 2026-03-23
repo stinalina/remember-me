@@ -3,7 +3,7 @@ import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '
 import { toSignal } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
-import { catchError, finalize, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, finalize, switchMap, tap } from 'rxjs';
 import { LocalStorageService } from '@services/local-storage.service';
 import { NotificationService } from '@services/notification.service';
 import { ToastService, ToastType } from '@services/toast.service';
@@ -157,12 +157,13 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
       mail: this.myForm.value.mail!
     } satisfies INotification;
 
+    this.sendingNotification.set(true)
     this.notificationService.getUserByMailOrCreateUserIfNotExists(notification.mail).pipe(
-      tap(() => this.sendingNotification.set(true)),
       switchMap((user: IUser) => this.notificationService.createNotification(notification, user)),
       catchError((error) => {
         console.error('Error creating notification.');
-        throw error;
+        this.toastService.showToast('Error creating notification. Please try again.', ToastType.Error);
+        return EMPTY;
       }),
       finalize(() => {
         this.sendingNotification.set(false);

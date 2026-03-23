@@ -60,18 +60,11 @@
   border-color: var(--color-base-300);
 }
 
-:host ::ng-deep .NgxEditor {
-  background-color: var(--color-base-100);
-  color: var(--color-base-content);
-  border-color: var(--color-base-300);
-}
-
 :host ::ng-deep .NgxEditor__MenuItem--Icon {
   background-color: transparent;
   color: var(--color-base-content);
   border: none;
   border-radius: var(--radius-btn, 0.5rem);
-  cursor: pointer;
   height: 1.5rem;
   min-height: 1.5rem;
   padding-inline: 0.5rem;
@@ -79,11 +72,8 @@
 
   &:hover {
     background-color: var(--color-base-300);
+    cursor: pointer;
   }
-}
-
-:host ::ng-deep .NgxEditor__MenuItem--Icon svg {
-  fill: currentColor;
 }
 
 :host ::ng-deep .NgxEditor__Seperator {

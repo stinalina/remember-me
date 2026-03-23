@@ -66,16 +66,9 @@
     </div>
 
     <div class="flex justify-center">
-      <!-- <button id="create-notification-apply"
-        class="btn btn-outline"
-        type="submit"
-        :disabled="!canSubmitForm || sendingNotification">
-        {{ sendingNotification ? 'Sending...' : 'Create Notification' }}
-      </button> -->
-
       @let disabled = (!this.canSubmitForm() || this.sendingNotification()) && !this.retry();
       <button type="submit" class="btn btn-sm md:btn-sm xl:btn-md" id="create-notification-apply"
-        [class.btn-disabled]="this.MVP_Mode || disabled">
+        [class.btn-disabled]="disabled">
         @if (this.sendingNotification()) {
           <span class="loading loading-spinner"></span>
         }
