@@ -1,4 +1,4 @@
-<div class="hero bg-base-200 min-h-screen md:min-h-auto xl:min-h-screen">
+<section class="hero bg-base-200 min-h-screen md:min-h-auto xl:min-h-screen">
   <div class="hero-content text-center">
     <div class="max-w-2xl w-full">
       <h1 class="md:text-4xl xl:text-5xl text-2xl font-bold">Pricing</h1>
@@ -18,17 +18,17 @@
       </div>
     </div>
   </div>
-</div>
+</section>
 
 <!-- Das erste pricing ist wie die variable im template heißt. Das zweite ist der Schlüssel im Kontext-Objekt beim übergeben -->
 <ng-template #pricingCard let-pricing="pricing">
 @let isBasic = pricing.title === "Basic";
-<div class="card sw-96 shadow-sm border-1"
+<article class="card sw-96 shadow-sm border-1"
   [class.middle-card]="isBasic"
   [class.bg-yellow]="isBasic"
   [class.bg-base-100]="!isBasic">
   <!-- Card Header -->
-  <div class="relative flex flex-col items-center justify-center md:pt-6 md:pb-5 xl:pt-8 xl:pb-6 pt-4 pb-3 rounded-t-2xl bg-gradient-to-b"
+  <header class="relative flex flex-col items-center justify-center md:pt-6 md:pb-5 xl:pt-8 xl:pb-6 pt-4 pb-3 rounded-t-2xl bg-gradient-to-b"
     [class.from-gray-200]="isBasic"
     [class.from-yellow-500]="!isBasic">
     <h2 class="md:text-base xl:text-lg text-base font-semibold text-white tracking-wide uppercase mb-2">{{pricing.title}}</h2>
@@ -39,7 +39,7 @@
     @if (isBasic) {
       <span class="absolute top-3 right-3 badge badge-warning badge-xs">Most Popular</span>
     }
-  </div>
+  </header>
   <div class="card-body flex flex-col justify-between">    
     <ul class="md:mt-4 xl:mt-6 mt-3 text-s">
       @for (item of pricing.features; track $index) {
@@ -53,5 +53,5 @@
       <button class="btn btn-block">Nehm ich!</button>
     </div>
   </div>
-</div>
+</article>
 </ng-template>
