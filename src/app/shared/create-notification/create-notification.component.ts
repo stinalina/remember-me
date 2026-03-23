@@ -85,6 +85,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
       const limitReached = this.limitReached();
       if (limitReached) {
         this.myForm.disable();
+        this.myForm.reset();
         this.actions = [
           { type: TypewriterActionType.PAUSE, duration: 1000 },
           { type: TypewriterActionType.TYPE, text: 'Maximum of free notifications reached for this month. So this editor is disabled.' },
@@ -92,7 +93,10 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
           { type: TypewriterActionType.PAUSE, duration: 2000 },
           { type: TypewriterActionType.TYPE, text: ' Do you want to create more notificatins?' },
           { type: TypewriterActionType.LINEBREAK },
-          { type: TypewriterActionType.TYPE, text: ' Login and ugrade your Abo!' },
+          { type: TypewriterActionType.TYPE, text: ' Just hold on!' },
+          { type: TypewriterActionType.LINEBREAK },
+          { type: TypewriterActionType.LINEBREAK },
+          { type: TypewriterActionType.TYPE, text: ' *Reason: This is still in develop mode and every request to the database costs money. In the future there will be an option to create as many notifications as you want.' },
         ];
         this.showPlaceholderAnimation = true;
         this.animatePlaceholder();
