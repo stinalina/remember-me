@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
+import { environment } from '@environments/environment';
 import { CreateNotificationComponent } from '@shared/create-notification/create-notification.component';
 
 @Component({
@@ -13,4 +14,5 @@ import { CreateNotificationComponent } from '@shared/create-notification/create-
 })
 export class FreeNotificationComponent {
   public readonly RouterTokens = ROUTER_TOKENS;
+  public readonly isMVPMode = environment.MVP_Mode;
 }

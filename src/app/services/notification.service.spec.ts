@@ -1,16 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { GetUserByMail_DevGQL, InsertNotification_DevGQL, InsertUser_DevGQL } from '@hasura/generated';
+import { GetUserByMailGQL, InsertNotificationGQL, InsertUserGQL } from '@hasura/generated';
 import { INotification, IUser } from '@shared/models';
 import { NotificationService } from './notification.service';
 
 describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
   let service: NotificationService;
 
-  let mockGetUserByMailGQL: jasmine.SpyObj<GetUserByMail_DevGQL>;
-  let mockInsertUserGQL: jasmine.SpyObj<InsertUser_DevGQL>;
-  let mockInsertNotificationGQL: jasmine.SpyObj<InsertNotification_DevGQL>;
+  let mockGetUserByMailGQL: jasmine.SpyObj<GetUserByMailGQL>;
+  let mockInsertUserGQL: jasmine.SpyObj<InsertUserGQL>;
+  let mockInsertNotificationGQL: jasmine.SpyObj<InsertNotificationGQL>;
   let httpMock: jasmine.SpyObj<HttpClient>;
 
   const mail = 'test@mail.de';
@@ -30,12 +30,12 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
   beforeEach(() => {
     mockGetUserByMailGQL = jasmine.createSpyObj(['fetch']);
     mockGetUserByMailGQL.fetch.and.returnValue(
-      of({data: {dev_User: []}})
+      of({data: {User: []}})
     );
 
     mockInsertUserGQL = jasmine.createSpyObj(['mutate']);
     mockInsertUserGQL.mutate.and.returnValue(
-      of({data: {insert_dev_User: {returning: [{Name: 'Heinz', Id: 'def-456'}]}}})
+      of({data: {insert_User: {returning: [{Name: 'Heinz', Id: 'def-456'}]}}})
     );
 
     mockInsertNotificationGQL = jasmine.createSpyObj(['mutate']);
@@ -48,9 +48,9 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
       providers: [
         NotificationService,
         { provide: HttpClient, useValue: httpMock },
-        { provide: GetUserByMail_DevGQL, useValue: mockGetUserByMailGQL },
-        { provide: InsertUser_DevGQL, useValue: mockInsertUserGQL },
-        { provide: InsertNotification_DevGQL, useValue: mockInsertNotificationGQL }
+        { provide: GetUserByMailGQL, useValue: mockGetUserByMailGQL },
+        { provide: InsertUserGQL, useValue: mockInsertUserGQL },
+        { provide: InsertNotificationGQL, useValue: mockInsertNotificationGQL }
       ]
     });
 
@@ -69,7 +69,7 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
 
   it('should return existing user if user exists', (done) => {
     mockGetUserByMailGQL.fetch.and.returnValue(
-      of({data: {dev_User: [{Name: 'Horst', Id: 'abc-123'}]}})
+      of({data: {User: [{Name: 'Horst', Id: 'abc-123'}]}})
     );
     service.getUserByMailOrCreateUserIfNotExists(mail).subscribe(
       (user) => {
