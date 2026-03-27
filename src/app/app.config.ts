@@ -6,6 +6,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideApollo } from 'apollo-angular';
 import { InMemoryCache } from '@apollo/client';
 import { HttpLink } from 'apollo-angular/http';
+import { environment } from '@environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -16,7 +17,7 @@ export const appConfig: ApplicationConfig = {
       //   headers = new HttpHeaders({ 'x-hasura-admin-secret': environment.HASURA_ADMIN_SECRET });
       // }
       return {
-        link: httpLink.create({ uri: 'http://localhost:8081/v1/graphql' }), //headers inside here
+        link: httpLink.create({ uri: environment.HASURA_URL }), //headers inside here
         cache: new InMemoryCache()
       };
     }),
