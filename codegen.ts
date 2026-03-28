@@ -5,7 +5,7 @@ const config: CodegenConfig = {
     {
       'http://localhost:8081/v1/graphql': {
         headers: {
-          'x-hasura-admin-secret': 'mysecretkey', // 👈 use your actual secret
+          'x-hasura-admin-secret': 'mysecretkey',
           'content-type': 'application/json',
         },
         method: 'POST',

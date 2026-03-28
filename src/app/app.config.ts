@@ -2,7 +2,7 @@ import { ApplicationConfig, inject, provideBrowserGlobalErrorListeners, provideZ
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
+import { HttpHeaders, provideHttpClient } from '@angular/common/http';
 import { provideApollo } from 'apollo-angular';
 import { InMemoryCache } from '@apollo/client';
 import { HttpLink } from 'apollo-angular/http';
@@ -13,11 +13,11 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(),
     provideApollo(() => {
       const httpLink = inject(HttpLink);
-      //  if (!environment.production && environment.HASURA_ADMIN_SECRET !== '') {
-      //   headers = new HttpHeaders({ 'x-hasura-admin-secret': environment.HASURA_ADMIN_SECRET });
-      // }
       return {
-        link: httpLink.create({ uri: environment.HASURA_URL }), //headers inside here
+        link: httpLink.create({ 
+          uri: environment.HASURA_URL,
+          headers: new HttpHeaders({ 'x-hasura-admin-secret': environment.HASURA_ADMIN_SECRET } 
+          )}), 
         cache: new InMemoryCache()
       };
     }),
