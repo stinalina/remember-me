@@ -2,14 +2,14 @@
   "name": "remember-me",
   "version": "0.0.0",
   "scripts": {
-    "ng": "ng",
-    "start": "ng build && ng serve",
+    "start": "ng serve",
+    "build": "ng build",
     "test": "ng test",
     "test-workflow": "ng test --browsers=ChromeHeadless --watch=false --code-coverage",
     "codegen": "graphql-codegen --config codegen.ts",
     "e2e": "playwright test",
-    "cloud": "ng build && ng serve --configuration cloud",
-    "prod": "ng build --configuration production && ng serve --configuration production"
+    "cloud": "ng serve --configuration cloud",
+    "prod": "ng serve --configuration production"
   },
   "prettier": {
     "printWidth": 100,

@@ -16,7 +16,7 @@ export const appConfig: ApplicationConfig = {
       return {
         link: httpLink.create({ 
           uri: environment.HASURA_URL,
-          headers: new HttpHeaders({ 'x-hasura-admin-secret': environment.HASURA_ADMIN_SECRET } 
+          headers: new HttpHeaders({ 'x-hasura-admin-secret': environment.HASURA_ADMIN_SECRET } // remove for prod, just for development
           )}), 
         cache: new InMemoryCache()
       };
