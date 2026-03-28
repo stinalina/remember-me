@@ -3,15 +3,13 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "ng build && ng serve",
     "test": "ng test",
     "test-workflow": "ng test --browsers=ChromeHeadless --watch=false --code-coverage",
     "codegen": "graphql-codegen --config codegen.ts",
     "e2e": "playwright test",
-    "cloud": "ng serve --configuration cloud",
-    "prod": "ng serve --configuration production",
-    "local": "ng serve --configuration development"
+    "cloud": "ng build && ng serve --configuration cloud",
+    "prod": "ng build --configuration production && ng serve --configuration production"
   },
   "prettier": {
     "printWidth": 100,
