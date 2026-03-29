@@ -1,38 +1,27 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
-import { catchError, EMPTY, finalize, switchMap, tap } from 'rxjs';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TypewriterActionType, TypewriterEffectService } from '@app/services/typewriter-effect.service';
+import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
+import { environment } from '@environments/environment';
 import { LocalStorageService } from '@services/local-storage.service';
 import { NotificationService } from '@services/notification.service';
 import { ToastService, ToastType } from '@services/toast.service';
+import { UserService } from '@services/user.service';
 import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '@shared/editor-config.token';
 import { INotification, IUser } from '@shared/models';
 import { SESSION_STORAGE } from '@shared/storage.token';
-import { UserService } from '@services/user.service';
-import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
-import { environment } from '@environments/environment';
-
-enum TypewriterActionType {
-  TYPE = 'type',
-  DELETE = 'delete',
-  PAUSE = 'pause',
-  LINEBREAK = '<br/>',
-}
-type TypewriterAction =
-  | { type: TypewriterActionType.TYPE; text: string }
-  | { type: TypewriterActionType.DELETE; count: number }
-  | { type: TypewriterActionType.PAUSE; duration: number }
-  | { type: TypewriterActionType.LINEBREAK };
+import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
+import { catchError, EMPTY, finalize, switchMap } from 'rxjs';
 
 @Component({
   selector: 'reme-create-notification',
   templateUrl: 'create-notification.component.html',
   styleUrl: 'create-notification.component.scss',
-  imports: [
+  imports: [  
     NgxEditorModule,
-    ReactiveFormsModule // to get access to FormGroup and the formControlName directive.
+    ReactiveFormsModule
   ] 
 })
 export class CreateNotificationComponent implements OnInit, OnDestroy {
@@ -41,6 +30,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   private readonly sessionStorage = inject(SESSION_STORAGE);
   private readonly localStorageService = inject(LocalStorageService);
   private readonly toastService = inject(ToastService);
+  private readonly typewriterEffectService = inject(TypewriterEffectService);
 
   public readonly MVP_Mode = environment.MVP_Mode;
 
@@ -71,8 +61,6 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
 
   public typedPlaceholder = '';
   public showPlaceholderAnimation = true;
-  private actions: TypewriterAction[] = [];
-  private readonly cursorHtml = '<span class="typewriter-cursor">|</span>';
 
   private get nextDay(): string {
     const date = new Date();
@@ -86,7 +74,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
       if (limitReached) {
         this.myForm.disable();
         this.myForm.reset();
-        this.actions = [
+        this.typewriterEffectService.setActions([
           { type: TypewriterActionType.PAUSE, duration: 1000 },
           { type: TypewriterActionType.TYPE, text: 'Maximum of free notifications reached for this month. So this editor is disabled.' },
           { type: TypewriterActionType.LINEBREAK },
@@ -97,9 +85,9 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
           { type: TypewriterActionType.LINEBREAK },
           { type: TypewriterActionType.LINEBREAK },
           { type: TypewriterActionType.TYPE, text: ' *Reason: This is still in develop mode and every request to the database costs money. In the future there will be an option to create as many notifications as you want.' },
-        ];
+        ]);
         this.showPlaceholderAnimation = true;
-        this.animatePlaceholder();
+        this.typewriterEffectService.animatePlaceholder(this.updatePlaceholder.bind(this));
       }
     });
   }
@@ -109,7 +97,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
       this.restoreDraftIfExists();
     
     if (this.showPlaceholderAnimation) {
-      this.actions = [
+      this.typewriterEffectService.setActions([
         { type: TypewriterActionType.PAUSE, duration: 1000 },
         { type: TypewriterActionType.TYPE, text: 'Im März diesmal wirklich dran denken Tickets für das Sommerfes' },
         { type: TypewriterActionType.PAUSE, duration: 3000 },
@@ -126,8 +114,8 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
         { type: TypewriterActionType.PAUSE, duration: 3000 },
         { type: TypewriterActionType.LINEBREAK },
         { type: TypewriterActionType.TYPE, text: ' Deadline ist der <strong>14.03</strong>!' },
-      ];
-      this.animatePlaceholder();
+      ]);
+      this.typewriterEffectService.animatePlaceholder(this.updatePlaceholder.bind(this));
       }
     }
   }
@@ -200,81 +188,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     return limitReached;
   }
 
-  private animatePlaceholder(): void {
-    let i = 0;
-    let text = '';
-    const typingSpeed = 100; // ms pro Buchstabe
-
-    const nextAction = () => {
-      if (i >= this.actions.length){
-        this.typedPlaceholder = text;
-        return
-      };
-      const action = this.actions[i];
-
-      switch (action.type) {
-        case TypewriterActionType.PAUSE:
-          if (action.duration <= 500 || i === 0) {
-            setTimeout(() => {
-              i++;
-              nextAction();
-            }, action.duration);
-          } else {
-            let dots = 0;
-            const maxDots = 3;
-            const dotInterval = 400;
-            let elapsed = 0;
-            this.typedPlaceholder = text + '<span class="typewriter-cursor"> ...</span>';
-            const interval = setInterval(() => {
-              dots = (dots + 1) % (maxDots + 1);
-              const dotsStr = '.'.repeat(dots);
-              this.typedPlaceholder = text + `<span class="typewriter-cursor">${dotsStr}</span>`;
-              elapsed += dotInterval;
-              if (elapsed >= action.duration) {
-                clearInterval(interval);
-                this.typedPlaceholder = text;
-                i++;
-                nextAction();
-              }
-            }, dotInterval);
-          }
-          break;
-        case TypewriterActionType.TYPE:
-          let j = 0;
-          const typeInterval = setInterval(() => {
-            if (j < action.text.length) {
-              text += action.text[j];
-              this.typedPlaceholder = text + this.cursorHtml;
-              j++;
-            } else {
-              clearInterval(typeInterval);
-              i++;
-              nextAction();
-            }
-          }, typingSpeed);
-          break;
-        case TypewriterActionType.DELETE:
-          let k = 0;
-          const deleteInterval = setInterval(() => {
-            if (k < action.count && text.length > 0) {
-              text = text.slice(0, -1);
-              this.typedPlaceholder = text + this.cursorHtml;
-              k++;
-            } else {
-              clearInterval(deleteInterval);
-              i++;
-              nextAction();
-            }
-          }, typingSpeed);
-          break;
-        case TypewriterActionType.LINEBREAK:
-          text += TypewriterActionType.LINEBREAK;
-          this.typedPlaceholder = text;
-          i++;
-          nextAction();
-          break;
-      }
-    };
-    nextAction();
+  private updatePlaceholder(text: string): void {
+    this.typedPlaceholder = text;
   }
 }
