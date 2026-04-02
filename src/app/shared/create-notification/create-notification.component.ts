@@ -4,6 +4,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TypewriterActionType, TypewriterEffectService } from '@app/services/typewriter-effect.service';
 import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
+import { restrictFreeLimitValidator } from '@app/shared/validators/restrict-free-limit.validator';
 import { environment } from '@environments/environment';
 import { LocalStorageService } from '@services/local-storage.service';
 import { NotificationService } from '@services/notification.service';
@@ -40,7 +41,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   protected readonly myForm = this.fb.group({
     subject: [''],
     content: ['', htmlContentValidator()],
-    mail: [this.localStorageService.getUserMail() ?? '', [Validators.required, Validators.email]],
+    mail: [this.localStorageService.getUserMail() ?? '', [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService)]],
     dateTime: [this.nextDay, Validators.required],
   });
 
@@ -70,13 +71,11 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
 
   constructor() {
     effect(() => {
-      const limitReached = this.limitReached();
-      if (limitReached) {
-        this.myForm.disable();
-        this.myForm.reset();
+      if (this.limitReached()) {
+        this.resetForm();
         this.typewriterEffectService.setActions([
           { type: TypewriterActionType.PAUSE, duration: 1000 },
-          { type: TypewriterActionType.TYPE, text: 'Maximum of free notifications reached for this month. So this editor is disabled.' },
+          { type: TypewriterActionType.TYPE, text: 'Maximum of free notifications reached for this month.' },
           { type: TypewriterActionType.LINEBREAK },
           { type: TypewriterActionType.PAUSE, duration: 2000 },
           { type: TypewriterActionType.TYPE, text: ' Do you want to create more notificatins?' },
@@ -84,7 +83,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
           { type: TypewriterActionType.TYPE, text: ' Just hold on!' },
           { type: TypewriterActionType.LINEBREAK },
           { type: TypewriterActionType.LINEBREAK },
-          { type: TypewriterActionType.TYPE, text: ' *Reason: This is still in develop mode and every request to the database costs money. In the future there will be an option to create as many notifications as you want.' },
+          { type: TypewriterActionType.TYPE, text: ' *Reason: This is still in develop mode and every request to the database costs money.' },
         ]);
         this.showPlaceholderAnimation = true;
         this.typewriterEffectService.animatePlaceholder(this.updatePlaceholder.bind(this));
@@ -142,7 +141,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     }
 
     const notification = {
-      subject: this.myForm.value.subject || this.placeholderSubject, // use placeholder if empty
+      subject: this.myForm.value.subject || this.placeholderSubject,
       content: this.myForm.value.content!,
       dueDate: this.myForm.value.dateTime!.toString(),
       mail: this.myForm.value.mail!
@@ -163,26 +162,21 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
         this.localStorageService.setUserMail(notification.mail);
       })
     ).subscribe(() => {
-      this.myForm.reset({
-        subject: '',
-        content: '',
-        mail: this.localStorageService.getUserMail() ?? '',
-        dateTime: this.nextDay
-      });
-
-      this.localStorageService.increaseSendedNotificationCount(); //TODO limit should set based on pricing when user is logged in!
-      
+      this.resetForm();
+      this.localStorageService.increaseSendedNotificationCount();
       if (this.checkIfMaxSendedNotificationCountIsReached()) {
         this.toastService.showToast(
           'Max amount of notifications reached this month',
-          ToastType.Warning
+          ToastType.Warning,
+          10000
         );
       }
     });
   }
 
   private checkIfMaxSendedNotificationCountIsReached(): boolean {
-    const count = this.localStorageService.getSendedNotificationCount();
+    const mail = this.localStorageService.getUserMail() ?? '';
+    const count = this.localStorageService.getSendedNotificationCount(mail);
     const limitReached = count >= this.freeNotificationsLimit();
     this.limitReached.set(limitReached);
     return limitReached;
@@ -190,5 +184,14 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
 
   private updatePlaceholder(text: string): void {
     this.typedPlaceholder = text;
+  }
+
+  private resetForm(): void {
+    this.myForm.reset({
+      subject: '',
+      content: '',
+      mail: this.localStorageService.getUserMail() ?? '',
+      dateTime: this.nextDay
+    });
   }
 }
