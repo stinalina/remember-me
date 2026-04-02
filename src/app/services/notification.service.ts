@@ -35,7 +35,6 @@ export class NotificationService {
           } satisfies IUser);
         } else {
           return this.insertUser_Dev.mutate({ variables: { mail, name: this.unkownUserName } }).pipe(
-            tap((res) => console.log(`Created new user with id: ${res.data?.insert_User?.returning[0].Id}`)),
             map((res) => ({
               mail,
               name: res.data?.insert_User?.returning[0].Name ?? '',
@@ -65,7 +64,6 @@ export class NotificationService {
       ]
     };
     return this.insertNotification_Dev.mutate({variables}).pipe(
-      tap((result) => console.log(`Inserted notification: ${JSON.stringify(result)}`)),
       map(() => {
         if (user.newCreated === true) {
           this.sendWelcomeMail(user);
@@ -109,7 +107,6 @@ export class NotificationService {
     const url = environment.BACKEND_URL + environment.SEND_WELCOME_MAIL_URL;
     this.httpClient.post(url, payload)
     .subscribe({
-      next: (response) => console.log('Welcome email sent successfully!', response),
       error: (error) => console.error(`Error sending welcome email: ${JSON.stringify(error)}`)
     });
   }

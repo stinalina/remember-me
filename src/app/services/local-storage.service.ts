@@ -6,7 +6,6 @@ export class LocalStorageService {
   private readonly stoarge = inject(LOCAL_STORAGE);
 
   private readonly USER_MAIL_TOKEN = 'user_mail';
-  private readonly SENDED_NOTIFICATIONS_COUNT_TOKEN = 'sended_notifications_count';
 
   public getUserMail(): string | null {
     return this.stoarge.getItem(this.USER_MAIL_TOKEN);
@@ -16,13 +15,13 @@ export class LocalStorageService {
     this.stoarge.setItem(this.USER_MAIL_TOKEN, value);
   }
 
-  public getSendedNotificationCount(): number {
-    const value = this.stoarge.getItem(this.SENDED_NOTIFICATIONS_COUNT_TOKEN)?.split('_');
+  public getSendedNotificationCount(userMail: string): number {
+    const value = this.stoarge.getItem(this.getSendedNotificationCountKey(userMail))?.split('_');
     if (value) {
       let month = new Date().getMonth();
       const lastMonth = Number(value[1]);
       if (month !== lastMonth) {
-        this.stoarge.setItem(this.SENDED_NOTIFICATIONS_COUNT_TOKEN, `0_${month}`);
+        this.setNotificationCount(0, userMail);
         return 0;
       }
       return Number(value[0]);
@@ -35,7 +34,12 @@ export class LocalStorageService {
    * @param limit - default is 3; count won't increase when limit is reached
    */
   public increaseSendedNotificationCount(limit: number = 3): void {
-    const value = this.stoarge.getItem(this.SENDED_NOTIFICATIONS_COUNT_TOKEN)?.split('_');
+    const user = this.getUserMail();
+    if (!user) {
+      console.error('User mail is not set in local storage. Cannot increase sended notification count.');
+      return;
+    }
+    const value = this.stoarge.getItem(this.getSendedNotificationCountKey(user))?.split('_');
     let count = 1;
     let month = new Date().getMonth();
     if (value) {
@@ -45,8 +49,16 @@ export class LocalStorageService {
         count++;
       }
     }
-    
-    const newValue = `${count}_${month}`;
-    this.stoarge.setItem(this.SENDED_NOTIFICATIONS_COUNT_TOKEN, newValue);
+    this.setNotificationCount(count, user);
+  }
+
+  private setNotificationCount(count: number, userMail: string): void {
+    const month = new Date().getMonth();
+    this.stoarge.setItem(this.getSendedNotificationCountKey(userMail), `${count}_${month}`);
+  }
+
+  private getSendedNotificationCountKey(userMail: string): string {
+    const normalizedMail = userMail.trim().toLowerCase();
+    return `sended_notifications_count_${normalizedMail}`;
   }
 }

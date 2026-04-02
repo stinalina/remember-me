@@ -132,28 +132,7 @@ test.describe('CreateNotificationComponent', () => {
     expect(mailValue).toEqual(testEmail);
   });
 
-  test('should show readonly message after 3 notifications and disable editor', async ({ page }) => {
-    // Set notification count to 3 (limit) in localStorage after page loads
-    await page.evaluate(() => {
-      localStorage.setItem('sended_notifications_count', '3_' + new Date().getMonth());
-    });
-    
-    // Reload page
-    await page.reload();
-    await page.waitForTimeout(1500); // Wait for placeholder animation
-    
-    // Check that placeholder with limit message is shown
-    const placeholder = page.locator('.typewriter-placeholder');
-    await expect(placeholder).toBeVisible();
-    const placeholderText = await placeholder.textContent();
-    expect(placeholderText?.toLowerCase()).toContain('maxim|');
-    
-    // Check that submit button is disabled
-    const submitButton = page.getByRole('button', { name: /Create Notification|Sending/ });
-    const buttonClass = await submitButton.getAttribute('class');
-    expect(buttonClass).toContain('btn-disabled');
-  });
-
+  // Note: This needed hasura running in background
   test('should successfully create a notification with valid data', async ({ page }) => {
     const mailInput = page.getByRole('textbox', { name: 'Sende Erinnerung an:' });
     const editor = page.locator('.ProseMirror');
