@@ -4,5 +4,7 @@
   "terminal.integrated.defaultProfile.linux": "bash",
   "files.associations": {
     "*.css": "tailwindcss"
-  }
+  },
+  "karmaTestExplorer.excludeFiles": ["dist/**", "out-tsc/**"],
+  "karmaTestExplorer.testFiles": ["src/**/*.spec.ts"]
 }
