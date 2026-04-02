@@ -23,34 +23,4 @@ import { catchError, EMPTY } from 'rxjs';
 export class LoginComponent {
   public readonly RouterTokens = ROUTER_TOKENS;
   public readonly MVP_Mode = environment.MVP_Mode;
-  
-  private readonly notificationService = inject(NotificationService);
-  private readonly toastService = inject(ToastService);
-  private readonly destroyRef = inject(DestroyRef); 
-
-  public readonly alreadyRegistered = signal<boolean>(false);
-
-  public registerUserForInterestedParty(mail: string | null): void {
-    if (!this.MVP_Mode) {
-      console.error('Method should be removed when no MVP Mode is necessary anymore');
-      return;
-    }
-
-    if (!mail) {
-      console.error('Mail is null. Cannot register user as interested party.');
-      return;
-    }
-
-    this.notificationService.storeUserAsInterestedParty(mail).pipe(
-      takeUntilDestroyed(this.destroyRef),
-      catchError((error) => {
-        this.toastService.showToast('Fehler beim Registrieren als Interessent. Bitte versuchen Sie es später erneut.', ToastType.Error);
-        console.error(`Error registering user as interested party: ${JSON.stringify(error)}`);
-        return EMPTY
-      })
-    ).subscribe(() => {
-      this.alreadyRegistered.set(true);
-      this.toastService.showToast('Erfolgreich registriert! Wir halten dich auf dem Laufenden.', ToastType.Success);
-    });
-  }
 }

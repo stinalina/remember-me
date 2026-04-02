@@ -6,11 +6,6 @@ import { INotification, IUser } from "@shared/models";
 import { ToastService, ToastType } from "./toast.service";
 import { environment } from "@environments/environment";
 
-type UserRegistrationResponse = {
-  success: boolean;
-  callCount: number;
-}
-
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
   private readonly httpClient = inject(HttpClient);
@@ -79,21 +74,6 @@ export class NotificationService {
         return of(false);
       })
     )
-  }
-
-  public storeUserAsInterestedParty(mail: string): Observable<number> {
-    const payload = {
-      Mail: mail,
-      Name: this.unkownUserName
-    };
-
-    const url = `${environment.BACKEND_URL}${environment.SEND_REGISTER_INTERESTED_PARTY_MAIL_URL}`;
-    return this.httpClient.post<UserRegistrationResponse>(url, payload).pipe(
-      tap({
-        next: (response) => console.log('Register interested party email sent successfully!', response),
-        error: (error) => console.error(`Error sending register interested party email: ${JSON.stringify(error)}`)
-      }),
-      map((response: UserRegistrationResponse) => response.callCount));
   }
 
   /**

@@ -2,21 +2,14 @@
   <div class="hero-content text-center">
     <div class="max-w-md">
       @if (this.MVP_Mode) {
-        <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">Halte mich auf dem Laufenden!</h1>
+        <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">Anmeldung bald verfügbar!</h1>
         <div class="md:py-4 xl:py-6 py-3 flex flex-col gap-3">
-          <reme-mail #mail></reme-mail>
+          <p>Mit Anmeldeberreich ...</p>
           <ul class="list">
-            <li class="list-row"><span class="font-bold italic">Du</span>bist der Erste der erfährt, wenn es losgeht!</li>
-            <li class="list-row"><span class="font-bold italic">Ich</span>erhalte Feedback, ob überhaupt Bedarf besteht.</li>
+            <li class="list-row"><span class="font-bold italic">✓</span>Hast du alle deine Notizen im Blick</li>
+            <li class="list-row"><span class="font-bold italic">✓</span>Wirst du Notizen überarbeiten können</li>
+            <li class="list-row"><span class="font-bold italic">✓</span>Kannst du deine Notizen mit anderen teilen</li>
           </ul>
-          <button class="mx-2 self-center
-            btn btn-sm xl:btn-md
-            md:mx-6 xl:mx-20
-            w-[20rem] xl:w-[15rem]"
-            [disabled]="!mail.mailControl.valid || this.alreadyRegistered()"
-            (click)="this.registerUserForInterestedParty(mail.mailControl.value)">
-            Interesse bekunden
-          </button>
         </div>
       } @else {
         <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">Einloggen & <br/> Dran bleiben!</h1>
