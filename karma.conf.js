@@ -29,7 +29,7 @@ module.exports = function (config) {
         { type: 'text-summary' }
       ]
     },
-    reporters: ['progress', 'spec', 'junit'],
+    reporters: ['progress'],
     browsers: ['Chrome'],
     customLaunchers: {
       Headless_Chrome: {
