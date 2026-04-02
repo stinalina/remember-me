@@ -14,7 +14,7 @@ test.describe('FreeNotificationComponent', () => {
     }, testMail);
   });
 
-  test('should show limit reached message after 3 notifications and disable editor', async ({ page }) => {
+  test('should show limit reached message after 3 notifications', async ({ page }) => {
     // Reload page
     await page.reload();
     await page.waitForTimeout(1500); // Wait for placeholder animation

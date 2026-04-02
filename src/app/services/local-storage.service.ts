@@ -5,8 +5,6 @@ import { LOCAL_STORAGE } from "@shared/storage.token";
 export class LocalStorageService {
   private readonly stoarge = inject(LOCAL_STORAGE);
 
-  public readonly freeNotificationsLimit = 3; //TODO should be set based on pricing when user is logged in
-
   private readonly USER_MAIL_TOKEN = 'user_mail';
 
   public getUserMail(): string | null {
@@ -35,7 +33,7 @@ export class LocalStorageService {
    * Count will be reseted when new month starts
    * @param limit - default is 3; count won't increase when limit is reached
    */
-  public increaseSendedNotificationCount(limit: number = this.freeNotificationsLimit): void {
+  public increaseSendedNotificationCount(limit: number = 3): void {
     const user = this.getUserMail();
     if (!user) {
       console.error('User mail is not set in local storage. Cannot increase sended notification count.');
@@ -60,6 +58,7 @@ export class LocalStorageService {
   }
 
   private getSendedNotificationCountKey(userMail: string): string {
-    return `sended_notifications_count_${userMail}`;
+    const normalizedMail = userMail.trim().toLowerCase();
+    return `sended_notifications_count_${normalizedMail}`;
   }
 }

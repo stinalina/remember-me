@@ -33,6 +33,8 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   private readonly toastService = inject(ToastService);
   private readonly typewriterEffectService = inject(TypewriterEffectService);
 
+  private readonly freeNotificationsLimit = inject(UserService).freeNotificationsLimit;
+  private readonly limitReached = signal<boolean>(false);
   public readonly MVP_Mode = environment.MVP_Mode;
 
   public readonly editor: Editor = new Editor();
@@ -41,7 +43,8 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   protected readonly myForm = this.fb.group({
     subject: [''],
     content: ['', htmlContentValidator()],
-    mail: [this.localStorageService.getUserMail() ?? '', [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService)]],
+    mail: [this.localStorageService.getUserMail() ?? '',
+      [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService, this.freeNotificationsLimit())]],
     dateTime: [this.nextDay, Validators.required],
   });
 
@@ -56,9 +59,6 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   protected readonly retry = signal<boolean>(false);
   protected readonly sendingNotification = signal<boolean>(false);
   protected readonly placeholderSubject = 'Greetings from Notify!';
-
-  private readonly freeNotificationsLimit = inject(UserService).freeNotificationsLimit;
-  private readonly limitReached = signal<boolean>(false);
 
   public typedPlaceholder = '';
   public showPlaceholderAnimation = true;
@@ -78,12 +78,12 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
           { type: TypewriterActionType.TYPE, text: 'Maximum of free notifications reached for this month.' },
           { type: TypewriterActionType.LINEBREAK },
           { type: TypewriterActionType.PAUSE, duration: 2000 },
-          { type: TypewriterActionType.TYPE, text: ' Do you want to create more notificatins?' },
+          { type: TypewriterActionType.TYPE, text: ' Do you want to create more notifications?' },
           { type: TypewriterActionType.LINEBREAK },
           { type: TypewriterActionType.TYPE, text: ' Just hold on!' },
           { type: TypewriterActionType.LINEBREAK },
           { type: TypewriterActionType.LINEBREAK },
-          { type: TypewriterActionType.TYPE, text: ' *Reason: This is still in develop mode and every request to the database costs money.' },
+          { type: TypewriterActionType.TYPE, text: ' *Reason: This is still in development mode and every request to the database costs money.' },
         ]);
         this.showPlaceholderAnimation = true;
         this.typewriterEffectService.animatePlaceholder(this.updatePlaceholder.bind(this));
@@ -159,10 +159,10 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
       finalize(() => {
         this.sendingNotification.set(false);
         this.retry.set(false);
-        this.localStorageService.setUserMail(notification.mail);
       })
     ).subscribe(() => {
       this.resetForm();
+      this.localStorageService.setUserMail(notification.mail);
       this.localStorageService.increaseSendedNotificationCount();
       if (this.checkIfMaxSendedNotificationCountIsReached()) {
         this.toastService.showToast(

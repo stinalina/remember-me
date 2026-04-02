@@ -28,7 +28,7 @@ describe('Local Stoarge Service', () => {
   });
 
   it('should not increase count when limit if reached but min 1 when limit was 0', () => {
-    service.setUserMail(mail)
+    service.setUserMail(mail);
     let count = service.getSendedNotificationCount(mail);
     service.increaseSendedNotificationCount(count);
     let newCount = service.getSendedNotificationCount(mail);

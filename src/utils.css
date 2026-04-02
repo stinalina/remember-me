@@ -27,7 +27,7 @@
   text-decoration: underline
 }
 
-.reme-validator.hint {
+.reme-validator-hint {
   color: var(--color-red-700);
   font-size: var(--text-sm); /* 0.875rem = 14px */;
   line-height: var(--tw-leading, var(--text-sm--line-height));
