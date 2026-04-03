@@ -49,16 +49,12 @@
           (click)="scrollToOutlet()">
           Dran bleiben</a>
       </div>
-      @if (this.MVP_Mode) {
-        <p class="text-sm mt-2 italic">* Noch in der Entwicklung - aber bald verfügbar!
-        </p>
-      }
       @if (this.showThemeToggle) {
         <reme-theme-toggle></reme-theme-toggle>
       } 
     </div>
   </div>
- 
+
   </header>
   <section class="h-auto md:h-screen xl:h-screen items-center justify-center" #outletContainer>
     <router-outlet />
