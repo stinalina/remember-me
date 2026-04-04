@@ -41,7 +41,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);
   
   protected readonly myForm = this.fb.group({
-    subject: [''],
+    subject: ['', Validators.maxLength(100)],
     content: ['', htmlContentValidator()],
     mail: [this.localStorageService.getUserMail() ?? '',
       [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService, this.freeNotificationsLimit())]],

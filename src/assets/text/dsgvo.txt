@@ -1,9 +1,8 @@
 1. Verantwortlicher
 Verantwortlicher im Sinne der Datenschutz-Grundverordnung (DSGVO) ist:
 Stina Böhmig
-[Adresse]
+69239 Neckarsteinach -DE
 stina.boehmig@gmx.de
-[Telefonnummer]
 
 2. Erhebung und Speicherung personenbezogener Daten sowie Art und Zweck von deren Verwendung
 a) Beim Besuch der Website
@@ -16,6 +15,8 @@ Folgende Informationen werden dabei ohne Ihr Zutun erfasst und bis zur automatis
 Die genannten Daten werden durch uns zu folgenden Zwecken verarbeitet:
  - Gewährleistung eines reibungslosen Verbindungsaufbaus der Website
  - Auswertung der Systemsicherheit und -stabilität sowie zu weiteren administrativen Zwecken
+
+Zusätzlich wird die Mail-Adresse vermerkt, sofern erfolgreich eine Notiz erstellt wurde. Dies soll ermöglichen, bei einem erneutem Aufruf der Website das eMail Feld vorauszufüllen.
 
 Rechtsgrundlage für die Datenverarbeitung ist Art. 6 Abs. 1 S. 1 lit. f DSGVO.
 
@@ -44,10 +45,7 @@ die Weitergabe nach Art. 6 Abs. 1 S. 1 lit. f DSGVO zur Geltendmachung, Ausübun
 für den Fall, dass für die Weitergabe nach Art. 6 Abs. 1 S. 1 lit. c DSGVO eine gesetzliche Verpflichtung besteht, sowie
 dies gesetzlich zulässig und nach Art. 6 Abs. 1 S. 1 lit. b DSGVO für die Abwicklung von Vertragsverhältnissen mit Ihnen erforderlich ist.
 
-4. Cookies und Tracking
-Unsere Website verwendet Cookies. Nähere Informationen dazu finden Sie in unserer Cookie-Richtlinie.
-
-5. Betroffenenrechte
+4. Betroffenenrechte
 Sie haben das Recht:
  - gemäß Art. 15 DSGVO Auskunft über Ihre von uns verarbeiteten personenbezogenen Daten zu verlangen;
  - gemäß Art. 16 DSGVO unverzüglich die Berichtigung unrichtiger oder Vervollständigung Ihrer bei uns gespeicherten personenbezogenen Daten zu verlangen;
@@ -57,10 +55,10 @@ Sie haben das Recht:
  - gemäß Art. 7 Abs. 3 DSGVO Ihre einmal erteilte Einwilligung jederzeit gegenüber uns zu widerrufen;
  - gemäß Art. 77 DSGVO sich bei einer Aufsichtsbehörde zu beschweren.
 
-6. Datensicherheit
+5. Datensicherheit
 Wir verwenden innerhalb des Website-Besuchs das verbreitete SSL-Verfahren (Secure Socket Layer) in Verbindung mit der jeweils höchsten Verschlüsselungsstufe, die von Ihrem Browser unterstützt wird.
 
-7. Aktualität und Änderung dieser Datenschutzerklärung
-Diese Datenschutzerklärung ist aktuell gültig und hat den Stand Februar 2026. Durch die Weiterentwicklung unserer Website und Angebote darüber oder aufgrund geänderter gesetzlicher beziehungsweise behördlicher Vorgaben kann es notwendig werden, diese Datenschutzerklärung zu ändern.
+6. Aktualität und Änderung dieser Datenschutzerklärung
+Diese Datenschutzerklärung ist aktuell gültig und hat den Stand April 2026. Durch die Weiterentwicklung unserer Website und Angebote darüber oder aufgrund geänderter gesetzlicher beziehungsweise behördlicher Vorgaben kann es notwendig werden, diese Datenschutzerklärung zu ändern.
 
 RememberMe – Dein smarter Erinnerungshelfer
