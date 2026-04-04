@@ -15,24 +15,9 @@ type Slogan = {
 export class HomePage implements OnInit, OnDestroy {
   private readonly slogans: Slogan[] = [
     {
-      title: "Dein Kopf ist voll genug.",
-      description: "Notizen landen überall – nur nicht da, wo du sie brauchst. Erstelle eine Notiz, leg den Zeitpunkt fest, wir erinnern dich genau dann.",
-      fazit: "👉 Kein Kalender-Chaos. Kein Vergessen."
-    },
-    {
-      title: "Todo's raus aus dem Kalender. Klarheit rein.",
-      description: "Dein Kalender ist für Termine da, nicht für Gedankenfetzen. Mit unseren Notizen bekommst du Erinnerungen genau dann, wenn sie relevant sind.",
-      fazit: "👉 Ordnung, die mitdenkt."
-    },
-    {
       title: "Reisepläne? Erstmal festhalten.",
       description: "Du weißt schon, wohin die nächste Reise gehen soll, aber buchen ist noch zu früh? Schreib auf, wohin es geht und welche Highlights du erleben willst – wir erinnern dich rechtzeitig.",
       fazit: "👉 Inspiration sichern. Sehenswürdigkeiten nicht verpassen."
-    },
-    {
-      title: "Vergessen war gestern.",
-      description: "Notieren, terminieren, abschalten. Wir erinnern dich – du behältst den Fokus.",
-      fazit: "👉 Dein Kalender bleibt sauber. Dein Kopf auch."
     },
     {
       title: "Später merken. Jetzt leben.",
@@ -55,19 +40,9 @@ export class HomePage implements OnInit, OnDestroy {
       fazit: "👉 Smart organisiert statt überplant."
     },
     {
-      title: "Chaos entsteht im Kopf – Ordnung in der App.",
-      description: "Statt alles im Kalender zu parken: Notieren. Terminieren. Zur richtigen Zeit erinnern lassen.",
-      fazit: "👉 Für Studium, Selbstständigkeit & Alltag."
-    },
-    {
       title: "Weißt du noch? – Ja.",
       description: "Ob Konzerttickets, Geburtstagsgeschenke oder Lernnotizen – wir erinnern dich, bevor es zu spät ist.",
       fazit: "👉 Vergessen war gestern."
-    },
-    {
-      title: "Eine App für all die ‚nicht vergessen‘-Momente.",
-      description: "Kein Termin. Keine To-do-Liste. Nur eine Erinnerung, wenn es Sinn macht.",
-      fazit: "👉 Klar. Einfach. Effektiv."
     },
     {
       title: "Dein Kalender ist voll genug.",
