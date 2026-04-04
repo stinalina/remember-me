@@ -28,22 +28,21 @@ test.describe('FreeNotificationComponent', () => {
     const placeholder = page.locator('.typewriter-placeholder');
     await expect(placeholder).toBeVisible();
     const placeholderText = await placeholder.textContent();
-    expect(placeholderText?.toLowerCase()).toContain('maxim|');
+    expect(placeholderText?.toLowerCase()).toContain('maxim');
     
     // Check that submit button is disabled
-    const submitButton = page.getByRole('button', { name: /Create Notification|Sending/ });
+    const submitButton = page.getByRole('button', { name: /Notiz erstellen|Senden/ });
     const buttonClass = await submitButton.getAttribute('class');
     expect(buttonClass).toContain('btn-disabled');
 
     // Check that mail can be filled but editor is disabled
     const mailInput = page.getByRole('textbox', { name: 'Sende Erinnerung an:' });
-    expect(mailInput).toBeEnabled();
+    await expect(mailInput).toBeEnabled();
   });
 
   test('should restrict user to send more than limit allowed notifications', async ({ page }) => {
     const mailInput = page.getByRole('textbox', { name: 'Sende Erinnerung an:' });
     const editor = page.locator('.ProseMirror');
-    const submitButton = page.getByRole('button', { name: 'Create Notification' });
 
     // Fill all fields with valid data
     await mailInput.fill(testMail);
@@ -55,13 +54,13 @@ test.describe('FreeNotificationComponent', () => {
     const validatorHint = page.locator('.reme-validator-hint');
     await expect(validatorHint).toBeVisible();
     const hintText = await validatorHint.textContent();
-    expect(hintText?.toLowerCase()).toContain('free notification limit reached');
+    expect(hintText?.toLowerCase()).toContain('limit für kostenlose benachrichtigungen erreicht');
   });
 
   test('should send notification when limit is reached but new mail entered', async ({ page }) => {
     const mailInput = page.getByRole('textbox', { name: 'Sende Erinnerung an:' });
     const editor = page.locator('.ProseMirror');
-    const submitButton = page.getByRole('button', { name: 'Create Notification' });
+    const submitButton = page.getByRole('button', { name: 'Notiz erstellen' });
 
     // Fill all fields with valid data
     await mailInput.fill('new@mail.de');
