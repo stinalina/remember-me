@@ -76,6 +76,11 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "headers": {
+              "Content-Security-Policy": "default-src 'self'; script-src 'self' https://storage.ko-fi.com 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://hasura.orangemeadow-efd57554.germanywestcentral.azurecontainerapps.io https://fa-rememberme-backend-cchucab0bsdpepb5.germanywestcentral-01.azurewebsites.net; frame-src https://ko-fi.com; font-src 'self' data:; object-src 'none'"
+            }
+          },
           "configurations": {
             "production": {
               "buildTarget": "remember-me:build:production"
