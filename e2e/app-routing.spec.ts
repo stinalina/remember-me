@@ -15,10 +15,10 @@ test.describe('App.html - Router Links', () => {
     await expect(page).toHaveURL('/free-notification');
   });
 
-  // test('should navigate to login when clicking Dran bleiben button', async ({ page }) => {
-  //   await page.getByRole('button', { name: 'Dran bleiben' }).click();
-  //   await expect(page).toHaveURL('/login');
-  // });
+  test('should navigate to login when clicking Dran bleiben button', async ({ page }) => {
+    await page.getByRole('button', { name: 'Dran bleiben' }).click();
+    await expect(page).toHaveURL('/login');
+  });
 
   test('should navigate to impressum when clicking Impressum link', async ({ page }) => {
     await page.getByRole('link', { name: 'Impressum' }).click();
