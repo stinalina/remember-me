@@ -22,7 +22,7 @@ import { ThemeToggleComponent } from '@app/shared/theme-toggle/theme-toggle.comp
 export class App {
   @ViewChild('outletContainer') outletContainer!: ElementRef;
   public readonly RouterTokens = ROUTER_TOKENS;
-  public readonly version = '0.0.1';
+  public readonly version = '1.0.0';
   public readonly env = environment.production ? 'Prod Mode' : 'Dev Mode';
   public readonly contactMail = environment.CONTACT_MAIL; 
   public readonly MVP_Mode = environment.MVP_Mode;

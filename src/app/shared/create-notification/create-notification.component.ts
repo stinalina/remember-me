@@ -58,7 +58,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   protected readonly now = this.nextDay;
   protected readonly retry = signal<boolean>(false);
   protected readonly sendingNotification = signal<boolean>(false);
-  protected readonly placeholderSubject = 'Greetings from Notify!';
+  protected readonly placeholderSubject = 'Grüße von Notify!';
 
   public typedPlaceholder = '';
   public showPlaceholderAnimation = true;
