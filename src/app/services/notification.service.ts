@@ -11,14 +11,14 @@ export class NotificationService {
   private readonly httpClient = inject(HttpClient);
   private readonly toastService = inject(ToastService);
   
-  private readonly insertUser_Dev = inject(InsertUserGQL);
-  private readonly getUserByMail_Dev = inject(GetUserByMailGQL);
-  private readonly insertNotification_Dev = inject(InsertNotificationGQL);
+  private readonly insertUserGQL = inject(InsertUserGQL);
+  private readonly getUserByMailGQL = inject(GetUserByMailGQL);
+  private readonly insertNotificationGQL = inject(InsertNotificationGQL);
 
   private readonly unkownUserName = 'Unknown';
   
   public getUserByMailOrCreateUserIfNotExists(mail: string): Observable<IUser> {
-    return this.getUserByMail_Dev.fetch({ variables: { mail } }).pipe(
+    return this.getUserByMailGQL.fetch({ variables: { mail } }).pipe(
       switchMap((result) => {
         const userExists = result.data?.User.length !== 0;
         if (userExists) {
@@ -29,7 +29,7 @@ export class NotificationService {
             newCreated: false
           } satisfies IUser);
         } else {
-          return this.insertUser_Dev.mutate({ variables: { mail, name: this.unkownUserName } }).pipe(
+          return this.insertUserGQL.mutate({ variables: { mail, name: this.unkownUserName } }).pipe(
             map((res) => ({
               mail,
               name: res.data?.insert_User?.returning[0].Name ?? '',
@@ -58,7 +58,7 @@ export class NotificationService {
         }
       ]
     };
-    return this.insertNotification_Dev.mutate({variables}).pipe(
+    return this.insertNotificationGQL.mutate({variables}).pipe(
       map(() => {
         if (user.newCreated === true) {
           this.sendWelcomeMail(user);
