@@ -35,6 +35,7 @@
           },
           "configurations": {
             "production": {
+              "extractLicenses": true,
               "security": {
                 "autoCsp": true
               },
