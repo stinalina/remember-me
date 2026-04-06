@@ -14,7 +14,7 @@ import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '@shared/editor-config.token';
 import { INotification, IUser } from '@shared/models';
 import { SESSION_STORAGE } from '@shared/storage.token';
 import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
-import { catchError, EMPTY, finalize, switchMap } from 'rxjs';
+import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
 
 @Component({
   selector: 'reme-create-notification',
@@ -155,6 +155,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
 
     this.sendingNotification.set(true)
     this.notificationService.getUserByMailOrCreateUserIfNotExists(notification.mail).pipe(
+      delay(500), // prevent race condition when new user is created and immediately receives a notification
       switchMap((user: IUser) => this.notificationService.createNotification(notification, user)),
       catchError((error) => {
         console.error(`Error creating notification.\n Error message: ${error.message}\n Stack trace: ${error.stack}`);
