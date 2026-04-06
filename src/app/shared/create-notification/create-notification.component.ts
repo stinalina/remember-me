@@ -42,6 +42,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   
   protected readonly myForm = this.fb.group({
     subject: ['', Validators.maxLength(100)],
+    additionalInfo: [''],
     content: ['', htmlContentValidator()],
     mail: [this.localStorageService.getUserMail() ?? '',
       [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService, this.freeNotificationsLimit())]],
@@ -136,6 +137,11 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   }
 
   public createNotification(): void {
+    if (this.myForm.value.additionalInfo && this.myForm.value.additionalInfo.length > 0) {
+      this.toastService.showToast('Bot detected. If you are not a bot, please try again.', ToastType.Error);
+      this.myForm.value.additionalInfo = '';
+      return;
+    }
     if (!this.canSubmitForm()) {
       return;
     }
