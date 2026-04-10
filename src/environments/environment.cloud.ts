@@ -1,5 +1,5 @@
 export const environment = {
-  production: true,
+  production: false,
 
   HASURA_URL: 'https://hasura.orangemeadow-efd57554.germanywestcentral.azurecontainerapps.io/v1/graphql',
   BACKEND_URL: 'https://fa-rememberme-backend-cchucab0bsdpepb5.germanywestcentral-01.azurewebsites.net',

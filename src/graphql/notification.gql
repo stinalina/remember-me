@@ -1,13 +1,5 @@
-mutation InsertNotification_Dev($objects: [dev_Notification_insert_input!]!) {
-  insert_dev_Notification(objects: $objects) {
-    returning {
-      Subject
-    }
-  }
-}
-
-mutation InsertNotification_Prod($objects: [prod_Notification_insert_input!]!) {
-  insert_prod_Notification(objects: $objects) {
+mutation InsertNotification($objects: [Notification_insert_input!]!) {
+  insert_Notification(objects: $objects) {
     returning {
       Subject
     }

@@ -2,13 +2,13 @@
   class="
     shadow-lg 
     md:p-2.5 xl:p-3 p-2
-    rounded-lg bg-base-100 border-1 
+    rounded-lg bg-base-100 border
     max-h-screen xl:max-h-none 
     overflow-y-auto md:overflow-y-auto xl:overflow-y-visible"
     >
   <div class="flex flex-col md:gap-3 xl:gap-4 gap-2 justify-around">
     <label class="input input-sm md:input-sm xl:input-md w-full">
-      Subject
+      Betreff
       <input type="text" id="create-notifcation-subject" 
         formControlName="subject"
         class="pl-1" placeholder="{{ this.placeholderSubject }}" />
@@ -41,6 +41,8 @@
         [min]="this.now"/>
     </div>
 
+    <input type="text" formControlName="additionalInfo" style="display:none" autocomplete="off">
+
     <div class="flex flex-col text-sm md:text-sm xl:text-base">
       <label for="create-notifcation-mail" class="text-left md:ml-0.5 xl:ml-1 mb-1">
         Sende Erinnerung an:
@@ -62,24 +64,26 @@
           formControlName="mail" class="pl-1"
           type="email" placeholder="mail@site.com" />
       </label>
-      <div class="validator-hint hidden">Enter valid email address</div>
+      @let mailErrors = this.myForm.get('mail')?.errors;
+      @let mailTouched = this.myForm.get('mail')?.touched;
+      @if (mailTouched && mailErrors) {
+        @if (mailErrors['email']) {
+          <div class="reme-validator-hint">Gebe eine gültige E-Mail-Adresse ein</div>
+        }
+        @if (mailErrors['freeLimitReached']) {
+          <div class="reme-validator-hint">Limit für kostenlose Benachrichtigungen erreicht</div>
+        }
+      }
     </div>
 
     <div class="flex justify-center">
-      <!-- <button id="create-notification-apply"
-        class="btn btn-outline"
-        type="submit"
-        :disabled="!canSubmitForm || sendingNotification">
-        {{ sendingNotification ? 'Sending...' : 'Create Notification' }}
-      </button> -->
-
       @let disabled = (!this.canSubmitForm() || this.sendingNotification()) && !this.retry();
       <button type="submit" class="btn btn-sm md:btn-sm xl:btn-md" id="create-notification-apply"
-        [class.btn-disabled]="this.MVP_Mode || disabled">
+        [class.btn-disabled]="disabled">
         @if (this.sendingNotification()) {
           <span class="loading loading-spinner"></span>
         }
-        {{ this.sendingNotification() ? 'Sending...' : 'Create Notification' }}
+        {{ this.sendingNotification() ? 'Senden...' : 'Notiz erstellen' }}
       </button>
     </div>
   </div>

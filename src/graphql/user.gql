@@ -1,5 +1,5 @@
-mutation InsertUser_Dev($mail: String!, $name: String!) {
-  insert_dev_User(objects: { Mail: $mail, Name: $name }) {
+mutation InsertUser($mail: String!, $name: String!) {
+  insert_User(objects: { Mail: $mail, Name: $name }) {
     returning {
       Id,
       Name
@@ -7,24 +7,8 @@ mutation InsertUser_Dev($mail: String!, $name: String!) {
   }
 }
 
-mutation InsertUser_Prod($mail: String!, $name: String!) {
-  insert_prod_User(objects: { Mail: $mail, Name: $name }) {
-    returning {
-      Id,
-      Name
-    }
-  }
-}
-
-query GetUserByMail_Dev($mail: String!) {
-  dev_User(where: {Mail: {_eq:$ mail}}) {
-    Id,
-    Name
-  }
-}
-
-query GetUserByMail_Prod($mail: String!) {
-  prod_User(where: {Mail: {_eq:$ mail}}) {
+query GetUserByMail($mail: String!) {
+  User(where: {Mail: {_eq:$ mail}}) {
     Id,
     Name
   }

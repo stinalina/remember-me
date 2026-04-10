@@ -4,12 +4,12 @@
 module.exports = function (config) {
   config.set({
     basePath: '',
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', '@angular-devkit/build-angular'], // angular devkit löst die Paths zu den testfiles automatisch auf
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
-      require('karma-jasmine-html-reporter'),
       require('karma-coverage'),
+      require('@angular-devkit/build-angular/plugins/karma'),
     ],
     client: {
       jasmine: {
@@ -30,8 +30,16 @@ module.exports = function (config) {
         { type: 'text-summary' }
       ]
     },
-    reporters: ['progress', 'kjhtml'],
-    browsers: [],
+    reporters: ['progress'],
+    browsers: ['Chrome'],
+    customLaunchers: {
+      Headless_Chrome: {
+        base: 'ChromeHeadless',
+        flags: [
+          '--no-sandbox'
+        ]
+      }
+    },
     restartOnFileChange: true
   });
 };

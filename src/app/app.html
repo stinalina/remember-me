@@ -1,10 +1,10 @@
 <reme-toast></reme-toast>
-<div class="
+<main class="
     grid md:grid-cols-2 xl:grid-cols-2 
     items-center justify-center 
     min-h-screen md:min-h-screen xl:min-h-screen"
   >
-  <div class="
+  <header class="
     flex flex-col items-center justify-center 
     min-h-screen md:min-h-auto xl:min-h-auto 
     h-auto md:h-screen xl:h-screen"
@@ -47,28 +47,25 @@
         <a role="button" class="btn btn-sm xl:btn-lg"
           [routerLink]="[RouterTokens.LOGIN]" routerLinkActive="md:btn-soft" [routerLinkActiveOptions]="{ exact: true }"
           (click)="scrollToOutlet()">
-          Interessiert?</a>
+          Dran bleiben</a>
       </div>
-      @if (this.MVP_Mode) {
-        <p class="text-sm mt-2 italic">* Noch in der Entwicklung - aber bald verfügbar!
-          @if (this.showThemeToggle) {
-            <reme-theme-toggle></reme-theme-toggle>
-          } 
-        </p>
-      }
+      @if (this.showThemeToggle) {
+        <reme-theme-toggle></reme-theme-toggle>
+      } 
     </div>
   </div>
- 
-  </div>
-  <div class="h-auto md:h-screen xl:h-screen items-center justify-center" #outletContainer>
+
+  </header>
+  <section class="h-auto md:h-screen xl:h-screen items-center justify-center" #outletContainer>
     <router-outlet />
-  </div>
+  </section>
   <ng-content *ngTemplateOutlet="submenu"></ng-content>
   <reme-footer class="hidden xl:block"></reme-footer>
+</main>
 
 
 <ng-template #submenu>
-  <div class="md:absolute md:flex flex-row md:items-end p-1 gap-3 md:left-2 md:bottom-1 text-sm md:w-auto md:px-0 xl:fixed xl:flex xl:flex-row xl:items-end xl:gap-3 xl:left-2 xl:bottom-1 xl:text-sm xl:w-auto xl:px-0">
+  <nav class="md:absolute md:flex flex-row md:items-end p-1 gap-3 md:left-2 md:bottom-1 text-sm md:w-auto md:px-0 xl:fixed xl:flex xl:flex-row xl:items-end xl:gap-3 xl:left-2 xl:bottom-1 xl:text-sm xl:w-auto xl:px-0">
   <div>
     <p>{{ this.env }}</p>
     <p>Version: {{ this.version }}</p>
@@ -78,7 +75,7 @@
     <a [routerLink]="[RouterTokens.DATENSCHUTZ]">Datenschutz</a>
   </div>
   <ng-content *ngTemplateOutlet="contact"></ng-content> 
-</div>
+</nav>
 </ng-template>
 
 <ng-template #contact>

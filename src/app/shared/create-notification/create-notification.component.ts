@@ -1,38 +1,28 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
-import { catchError, finalize, switchMap, tap } from 'rxjs';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TypewriterActionType, TypewriterEffectService } from '@app/services/typewriter-effect.service';
+import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
+import { restrictFreeLimitValidator } from '@app/shared/validators/restrict-free-limit.validator';
+import { environment } from '@environments/environment';
 import { LocalStorageService } from '@services/local-storage.service';
 import { NotificationService } from '@services/notification.service';
 import { ToastService, ToastType } from '@services/toast.service';
+import { UserService } from '@services/user.service';
 import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '@shared/editor-config.token';
 import { INotification, IUser } from '@shared/models';
 import { SESSION_STORAGE } from '@shared/storage.token';
-import { UserService } from '@services/user.service';
-import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
-import { environment } from '@environments/environment';
-
-enum TypewriterActionType {
-  TYPE = 'type',
-  DELETE = 'delete',
-  PAUSE = 'pause',
-  LINEBREAK = '<br/>',
-}
-type TypewriterAction =
-  | { type: TypewriterActionType.TYPE; text: string }
-  | { type: TypewriterActionType.DELETE; count: number }
-  | { type: TypewriterActionType.PAUSE; duration: number }
-  | { type: TypewriterActionType.LINEBREAK };
+import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
+import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
 
 @Component({
   selector: 'reme-create-notification',
   templateUrl: 'create-notification.component.html',
   styleUrl: 'create-notification.component.scss',
-  imports: [
+  imports: [  
     NgxEditorModule,
-    ReactiveFormsModule // to get access to FormGroup and the formControlName directive.
+    ReactiveFormsModule
   ] 
 })
 export class CreateNotificationComponent implements OnInit, OnDestroy {
@@ -41,16 +31,21 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   private readonly sessionStorage = inject(SESSION_STORAGE);
   private readonly localStorageService = inject(LocalStorageService);
   private readonly toastService = inject(ToastService);
+  private readonly typewriterEffectService = inject(TypewriterEffectService);
 
+  private readonly freeNotificationsLimit = inject(UserService).freeNotificationsLimit;
+  private readonly limitReached = signal<boolean>(false);
   public readonly MVP_Mode = environment.MVP_Mode;
 
   public readonly editor: Editor = new Editor();
   public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);
   
   protected readonly myForm = this.fb.group({
-    subject: [''],
+    subject: ['', Validators.maxLength(100)],
+    additionalInfo: [''],
     content: ['', htmlContentValidator()],
-    mail: [this.localStorageService.getUserMail() ?? '', [Validators.required, Validators.email]],
+    mail: [this.localStorageService.getUserMail() ?? '',
+      [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService, this.freeNotificationsLimit())]],
     dateTime: [this.nextDay, Validators.required],
   });
 
@@ -64,15 +59,10 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   protected readonly now = this.nextDay;
   protected readonly retry = signal<boolean>(false);
   protected readonly sendingNotification = signal<boolean>(false);
-  protected readonly placeholderSubject = 'Greetings from Notify!';
-
-  private readonly freeNotificationsLimit = inject(UserService).freeNotificationsLimit;
-  private readonly limitReached = signal<boolean>(false);
+  protected readonly placeholderSubject = 'Grüße von Notify!';
 
   public typedPlaceholder = '';
   public showPlaceholderAnimation = true;
-  private actions: TypewriterAction[] = [];
-  private readonly cursorHtml = '<span class="typewriter-cursor">|</span>';
 
   private get nextDay(): string {
     const date = new Date();
@@ -82,31 +72,32 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
 
   constructor() {
     effect(() => {
-      const limitReached = this.limitReached();
-      if (limitReached) {
-        this.myForm.disable();
-        this.actions = [
+      if (this.limitReached()) {
+        this.resetForm();
+        this.typewriterEffectService.setActions([
           { type: TypewriterActionType.PAUSE, duration: 1000 },
-          { type: TypewriterActionType.TYPE, text: 'Maximum of free notifications reached for this month. So this editor is disabled.' },
+          { type: TypewriterActionType.TYPE, text: 'Maximum of free notifications reached for this month.' },
           { type: TypewriterActionType.LINEBREAK },
           { type: TypewriterActionType.PAUSE, duration: 2000 },
-          { type: TypewriterActionType.TYPE, text: ' Do you want to create more notificatins?' },
+          { type: TypewriterActionType.TYPE, text: ' Do you want to create more notifications?' },
           { type: TypewriterActionType.LINEBREAK },
-          { type: TypewriterActionType.TYPE, text: ' Login and ugrade your Abo!' },
-        ];
+          { type: TypewriterActionType.TYPE, text: ' Just hold on!' },
+          { type: TypewriterActionType.LINEBREAK },
+          { type: TypewriterActionType.LINEBREAK },
+          { type: TypewriterActionType.TYPE, text: ' *Reason: This is still in development mode and every request to the database costs money.' },
+        ]);
         this.showPlaceholderAnimation = true;
-        this.animatePlaceholder();
+        this.typewriterEffectService.animatePlaceholder(this.updatePlaceholder.bind(this));
       }
     });
   }
 
   public ngOnInit(): void {
-    this.checkIfMaxSendedNotificationCountIsReached();
-    if (!this.limitReached()) {
+    if (!this.checkIfMaxSendedNotificationCountIsReached()) {
       this.restoreDraftIfExists();
     
     if (this.showPlaceholderAnimation) {
-      this.actions = [
+      this.typewriterEffectService.setActions([
         { type: TypewriterActionType.PAUSE, duration: 1000 },
         { type: TypewriterActionType.TYPE, text: 'Im März diesmal wirklich dran denken Tickets für das Sommerfes' },
         { type: TypewriterActionType.PAUSE, duration: 3000 },
@@ -123,8 +114,8 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
         { type: TypewriterActionType.PAUSE, duration: 3000 },
         { type: TypewriterActionType.LINEBREAK },
         { type: TypewriterActionType.TYPE, text: ' Deadline ist der <strong>14.03</strong>!' },
-      ];
-      this.animatePlaceholder();
+      ]);
+      this.typewriterEffectService.animatePlaceholder(this.updatePlaceholder.bind(this));
       }
     }
   }
@@ -146,128 +137,68 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   }
 
   public createNotification(): void {
+    if (this.myForm.value.additionalInfo && this.myForm.value.additionalInfo.length > 0) {
+      this.toastService.showToast('Bot detected. If you are not a bot, please try again.', ToastType.Error);
+      this.myForm.value.additionalInfo = '';
+      return;
+    }
     if (!this.canSubmitForm()) {
       return;
     }
 
     const notification = {
-      subject: this.myForm.value.subject || this.placeholderSubject, // use placeholder if empty
+      subject: this.myForm.value.subject || this.placeholderSubject,
       content: this.myForm.value.content!,
       dueDate: this.myForm.value.dateTime!.toString(),
       mail: this.myForm.value.mail!
     } satisfies INotification;
 
+    this.sendingNotification.set(true)
     this.notificationService.getUserByMailOrCreateUserIfNotExists(notification.mail).pipe(
-      tap(() => this.sendingNotification.set(true)),
+      delay(500), // prevent race condition when new user is created and immediately receives a notification
       switchMap((user: IUser) => this.notificationService.createNotification(notification, user)),
       catchError((error) => {
-        console.error('Error creating notification.');
-        throw error;
+        console.error(`Error creating notification.\n Error message: ${error.message}\n Stack trace: ${error.stack}`);
+        this.toastService.showToast('Error creating notification. Please try again.', ToastType.Error);
+        this.retry.set(true);
+        return EMPTY;
       }),
       finalize(() => {
         this.sendingNotification.set(false);
-        this.retry.set(true);
-        this.localStorageService.setUserMail(notification.mail);
-        this.localStorageService.increaseSendedNotificationCount(); //TODO limit should set based on pricing when user is logged in!
-        this.checkIfMaxSendedNotificationCountIsReached();
-        if (this.limitReached()) {
-          this.toastService.showToast(
-            'Max amount of notifications reached this month',
-            ToastType.Warning
-          );
-        }
+        this.retry.set(false);
       })
     ).subscribe(() => {
-      this.myForm.reset({
-        subject: '',
-        content: '',
-        mail: this.localStorageService.getUserMail() ?? '',
-        dateTime: this.nextDay
-      });
-      this.retry.set(false);
+      this.resetForm();
+      this.localStorageService.setUserMail(notification.mail);
+      this.localStorageService.increaseSendedNotificationCount();
+      if (this.checkIfMaxSendedNotificationCountIsReached()) {
+        this.toastService.showToast(
+          'Max amount of notifications reached this month',
+          ToastType.Warning,
+          10000
+        );
+      }
     });
   }
 
-  private checkIfMaxSendedNotificationCountIsReached(): void {
-    const count = this.localStorageService.getSendedNotificationCount();
-    this.limitReached.set(count >= this.freeNotificationsLimit());
+  private checkIfMaxSendedNotificationCountIsReached(): boolean {
+    const mail = this.localStorageService.getUserMail() ?? '';
+    const count = this.localStorageService.getSendedNotificationCount(mail);
+    const limitReached = count >= this.freeNotificationsLimit();
+    this.limitReached.set(limitReached);
+    return limitReached;
   }
 
-  private animatePlaceholder(): void {
-    let i = 0;
-    let text = '';
-    const typingSpeed = 100; // ms pro Buchstabe
+  private updatePlaceholder(text: string): void {
+    this.typedPlaceholder = text;
+  }
 
-    const nextAction = () => {
-      if (i >= this.actions.length){
-        this.typedPlaceholder = text;
-        return
-      };
-      const action = this.actions[i];
-
-      switch (action.type) {
-        case TypewriterActionType.PAUSE:
-          if (action.duration <= 500 || i === 0) {
-            setTimeout(() => {
-              i++;
-              nextAction();
-            }, action.duration);
-          } else {
-            let dots = 0;
-            const maxDots = 3;
-            const dotInterval = 400;
-            let elapsed = 0;
-            this.typedPlaceholder = text + '<span class="typewriter-cursor"> ...</span>';
-            const interval = setInterval(() => {
-              dots = (dots + 1) % (maxDots + 1);
-              const dotsStr = '.'.repeat(dots);
-              this.typedPlaceholder = text + `<span class="typewriter-cursor">${dotsStr}</span>`;
-              elapsed += dotInterval;
-              if (elapsed >= action.duration) {
-                clearInterval(interval);
-                this.typedPlaceholder = text;
-                i++;
-                nextAction();
-              }
-            }, dotInterval);
-          }
-          break;
-        case TypewriterActionType.TYPE:
-          let j = 0;
-          const typeInterval = setInterval(() => {
-            if (j < action.text.length) {
-              text += action.text[j];
-              this.typedPlaceholder = text + this.cursorHtml;
-              j++;
-            } else {
-              clearInterval(typeInterval);
-              i++;
-              nextAction();
-            }
-          }, typingSpeed);
-          break;
-        case TypewriterActionType.DELETE:
-          let k = 0;
-          const deleteInterval = setInterval(() => {
-            if (k < action.count && text.length > 0) {
-              text = text.slice(0, -1);
-              this.typedPlaceholder = text + this.cursorHtml;
-              k++;
-            } else {
-              clearInterval(deleteInterval);
-              i++;
-              nextAction();
-            }
-          }, typingSpeed);
-          break;
-        case TypewriterActionType.LINEBREAK:
-          text += TypewriterActionType.LINEBREAK;
-          this.typedPlaceholder = text;
-          i++;
-          nextAction();
-          break;
-      }
-    };
-    nextAction();
+  private resetForm(): void {
+    this.myForm.reset({
+      subject: '',
+      content: '',
+      mail: this.localStorageService.getUserMail() ?? '',
+      dateTime: this.nextDay
+    });
   }
 }

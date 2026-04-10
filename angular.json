@@ -35,6 +35,7 @@
           },
           "configurations": {
             "production": {
+              "extractLicenses": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -55,22 +56,41 @@
                 }
               ]
             },
+            "cloud": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.cloud.ts"
+                }
+              ]
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
             }
           },
-          "defaultConfiguration": "production"
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "headers": {
+              "Content-Security-Policy": "default-src 'self'; script-src 'self' https://storage.ko-fi.com 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' http://localhost:8081 http://localhost:7072 https://hasura.orangemeadow-efd57554.germanywestcentral.azurecontainerapps.io https://fa-rememberme-backend-cchucab0bsdpepb5.germanywestcentral-01.azurewebsites.net; frame-src https://ko-fi.com; font-src 'self' data:; object-src 'none'"
+            }
+          },
           "configurations": {
             "production": {
               "buildTarget": "remember-me:build:production"
             },
             "development": {
               "buildTarget": "remember-me:build:development"
+            },
+            "cloud": {
+              "buildTarget": "remember-me:build:cloud"
             }
           },
           "defaultConfiguration": "development"

@@ -3,11 +3,13 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
     "outDir": "./out-tsc/spec",
     "types": [
       "jasmine"
     ]
   },
+  "files": [],
   "include": [
     "src/**/*.ts"
   ]

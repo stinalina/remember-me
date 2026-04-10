@@ -1,36 +1,45 @@
 import { HttpClient } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
-import { GetUserByMail_DevGQL, GetUserByMail_ProdGQL, InsertNotification_DevGQL, InsertNotification_DevMutationVariables, InsertNotification_ProdGQL, InsertNotification_ProdMutationVariables, InsertUser_DevGQL, InsertUser_ProdGQL } from "@hasura/generated";
+import { GetUserByMailGQL, InsertNotificationGQL, InsertNotificationMutationVariables, InsertUserGQL } from "@hasura/generated";
 import { INotification, IUser } from "@shared/models";
 import { ToastService, ToastType } from "./toast.service";
 import { environment } from "@environments/environment";
-
-type UserRegistrationResponse = {
-  success: boolean;
-  callCount: number;
-}
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
   private readonly httpClient = inject(HttpClient);
   private readonly toastService = inject(ToastService);
   
-  private readonly insertUser_Dev = inject(InsertUser_DevGQL);
-  private readonly getUserByMail_Dev = inject(GetUserByMail_DevGQL);
-  private readonly insertNotification_Dev = inject(InsertNotification_DevGQL);
-
-  // Optional true prevents injection errors in case the production GQL services are not provided in the testing module
-  private readonly insertUser_Prod = inject(InsertUser_ProdGQL, { optional: true });
-  private readonly getUserByMail_Prod = inject(GetUserByMail_ProdGQL, { optional: true });
-  private readonly insertNotification_Prod = inject(InsertNotification_ProdGQL, { optional: true });
+  private readonly insertUserGQL = inject(InsertUserGQL);
+  private readonly getUserByMailGQL = inject(GetUserByMailGQL);
+  private readonly insertNotificationGQL = inject(InsertNotificationGQL);
 
   private readonly unkownUserName = 'Unknown';
   
   public getUserByMailOrCreateUserIfNotExists(mail: string): Observable<IUser> {
-    return environment.production
-      ? this.getUserByMailOrCreateUserIfNotExists_Prod(mail)
-      : this.getUserByMailOrCreateUserIfNotExists_Dev(mail);
+    return this.getUserByMailGQL.fetch({ variables: { mail } }).pipe(
+      switchMap((result) => {
+        const userExists = result.data?.User.length !== 0;
+        if (userExists) {
+          return of({
+            mail,
+            name: result.data?.User[0].Name ?? '',
+            userId: result.data?.User[0].Id,
+            newCreated: false
+          } satisfies IUser);
+        } else {
+          return this.insertUserGQL.mutate({ variables: { mail, name: this.unkownUserName } }).pipe(
+            map((res) => ({
+              mail,
+              name: res.data?.insert_User?.returning[0].Name ?? '',
+              userId: res.data?.insert_User?.returning[0].Id,
+              newCreated: true
+            } satisfies IUser)
+          ));
+        }
+      })
+    );
   }
 
   /**
@@ -39,24 +48,30 @@ export class NotificationService {
    * @returns a bollean indicating whether the operation was successful.
    */
   public createNotification(notification: INotification, user: IUser): Observable<boolean> {
-    return environment.production
-      ? this.createNotification_Prod(notification, user)
-      : this.createNotification_Dev(notification, user);
-  }
-
-  public storeUserAsInterestedParty(mail: string): Observable<number> {
-    const payload = {
-      Mail: mail,
-      Name: this.unkownUserName
+    const variables: InsertNotificationMutationVariables = {
+      objects: [
+        {
+          Content: notification.content,
+          DueDate: notification.dueDate,
+          UserId: user.userId,
+          Subject: notification.subject
+        }
+      ]
     };
-
-    const url = `${environment.BACKEND_URL}${environment.SEND_REGISTER_INTERESTED_PARTY_MAIL_URL}`;
-    return this.httpClient.post<UserRegistrationResponse>(url, payload).pipe(
-      tap({
-        next: (response) => console.log('Register interested party email sent successfully!', response),
-        error: (error) => console.error(`Error sending register interested party email: ${JSON.stringify(error)}`)
+    return this.insertNotificationGQL.mutate({variables}).pipe(
+      map(() => {
+        if (user.newCreated === true) {
+          this.sendWelcomeMail(user);
+        }
+        this.toastService.showToast('Notification created successfully!', ToastType.Success);
+        return true;
       }),
-      map((response: UserRegistrationResponse) => response.callCount));
+      catchError((error) => {
+        console.error(`Error inserting notification: ${JSON.stringify(error)}`);
+        this.toastService.showToast('Oh nein! Das hat leider nicht geklappt!', ToastType.Error);
+        return of(false);
+      })
+    )
   }
 
   /**
@@ -72,117 +87,7 @@ export class NotificationService {
     const url = environment.BACKEND_URL + environment.SEND_WELCOME_MAIL_URL;
     this.httpClient.post(url, payload)
     .subscribe({
-      next: (response) => console.log('Welcome email sent successfully!', response),
       error: (error) => console.error(`Error sending welcome email: ${JSON.stringify(error)}`)
     });
-  }
-
-  private getUserByMailOrCreateUserIfNotExists_Dev(mail: string): Observable<IUser> {
-    return this.getUserByMail_Dev.fetch({ variables: { mail } }).pipe(
-      switchMap((result) => {
-        const userExists = result.data?.dev_User.length !== 0;
-        if (userExists) {
-          return of({
-            mail,
-            name: result.data?.dev_User[0].Name ?? '',
-            userId: result.data?.dev_User[0].Id,
-            newCreated: false
-          } satisfies IUser);
-        } else {
-          return this.insertUser_Dev.mutate({ variables: { mail, name: this.unkownUserName } }).pipe(
-            tap((res) => console.log(`Created new user with id: ${res.data?.insert_dev_User?.returning[0].Id}`)),
-            map((res) => ({
-              mail,
-              name: res.data?.insert_dev_User?.returning[0].Name ?? '',
-              userId: res.data?.insert_dev_User?.returning[0].Id,
-              newCreated: true
-            } satisfies IUser)
-          ));
-        }
-      })
-    );
-  }
-
-  private getUserByMailOrCreateUserIfNotExists_Prod(mail: string): Observable<IUser> {
-    return this.getUserByMail_Prod!.fetch({ variables: { mail } }).pipe(
-      switchMap((result) => {
-        const userExists = result.data?.prod_User.length !== 0;
-        if (userExists) {
-          return of({
-            mail,
-            name: result.data?.prod_User[0].Name ?? '',
-            userId: result.data?.prod_User[0].Id,
-            newCreated: false
-          } satisfies IUser);
-        } else {
-          return this.insertUser_Prod!.mutate({ variables: { mail, name: this.unkownUserName } }).pipe(
-            tap((res) => console.log(`Created new user with id: ${res.data?.insert_prod_User?.returning[0].Id}`)),
-            map((res) => ({
-              mail,
-              name: res.data?.insert_prod_User?.returning[0].Name ?? '',
-              userId: res.data?.insert_prod_User?.returning[0].Id,
-              newCreated: true
-            } satisfies IUser)
-          ));
-        }
-      })
-    );
-  }
-
-  private createNotification_Dev(notification: INotification, user: IUser): Observable<boolean> {
-      const variables: InsertNotification_DevMutationVariables = {
-      objects: [
-        {
-          Content: notification.content,
-          DueDate: notification.dueDate,
-          UserId: user.userId,
-          Subject: notification.subject
-        }
-      ]
-    };
-    return this.insertNotification_Dev.mutate({variables}).pipe(
-      tap((result) => console.log(`Inserted notification: ${JSON.stringify(result)}`)),
-      map(() => {
-        if (user.newCreated === true) {
-          this.sendWelcomeMail(user);
-        }
-        this.toastService.showToast('Notification created successfully!', ToastType.Success);
-        return true;
-      }),
-      catchError((error) => {
-        console.error(`Error inserting notification: ${JSON.stringify(error)}`);
-        this.toastService.showToast('Oh nein! Das hat leider nicht geklappt!', ToastType.Error);
-        return of(false);
-      })
-    )
-  }
-
-  private createNotification_Prod(notification: INotification, user: IUser): Observable<boolean> {
-    const variables: InsertNotification_ProdMutationVariables = {
-      objects: [
-        {
-          Content: notification.content,
-          DueDate: notification.dueDate,
-          UserId: user.userId,
-          Subject: notification.subject
-        }
-      ]
-    };
-
-    return this.insertNotification_Prod!.mutate({variables}).pipe(
-      tap((result) => console.log(`Inserted notification: ${JSON.stringify(result)}`)),
-      map(() => {
-        if (user.newCreated === true) {
-          this.sendWelcomeMail(user);
-        }
-        this.toastService.showToast('Notification created successfully!', ToastType.Success);
-        return true;
-      }),
-      catchError((error) => {
-        console.error(`Error inserting notification: ${JSON.stringify(error)}`);
-        this.toastService.showToast('Oh nein! Das hat leider nicht geklappt!', ToastType.Error);
-        return of(false);
-      })
-    )
   }
 }

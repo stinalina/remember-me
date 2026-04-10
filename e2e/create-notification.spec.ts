@@ -32,7 +32,7 @@ test.describe('CreateNotificationComponent', () => {
   });
 
   test('should disable button when component loads without input', async ({ page }) => {
-    const submitButton = page.getByRole('button', { name: /Create Notification|Sending/ });
+    const submitButton = page.getByRole('button', { name: /Notiz erstellen|Senden/ });
     const buttonClass = await submitButton.getAttribute('class');
     
     // Button should be disabled initially (no content, no email)
@@ -41,7 +41,7 @@ test.describe('CreateNotificationComponent', () => {
 
   test('should enable button after filling all required fields', async ({ page }) => {
     const mailInput = page.getByRole('textbox', { name: 'Sende Erinnerung an:' });
-    const submitButton = page.getByRole('button', { name: /Create Notification|Sending/ });
+    const submitButton = page.getByRole('button', { name: /Notiz erstellen|Senden/ });
     
     // Fill email
     await mailInput.fill('test@example.com');
@@ -62,7 +62,7 @@ test.describe('CreateNotificationComponent', () => {
   test('should disable button when mail is deleted after being filled', async ({ page }) => {
     const mailInput = page.getByRole('textbox', { name: 'Sende Erinnerung an:' });
     const editor = page.locator('.ProseMirror');
-    const submitButton = page.getByRole('button', { name: /Create Notification|Sending/ });
+    const submitButton = page.getByRole('button', { name: /Notiz erstellen|Senden/ });
     
     // Fill all fields
     await mailInput.fill('test@example.com');
@@ -82,7 +82,7 @@ test.describe('CreateNotificationComponent', () => {
   test('should disable button when content is deleted after being filled', async ({ page }) => {
     const mailInput = page.getByRole('textbox', { name: 'Sende Erinnerung an:' });
     const editor = page.locator('.ProseMirror');
-    const submitButton = page.getByRole('button', { name: /Create Notification|Sending/ });
+    const submitButton = page.getByRole('button', { name: /Notiz erstellen|Senden/ });
     
     // Fill all fields
     await mailInput.fill('test@example.com');
@@ -132,32 +132,11 @@ test.describe('CreateNotificationComponent', () => {
     expect(mailValue).toEqual(testEmail);
   });
 
-  test('should show readonly message after 3 notifications and disable editor', async ({ page }) => {
-    // Set notification count to 3 (limit) in localStorage after page loads
-    await page.evaluate(() => {
-      localStorage.setItem('sended_notifications_count', '3_' + new Date().getMonth());
-    });
-    
-    // Reload page
-    await page.reload();
-    await page.waitForTimeout(1500); // Wait for placeholder animation
-    
-    // Check that placeholder with limit message is shown
-    const placeholder = page.locator('.typewriter-placeholder');
-    await expect(placeholder).toBeVisible();
-    const placeholderText = await placeholder.textContent();
-    expect(placeholderText?.toLowerCase()).toContain('maxim|');
-    
-    // Check that submit button is disabled
-    const submitButton = page.getByRole('button', { name: /Create Notification|Sending/ });
-    const buttonClass = await submitButton.getAttribute('class');
-    expect(buttonClass).toContain('btn-disabled');
-  });
-
+  // Note: This needs hasura running in background
   test('should successfully create a notification with valid data', async ({ page }) => {
     const mailInput = page.getByRole('textbox', { name: 'Sende Erinnerung an:' });
     const editor = page.locator('.ProseMirror');
-    const submitButton = page.getByRole('button', { name: 'Create Notification' });
+    const submitButton = page.getByRole('button', { name: 'Notiz erstellen' });
     
     // Fill all fields with valid data
     const testEmail = `test-${Date.now()}@example.com`;
@@ -169,9 +148,9 @@ test.describe('CreateNotificationComponent', () => {
     // Click submit button
     await submitButton.click();
     
-    // Wait for button to show "Sending..." state
-    await expect(page.getByRole('button', { name: /Sending/ })).toBeVisible({ timeout: 3000 }).catch(() => {
-      // If it doesn't show "Sending", that's okay - it might be quick
+    // Wait for button to show "Senden..." state
+    await expect(page.getByRole('button', { name: /Senden/ })).toBeVisible({ timeout: 3000 }).catch(() => {
+      // If it doesn't show "Senden", that's okay - it might be quick
     });
     
     // Wait for submission to complete (button should return to normal or form resets)
