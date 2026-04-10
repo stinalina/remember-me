@@ -7,10 +7,10 @@ test.describe('FreeNotificationComponent', () => {
     await page.goto('/free-notification');
     await page.waitForLoadState('networkidle');
 
-    // Set notification count to 3 (limit) in localStorage after page loads
+    // Set notification count to 5 (limit) in localStorage after page loads
     await page.evaluate((testMail) => {
       localStorage.setItem('user_mail', testMail);
-      localStorage.setItem(`sended_notifications_count_${testMail}`, '3_' + new Date().getMonth());
+      localStorage.setItem(`sended_notifications_count_${testMail}`, '5_' + new Date().getMonth());
     }, testMail);
   });
 

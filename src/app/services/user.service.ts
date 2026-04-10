@@ -4,5 +4,5 @@ import { IUser } from "@shared/models";
 @Injectable({ providedIn: 'root' })
 export class UserService {
   public readonly currUser = signal<IUser | null>(null);
-  public readonly freeNotificationsLimit = signal<number>(3);
+  public readonly freeNotificationsLimit = signal<number>(5);
 }

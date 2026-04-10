@@ -33,7 +33,7 @@ export class LocalStorageService {
    * Count will be reseted when new month starts
    * @param limit - default is 3; count won't increase when limit is reached
    */
-  public increaseSendedNotificationCount(limit: number = 3): void {
+  public increaseSendedNotificationCount(limit: number = 5): void {
     const user = this.getUserMail();
     if (!user) {
       console.error('User mail is not set in local storage. Cannot increase sended notification count.');
