@@ -36,9 +36,6 @@
           "configurations": {
             "production": {
               "extractLicenses": true,
-              "security": {
-                "autoCsp": true
-              },
               "budgets": [
                 {
                   "type": "initial",

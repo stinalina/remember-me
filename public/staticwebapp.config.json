@@ -4,6 +4,6 @@
     "exclude": ["/assets/*", "/*.{jpeg,jpg,gif,png,gif,svg,webp}"]
   },
   "globalHeaders": {
-    "Content-Security-Policy": "default-src 'self'; script-src 'self' https://storage.ko-fi.com 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://hasura.orangemeadow-efd57554.germanywestcentral.azurecontainerapps.io https://fa-rememberme-backend-cchucab0bsdpepb5.germanywestcentral-01.azurewebsites.net; frame-src https://ko-fi.com; font-src 'self' data:; object-src 'none'"
+    "Content-Security-Policy": "default-src 'self'; script-src 'self' https://storage.ko-fi.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://storage.ko-fi.com https://cdn.ko-fi.com https://fonts.googleapis.com; img-src 'self' data: https:; connect-src 'self' https://hasura.orangemeadow-efd57554.germanywestcentral.azurecontainerapps.io https://fa-rememberme-backend-cchucab0bsdpepb5.germanywestcentral-01.azurewebsites.net https://storage.ko-fi.com https://cdn.ko-fi.com; frame-src https://ko-fi.com https://storage.ko-fi.com; font-src 'self' data: https://fonts.gstatic.com; object-src 'none'"
   }
 }
