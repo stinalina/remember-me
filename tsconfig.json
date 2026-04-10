@@ -4,6 +4,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": ".",
+    "esModuleInterop": true,
     "strict": true,
     "sourceMap": true,
     "noImplicitOverride": true,
@@ -17,8 +18,7 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "esnext",
-    "lib": ["ES2020", "DOM"],
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "paths": {
       "@app/*": [
         "./src/app/*"

@@ -1,6 +1,6 @@
 {
   "name": "remember-me",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "start": "ng serve",
     "build": "ng build",
@@ -25,14 +25,14 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/common": "^20.3.18",
-    "@angular/compiler": "^20.3.18",
-    "@angular/core": "^20.3.18",
-    "@angular/forms": "^20.3.18",
-    "@angular/platform-browser": "^20.3.18",
-    "@angular/router": "^20.3.18",
+    "@angular/common": "^21.2.8",
+    "@angular/compiler": "^21.2.8",
+    "@angular/core": "^21.2.8",
+    "@angular/forms": "^21.2.8",
+    "@angular/platform-browser": "^21.2.8",
+    "@angular/router": "^21.2.8",
     "@apollo/client": "^4.0.7",
-    "apollo-angular": "^12.1.0",
+    "apollo-angular": "^13.0.0",
     "graphql": "^16.11.0",
     "ngx-editor": "^19.0.0-beta.1",
     "postcss": "^8.5.6",
@@ -41,10 +41,9 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^20.3.18",
-    "@angular/build": "^20.3.18",
-    "@angular/cli": "^20.3.18",
-    "@angular/compiler-cli": "^20.3.18",
+    "@angular/build": "^21.2.7",
+    "@angular/cli": "^21.2.7",
+    "@angular/compiler-cli": "^21.2.8",
     "@graphql-codegen/cli": "^6.0.1",
     "@graphql-codegen/typescript": "^5.0.2",
     "@graphql-codegen/typescript-apollo-angular": "^4.0.1",
@@ -62,6 +61,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "postcss": "^8.5.3",
     "tailwindcss": "^4.1.14",
     "typescript": "~5.9.2"
   }
