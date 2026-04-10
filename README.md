@@ -1,6 +1,6 @@
 # RememberMe – Webclient
 
-Eine Angular-Web-App, mit der Nutzer Erinnerungsbenachrichtigungen erstellen und verwalten können (sobald der Anmeldeberreich umgesetzt wurde).
+Eine Angular-Web-App, mit der Nutzer Erinnerungsbenachrichtigungen erstellen und verwalten können (sobald der Anmeldebereich umgesetzt wurde).
 
 **Live:** [www.reme-notify.de](https://www.reme-notify.de)
 ---
