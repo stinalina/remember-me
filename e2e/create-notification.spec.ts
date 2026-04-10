@@ -132,7 +132,7 @@ test.describe('CreateNotificationComponent', () => {
     expect(mailValue).toEqual(testEmail);
   });
 
-  // Note: This needed hasura running in background
+  // Note: This needs hasura running in background
   test('should successfully create a notification with valid data', async ({ page }) => {
     const mailInput = page.getByRole('textbox', { name: 'Sende Erinnerung an:' });
     const editor = page.locator('.ProseMirror');
