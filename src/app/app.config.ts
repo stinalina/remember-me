@@ -14,10 +14,7 @@ export const appConfig: ApplicationConfig = {
     provideApollo(() => {
       const httpLink = inject(HttpLink);
       return {
-        link: httpLink.create({ 
-          uri: environment.HASURA_URL,
-          headers: new HttpHeaders({ 'x-hasura-admin-secret': environment.HASURA_ADMIN_SECRET } // remove for prod, just for development
-          )}), 
+        link: httpLink.create({ uri: environment.HASURA_URL }), 
         cache: new InMemoryCache()
       };
     }),
