@@ -1,7 +1,8 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
+import { AuthenticationService } from '@app/services/authentication.service';
 import { NotificationService } from '@app/services/notification.service';
 import { ToastService, ToastType } from '@app/services/toast.service';
 import { CheckboxComponent } from '@app/shared/input/checkbox/checkbox.component';
@@ -23,4 +24,6 @@ import { catchError, EMPTY } from 'rxjs';
 export class LoginComponent {
   public readonly RouterTokens = ROUTER_TOKENS;
   public readonly MVP_Mode = environment.MVP_Mode;
+  
+  private readonly authenticationService = inject(AuthenticationService);
 }

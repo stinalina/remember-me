@@ -1,15 +1,19 @@
 import { ApplicationConfig, inject, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 
-import { routes } from './app.routes';
-import { HttpHeaders, provideHttpClient } from '@angular/common/http';
-import { provideApollo } from 'apollo-angular';
+import { provideHttpClient } from '@angular/common/http';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getAuth, provideAuth } from '@angular/fire/auth';
 import { InMemoryCache } from '@apollo/client';
-import { HttpLink } from 'apollo-angular/http';
 import { environment } from '@environments/environment';
+import { provideApollo } from 'apollo-angular';
+import { HttpLink } from 'apollo-angular/http';
+import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideAuth(() => getAuth()),
     provideHttpClient(),
     provideApollo(() => {
       const httpLink = inject(HttpLink);
