@@ -14,5 +14,4 @@ import { CreateNotificationComponent } from '@shared/create-notification/create-
 })
 export class FreeNotificationComponent {
   public readonly RouterTokens = ROUTER_TOKENS;
-  public readonly isMVPMode = environment.MVP_Mode;
 }

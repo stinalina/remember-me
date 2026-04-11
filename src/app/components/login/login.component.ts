@@ -23,7 +23,6 @@ import { catchError, EMPTY } from 'rxjs';
 })
 export class LoginComponent {
   public readonly RouterTokens = ROUTER_TOKENS;
-  public readonly MVP_Mode = environment.MVP_Mode;
   
   private readonly authenticationService = inject(AuthenticationService);
 }
