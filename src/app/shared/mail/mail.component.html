@@ -2,7 +2,7 @@
 <div class="flex flex-col self-center mx-10 
   text-sm md:text-sm xl:text-base">
   @if (inputLabel) {
-    <label for="create-notifcation-mail" class="text-left md:ml-0.5 xl:ml-1 mb-1">
+    <label for="{{preId()}}-reme-mail-label" class="text-left md:ml-0.5 xl:ml-1 mb-1">
       {{ inputLabel }}
     </label>
   }
@@ -19,7 +19,7 @@
         <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
       </g>
     </svg>
-    <input id="reme-mail-input"
+    <input id="{{preId()}}-reme-mail-input"
       [formControl]="mailControl" class="pl-1"
       type="email" placeholder="mail@site.com" />
   </label>

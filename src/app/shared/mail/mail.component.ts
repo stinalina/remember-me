@@ -1,4 +1,4 @@
-import { Component, inject, input } from '@angular/core';
+import { Component, inject, input, model } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LocalStorageService } from '@app/services/local-storage.service';
 
@@ -8,6 +8,7 @@ import { LocalStorageService } from '@app/services/local-storage.service';
   imports: [ReactiveFormsModule]
 })
 export class MailComponent {
+  public readonly preId = input.required<string>();
   public readonly inputLabel = input<string>();
   private readonly localStorageService = inject(LocalStorageService);
   

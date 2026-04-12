@@ -1,5 +1,7 @@
 <div class="flex gap-1 content-center justify-center">
-  <input id="{{this.preId()}}-checkbox" type="checkbox" checked="checked" class="checkbox" />
+  <input id="{{this.preId()}}-checkbox" type="checkbox"
+    [(ngModel)]="this.value" 
+    class="checkbox" />
   <label class="label">
     <ng-content></ng-content>
   </label>

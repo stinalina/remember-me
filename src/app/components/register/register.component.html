@@ -3,15 +3,20 @@
     <div class="max-w-md">
       <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">Registrieren & <br/> Loslegen!</h1>
       <div class="md:py-4 xl:py-6 py-3 flex flex-col gap-3">
-        <reme-mail></reme-mail>
-        <reme-password></reme-password>
-        <reme-password></reme-password>
-        <reme-checkbox preId="register-agb-dsgvo">
+        <reme-mail preId="register-mail" #mail></reme-mail>
+        <reme-password preId="register-pw" #password></reme-password>
+        <reme-password preId="register-repeat-pw" #repeatPassword></reme-password>
+        <reme-checkbox preId="register-agb-dsgvo" [(value)]="this.acceptDsgvoFlag">
           Akzeptiere <a class="reme-link" onclick="dsgvo.showModal()">DSGVO</a>
         </reme-checkbox>
-        <button class="btn mx-10">
+        <button class="btn mx-10"
+          [disabled]="mail.mailControl.invalid || password.passwordControl.invalid || repeatPassword.passwordControl.invalid || !acceptDsgvoFlag"
+          (click)="register(mail.mailControl.value!, password.passwordControl.value!, repeatPassword.passwordControl.value!)">
           Loslegen!
         </button>
+        @if (errorMessage) {
+          <div class="reme-validator-hint">{{ errorMessage }}</div>
+        }
       </div>
     </div>
   </div>

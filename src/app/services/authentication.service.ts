@@ -1,21 +1,29 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
+import { Auth, browserLocalPersistence, browserSessionPersistence, createUserWithEmailAndPassword, setPersistence, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
+import { LocalStorageService } from '@app/services/local-storage.service';
+import { ToastService, ToastType } from '@app/services/toast.service';
 import { User, UserCredential } from 'firebase/auth';
-import { catchError, EMPTY, from, map, Observable, of } from "rxjs";
+import { catchError, EMPTY, from, map, Observable, of, switchMap, tap } from "rxjs";
 
 @Injectable({providedIn: 'root'})
-export class AuthenticationService 
-{
+export class AuthenticationService {
   private readonly fireAuth: Auth = inject(Auth);
+  private readonly toastService = inject(ToastService);
+  private readonly localStorage = inject(LocalStorageService);
 
-  get currentUser(): User | undefined {
-    return this.fireAuth.currentUser ?? undefined;
+  public readonly currentUser = signal<User | null>(this.fireAuth.currentUser);
+  public readonly isAuthenticated = signal<boolean>(false);
+
+  constructor() {
+    this.fireAuth.onAuthStateChanged(user => {
+      this.isAuthenticated.set(user !== null);
+      this.currentUser.set(user);
+    });
   }
-
-  public isAuthenticated = signal<boolean>(false);
 
   public signUp(email: string, password: string): Observable<UserCredential> {
     return from(createUserWithEmailAndPassword(this.fireAuth, email, password)).pipe(
+      tap(() => this.localStorage.setUserMail(email)),
       catchError(error => {
         this.handleError(error);
         return EMPTY; 
@@ -23,26 +31,21 @@ export class AuthenticationService
     );
   }
 
-  public signIn(email: string, password: string): Observable<boolean> {
-    let result = {success: true, message: ''};
-    return from(signInWithEmailAndPassword(this.fireAuth, email, password)).pipe(
-      map(() => {
-        this.isAuthenticated.set(true);
-        console.log(JSON.stringify(this.currentUser));
-        return true;
-      }),
-      catchError(error => {
-        result.success = false;
-        result.message = this.handleError(error); //TODO just send toast msg
-        return of(false);
-      })
-    );
+  public signIn(email: string, password: string, rememberMe: boolean): Observable<void> {
+    const persistence = rememberMe ? browserLocalPersistence : browserSessionPersistence;
+    return from(setPersistence(this.fireAuth, persistence)).pipe(
+    switchMap(() => signInWithEmailAndPassword(this.fireAuth, email, password)),
+    tap(() => this.localStorage.setUserMail(email)),
+    catchError(error => {
+      this.handleError(error);
+      return EMPTY; 
+    }),
+    map(() => void 0)
+  );
   }
 
   public signOut(): Observable<void> {
-    return from(signOut(this.fireAuth)).pipe(
-      map(() => this.isAuthenticated.set(false))
-    );
+    return from(signOut(this.fireAuth));
   }
 
   public getIdToken(): Observable<string | undefined> {
@@ -54,12 +57,7 @@ export class AuthenticationService
     }
   }
 
-  //  logout(){
-  //   this.authenticationService.signOut().subscribe(() =>{
-  //     this.#router.navigate([ROUTER_TOKENS.HOME]);
-  //   });
-
-  private handleError(error: any): string {
+  private handleError(error: any): void {
     let errorMessage = '';
     switch (error.code) {
       case 'auth/invalid-credential':
@@ -77,11 +75,11 @@ export class AuthenticationService
       case 'auth/email-already-in-use':
         errorMessage = 'Die E-Mail-Adresse wird bereits verwendet.';
         break;
-      // Weitere Fehlercodes können hier behandelt werden
       default:
         errorMessage = 'Ein unbekannter Fehler ist aufgetreten. Bitte versuche es später erneut.';
     }
+
     console.error('Authentication error:', error);
-    return errorMessage;
+    this.toastService.showToast(errorMessage, ToastType.Error);
   }
 }
