@@ -1,4 +1,4 @@
-import { Component, effect, input, model } from '@angular/core';
+import { Component, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -11,8 +11,4 @@ import { FormsModule } from '@angular/forms';
 export class CheckboxComponent {
   public readonly preId = input.required<string>();
   public readonly value = model.required<boolean>();
-
-  constructor() {
-    effect(() => console.log(`Checkbox ${this.preId()} value changed: ${this.value()}`));
-  }
 }

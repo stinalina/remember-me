@@ -7,8 +7,8 @@ export const environment = {
   CONTACT_MAIL: 'stina.boehmig@gmx.de',
 
   firebaseConfig: {
-    apiKey: "AIzaSyBIdSguHqftt5mM3q9o7ZF7SRG4V9rwLHE",
-    authDomain: "rememberme-d356c.firebaseapp.com",
+    apiKey: "FIREBASE_API_KEY",
+    authDomain: "FIREBASE_AUTH_DOMAIN",
     projectId: "rememberme-d356c",
     storageBucket: "rememberme-d356c.firebasestorage.app",
     messagingSenderId: "417866784133",
