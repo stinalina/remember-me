@@ -5,7 +5,6 @@ export const environment = {
   BACKEND_URL: 'https://fa-rememberme-backend-cchucab0bsdpepb5.germanywestcentral-01.azurewebsites.net',
   SEND_WELCOME_MAIL_URL: '/api/sendWelcomeMail',
   CONTACT_MAIL: 'stina.boehmig@gmx.de',
-  MVP_Mode: true,
 
   firebaseConfig: {
     apiKey: "FIREBASE_API_KEY",

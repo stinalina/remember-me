@@ -35,7 +35,6 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
 
   private readonly freeNotificationsLimit = inject(UserService).freeNotificationsLimit;
   private readonly limitReached = signal<boolean>(false);
-  public readonly MVP_Mode = environment.MVP_Mode;
 
   public readonly editor: Editor = new Editor();
   public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);

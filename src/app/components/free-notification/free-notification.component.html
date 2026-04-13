@@ -5,11 +5,7 @@
       <div class="md:py-3 xl:py-6 py-3">
         <reme-create-notification></reme-create-notification>
       </div>
-      @if (this.isMVPMode) {
-         <span>👉 Notiz überarbeiten? <a [routerLink]="['/', RouterTokens.LOGIN]" class="reme-link">Anmeldung bald verfügbar!</a></span>
-      } @else {
         <span>👉 Notiz überarbeiten? <a [routerLink]="['/', RouterTokens.LOGIN]" class="reme-link">Melde dich noch heute an!</a></span>
-      }
     </div>
   </div>
 </section>

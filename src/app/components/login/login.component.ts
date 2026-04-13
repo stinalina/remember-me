@@ -1,15 +1,12 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
 import { AuthenticationService } from '@app/services/authentication.service';
-import { NotificationService } from '@app/services/notification.service';
 import { ToastService, ToastType } from '@app/services/toast.service';
 import { CheckboxComponent } from '@app/shared/input/checkbox/checkbox.component';
 import { MailComponent } from '@app/shared/mail/mail.component';
 import { PasswordComponent } from '@app/shared/password/password.component';
-import { environment } from '@environments/environment';
-import { catchError, EMPTY } from 'rxjs';
 
 @Component({
   selector: 'reme-login',
@@ -18,12 +15,31 @@ import { catchError, EMPTY } from 'rxjs';
     CheckboxComponent,
     MailComponent,
     PasswordComponent,
-    RouterLink
+    RouterLink,
   ],
 })
 export class LoginComponent {
   public readonly RouterTokens = ROUTER_TOKENS;
-  public readonly MVP_Mode = environment.MVP_Mode;
   
-  private readonly authenticationService = inject(AuthenticationService);
+  protected readonly authenticationService = inject(AuthenticationService);
+  private readonly toastService = inject(ToastService)
+  private readonly destroyRef = inject(DestroyRef);
+
+  protected errorMessage: string | null = null;
+  protected rememberMeFlag: boolean = true;
+
+  public login(mail: string, password: string, rememberMe: boolean): void {
+    this.errorMessage = null;
+
+    if (!mail || !password) {
+      this.toastService.showToast('Bitte geben Sie eine gültige E-Mail und ein Passwort ein.', ToastType.Warning);
+      return;
+    }
+
+    this.authenticationService.signIn(mail, password, rememberMe).pipe(
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe(
+      // redirect handled by auth guard or to personal space
+    );
+  }
 }

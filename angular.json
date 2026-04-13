@@ -79,7 +79,7 @@
           "builder": "@angular/build:dev-server",
           "options": {
             "headers": {
-              "Content-Security-Policy": "default-src 'self'; script-src 'self' https://storage.ko-fi.com 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' http://localhost:8081 http://localhost:7072 https://hasura.orangemeadow-efd57554.germanywestcentral.azurecontainerapps.io https://fa-rememberme-backend-cchucab0bsdpepb5.germanywestcentral-01.azurewebsites.net https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; frame-src https://ko-fi.com; font-src 'self' data:; object-src 'none'"
+              "Content-Security-Policy": "default-src 'self'; script-src 'self' https://storage.ko-fi.com 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://storage.ko-fi.com https://cdn.ko-fi.com; img-src 'self' data: https:; connect-src 'self' http://localhost:8081 http://localhost:7072 https://hasura.orangemeadow-efd57554.germanywestcentral.azurecontainerapps.io https://fa-rememberme-backend-cchucab0bsdpepb5.germanywestcentral-01.azurewebsites.net https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; frame-src https://ko-fi.com https://storage.ko-fi.com; font-src 'self' data: https://fonts.gstatic.com; object-src 'none'"
             }
           },
           "configurations": {
