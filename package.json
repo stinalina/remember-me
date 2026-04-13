@@ -9,7 +9,8 @@
     "codegen": "graphql-codegen --config codegen.ts",
     "e2e": "playwright test",
     "cloud": "ng serve --configuration cloud",
-    "prod": "ng serve --configuration production"
+    "prod": "ng serve --configuration production",
+    "lint": "ng lint"
   },
   "prettier": {
     "printWidth": 100,
@@ -45,6 +46,7 @@
     "@angular/build": "^21.2.7",
     "@angular/cli": "^21.2.7",
     "@angular/compiler-cli": "^21.2.8",
+    "@eslint/js": "^10.0.1",
     "@graphql-codegen/cli": "^6.0.1",
     "@graphql-codegen/typescript": "^5.0.2",
     "@graphql-codegen/typescript-apollo-angular": "^4.0.1",
@@ -54,8 +56,10 @@
     "@types/graphql": "^14.2.3",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^25.0.3",
+    "angular-eslint": "21.3.1",
     "baseline-browser-mapping": "^2.9.19",
     "daisyui": "^5.2.3",
+    "eslint": "^10.0.3",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
@@ -63,6 +67,7 @@
     "karma-jasmine": "~5.1.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.14",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "typescript-eslint": "8.56.1"
   }
 }
