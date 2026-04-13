@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
@@ -9,6 +9,7 @@ import { MailComponent } from '@app/shared/mail/mail.component';
 import { PasswordComponent } from '@app/shared/password/password.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'reme-login',
   templateUrl: 'login.component.html',
   imports: [
@@ -26,7 +27,7 @@ export class LoginComponent {
   private readonly destroyRef = inject(DestroyRef);
 
   protected errorMessage: string | null = null;
-  protected rememberMeFlag: boolean = true;
+  protected rememberMeFlag = true;
 
   public login(mail: string, password: string, rememberMe: boolean): void {
     this.errorMessage = null;

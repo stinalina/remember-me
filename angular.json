@@ -14,7 +14,7 @@
       },
       "root": "",
       "sourceRoot": "src",
-      "prefix": "app",
+      "prefix": "reme",
       "architect": {
         "build": {
           "builder": "@angular/build:application",

@@ -1,4 +1,4 @@
-import { Component, computed, OnDestroy, OnInit, signal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal } from "@angular/core";
 
 type Slogan = {
   title: string;
@@ -7,6 +7,7 @@ type Slogan = {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'reme-home',
   templateUrl: 'home-page.component.html',
   styles: [],

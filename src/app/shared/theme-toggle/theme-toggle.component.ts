@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 
 type Theme = 'caramellatte' | 'dark';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'reme-theme-toggle',
   imports: [ ],
   templateUrl: './theme-toggle.component.html'

@@ -19,7 +19,7 @@ module.exports = defineConfig([
         "error",
         {
           type: "attribute",
-          prefix: "app",
+          prefix: "reme",
           style: "camelCase",
         },
       ],
@@ -27,10 +27,11 @@ module.exports = defineConfig([
         "error",
         {
           type: "element",
-          prefix: "app",
+          prefix: "reme",
           style: "kebab-case",
         },
       ],
+      "@typescript-eslint/consistent-type-definitions": "off",
     },
   },
   {

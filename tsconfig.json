@@ -4,6 +4,8 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
+    "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "strict": true,
     "sourceMap": true,

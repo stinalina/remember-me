@@ -1,7 +1,43 @@
-<footer class="footer-pen-pencil">
-  <img
-    class="logo w-20 h-20 xl:w-[125px] xl:h-[125px]"
-    alt="Pen and Pencil"
-    src="assets/images/pen_pencil.svg"
-  />
+<footer class="absolute bottom-0">
+  <nav class="md:absolute md:flex flex-row md:items-end p-1 gap-3 md:left-2 md:bottom-1 text-sm md:w-auto md:px-0 xl:fixed xl:flex xl:flex-row xl:items-end xl:gap-3 xl:left-2 xl:bottom-1 xl:text-sm xl:w-auto xl:px-0">
+    <div>
+      <p>{{ this.env }}</p>
+      <p>Version: {{ this.version }}</p>
+    </div>
+    <div class="submenu flex flex-row gap-2">
+      <a [routerLink]="[RouterTokens.IMPRESSUM]">Impressum</a>
+      <a [routerLink]="[RouterTokens.DATENSCHUTZ]">Datenschutz</a>
+    </div>
+    <ng-content *ngTemplateOutlet="contact"></ng-content> 
+  </nav>
+  <div class="footer-pen-pencil hidden xl:block">
+    <img
+      class="logo w-20 h-20 xl:w-[125px] xl:h-[125px]"
+      alt="Pen and Pencil"
+      src="assets/images/pen_pencil.svg"
+    />
+  </div>
 </footer>
+
+<ng-template #contact>
+  <a href="mailto:{{this.contactMail}}" 
+    class="tooltip envelope-icon" 
+    data-tip="Feedback oder Fragen? Schreib mir gerne!">
+    <!-- Geschlossener Umschlag -->
+    <svg class="h-[1em] md:h-[1.25em] opacity-50 envelope-closed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+      </g>
+    </svg>
+    <!-- Geöffneter Umschlag -->
+    <svg class="h-[1em] md:h-[1.25em] opacity-50 envelope-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
+        <path d="M22 12v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8"></path>
+        <path d="m2 7 8.97 5.7a1.94 1.94 0 0 0 2.06 0L22 7"></path>
+        <path d="M2 7V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v2l-10 6.35L2 7Z"></path>
+      </g>
+    </svg>
+  </a>
+  <span class="md:hidden"> Feedback oder Fragen? Schreib mir gerne!</span>
+</ng-template>

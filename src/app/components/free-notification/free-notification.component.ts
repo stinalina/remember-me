@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
-import { environment } from '@environments/environment';
 import { CreateNotificationComponent } from '@shared/create-notification/create-notification.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'reme-free-notification',
   templateUrl: 'free-notification.component.html',
   imports: [
