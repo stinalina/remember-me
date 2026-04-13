@@ -1,8 +1,11 @@
 <div class="flex gap-1 content-center justify-center">
-  <input id="{{this.preId()}}-checkbox" type="checkbox"
+  @let id = this.preId() + '-checkbox';
+  <input [attr.data-testid]="this.preId() + '-checkbox'" 
+    [id]="id"
+    type="checkbox"
     [(ngModel)]="this.value" 
     class="checkbox" />
-  <label class="label">
+  <label class="label" [for]="id">
     <ng-content></ng-content>
   </label>
 </div>

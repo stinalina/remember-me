@@ -6,7 +6,7 @@
         <reme-mail preId="register-mail" #mail></reme-mail>
         <reme-password preId="register-pw" #password></reme-password>
         <reme-password preId="register-repeat-pw" #repeatPassword></reme-password>
-        <reme-checkbox preId="register-agb-dsgvo" [(value)]="this.acceptDsgvoFlag">
+        <reme-checkbox preId="register-dsgvo" [(value)]="this.acceptDsgvoFlag">
           Akzeptiere <a class="reme-link" onclick="dsgvo.showModal()">DSGVO</a>
         </reme-checkbox>
         <button class="btn mx-10"
