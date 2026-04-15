@@ -1,8 +1,9 @@
-import { Component, inject, input, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LocalStorageService } from '@app/services/local-storage.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'reme-mail',
   templateUrl: 'mail.component.html',
   imports: [ReactiveFormsModule]

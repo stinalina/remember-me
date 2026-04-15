@@ -3,7 +3,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": ".",
+    "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "strict": true,
     "sourceMap": true,
@@ -51,7 +51,6 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "typeCheckHostBindings": true,
-    "fullttemplateTypeCheck": true,
     "strictTemplates": true
   },
   "files": [],

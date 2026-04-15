@@ -1,17 +1,14 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { ROUTER_TOKENS } from '@app/app.routes';
-import { environment } from '@environments/environment';
+import { ChangeDetectionStrategy, Component, output } from '@angular/core';
 import { CreateNotificationComponent } from '@shared/create-notification/create-notification.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'reme-free-notification',
   templateUrl: 'free-notification.component.html',
   imports: [
     CreateNotificationComponent,
-    RouterLink
   ],
 })
 export class FreeNotificationComponent {
-  public readonly RouterTokens = ROUTER_TOKENS;
+  public readonly requestRegistration = output<void>();
 }

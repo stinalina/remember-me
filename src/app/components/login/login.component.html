@@ -12,7 +12,7 @@
           <reme-checkbox preId="login-remember-me" [(value)]="this.rememberMeFlag">
             Angemeldet bleiben
           </reme-checkbox>
-          <button class="btn mx-10"
+          <button class="btn w-full"
             [disabled]="mail.mailControl.invalid || pw.passwordControl.invalid"
             (click)="this.login(mail.mailControl.value!, pw.passwordControl.value!, this.rememberMeFlag)">
             Einloggen
@@ -21,7 +21,7 @@
             <div class="reme-validator-hint">{{ errorMessage }}</div>
           }
         </div>
-        <span>👉 Noch nicht dabei?  <a [routerLink]="['/', RouterTokens.REGISTER]" class="reme-link">Registriere dich</a> noch heute!</span>
+        <span>👉 Noch nicht dabei?  <button class="btn-ghost reme-link" (click)="requestRegistration.emit()">Werde Mitglied</button>!</span>
       </div>
     }
   </div>

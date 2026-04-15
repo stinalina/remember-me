@@ -1,13 +1,14 @@
-import { Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 import {NgTemplateOutlet} from '@angular/common';
 
 type PricingModel = {
-  title: string,
-  features: string[],
-  costPerMonth: number
+  title: string;
+  features: string[];
+  costPerMonth: number;
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'reme-pricing',
   templateUrl: 'pricing.component.html',
   styleUrl: 'pricing.component.scss',
@@ -16,7 +17,7 @@ type PricingModel = {
   ]  
 })
 export class PricingComponent {
-  public activeCardIndex: number = 1;
+  public activeCardIndex = 1;
   
   public readonly pricings: PricingModel[] = [
     {

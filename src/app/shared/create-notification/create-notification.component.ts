@@ -1,11 +1,10 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TypewriterActionType, TypewriterEffectService } from '@app/services/typewriter-effect.service';
 import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
 import { restrictFreeLimitValidator } from '@app/shared/validators/restrict-free-limit.validator';
-import { environment } from '@environments/environment';
 import { LocalStorageService } from '@services/local-storage.service';
 import { NotificationService } from '@services/notification.service';
 import { ToastService, ToastType } from '@services/toast.service';
@@ -17,6 +16,7 @@ import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'reme-create-notification',
   templateUrl: 'create-notification.component.html',
   styleUrl: 'create-notification.component.scss',

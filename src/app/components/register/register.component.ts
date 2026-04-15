@@ -1,9 +1,6 @@
-import { Component, DestroyRef, effect, inject, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
-import { ROUTER_TOKENS } from '@app/app.routes';
 import { AuthenticationService } from '@app/services/authentication.service';
-import { LocalStorageService } from '@app/services/local-storage.service';
 import { ToastService, ToastType } from '@app/services/toast.service';
 import { CheckboxComponent } from '@app/shared/input/checkbox/checkbox.component';
 import { MailComponent } from '@app/shared/mail/mail.component';
@@ -11,9 +8,9 @@ import { ModalComponent } from '@app/shared/modal/modal.component';
 import { PasswordComponent } from '@app/shared/password/password.component';
 import { TextFrameComponent } from '@app/shared/text-frame/text-frame.component';
 import * as dsgvo from '@assets/text/dsgvo.txt';
-import { catchError, EMPTY } from 'rxjs';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'reme-register',
   templateUrl: 'register.component.html',
   imports: [
@@ -28,12 +25,10 @@ export class RegisterComponent {
   private readonly authenticationService = inject(AuthenticationService);
   private readonly toastService = inject(ToastService)
   private readonly destroyRef = inject(DestroyRef);
-  private readonly router = inject(Router);
-  
   protected readonly DsgvoText = dsgvo.default;
   
   protected errorMessage: string | null = null;
-  protected acceptDsgvoFlag: boolean = false;
+  protected acceptDsgvoFlag = false;
 
   constructor() {
     effect(() => console.log(`Checkbox value changed: ${this.acceptDsgvoFlag}`));
@@ -59,8 +54,8 @@ export class RegisterComponent {
 
     this.authenticationService.signUp(mail, password).pipe(
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(() => { //Das ist wohl ein auto login by default... so navigate to personal space or home
-        this.router.navigate([ROUTER_TOKENS.LOGIN]);
+    ).subscribe(() => {
+        // TODO route to personal space or use routing guard
       }
     );
   }
