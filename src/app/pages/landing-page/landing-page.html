@@ -37,18 +37,15 @@
         >
         <button class="btn btn-sm xl:btn-lg"
           [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Home"
-          routerLink="/"
-          (click)="this.selectedTabComponent.set(SelectedTab.Home); scrollToOutlet()">
+          (click)="selectTab(SelectedTab.Home)">
           Home</button>
         <button class="btn btn-sm xl:btn-lg"
           [class.btn-soft]="this.selectedTabComponent() === SelectedTab.FreeNotification"
-          routerLink="/"
-          (click)="this.selectedTabComponent.set(SelectedTab.FreeNotification); scrollToOutlet()">
+          (click)="selectTab(SelectedTab.FreeNotification)">
           Ausprobieren</button>
         <button class="btn btn-sm xl:btn-lg"
           [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Login"
-          routerLink="/"
-          (click)="this.selectedTabComponent.set(SelectedTab.Login); scrollToOutlet()">
+          (click)="selectTab(SelectedTab.Login)">
           Dran bleiben</button>
       </div>
       @if (this.showThemeToggle) {

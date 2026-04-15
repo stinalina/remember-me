@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, ElementRef, input, linkedSignal, viewChild } from '@angular/core';
+import { Location } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, input, linkedSignal, viewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FreeNotificationComponent } from '@app/components/free-notification/free-notification.component';
 import { LoginComponent } from '@app/components/login/login.component';
@@ -49,6 +50,16 @@ export class LandingPageComponent {
       return SelectedTabComponentEnum.Home;
     },
   });
+
+  private readonly location = inject(Location);
+
+  selectTab(tab: SelectedTabComponentEnum) {
+    this.selectedTabComponent.set(tab);
+    if (tab !== SelectedTabComponentEnum.Impressum) {
+      this.location.go('/');
+    }
+    this.scrollToOutlet();
+  }
 
   scrollToOutlet() {
     setTimeout(() => {
