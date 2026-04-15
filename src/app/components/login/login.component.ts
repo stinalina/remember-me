@@ -1,7 +1,5 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
-import { ROUTER_TOKENS } from '@app/app.routes';
 import { AuthenticationService } from '@app/services/authentication.service';
 import { ToastService, ToastType } from '@app/services/toast.service';
 import { CheckboxComponent } from '@app/shared/input/checkbox/checkbox.component';
@@ -15,13 +13,12 @@ import { PasswordComponent } from '@app/shared/password/password.component';
   imports: [
     CheckboxComponent,
     MailComponent,
-    PasswordComponent,
-    RouterLink,
-  ],
+    PasswordComponent
+],
 })
 export class LoginComponent {
-  public readonly RouterTokens = ROUTER_TOKENS;
-  
+  public readonly requestRegistration = output<void>();
+
   protected readonly authenticationService = inject(AuthenticationService);
   private readonly toastService = inject(ToastService)
   private readonly destroyRef = inject(DestroyRef);

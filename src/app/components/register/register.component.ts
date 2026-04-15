@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
-import { ROUTER_TOKENS } from '@app/app.routes';
 import { AuthenticationService } from '@app/services/authentication.service';
 import { ToastService, ToastType } from '@app/services/toast.service';
 import { CheckboxComponent } from '@app/shared/input/checkbox/checkbox.component';
@@ -27,8 +25,6 @@ export class RegisterComponent {
   private readonly authenticationService = inject(AuthenticationService);
   private readonly toastService = inject(ToastService)
   private readonly destroyRef = inject(DestroyRef);
-  private readonly router = inject(Router);
-  
   protected readonly DsgvoText = dsgvo.default;
   
   protected errorMessage: string | null = null;
@@ -58,8 +54,8 @@ export class RegisterComponent {
 
     this.authenticationService.signUp(mail, password).pipe(
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(() => { //Das ist wohl ein auto login by default... so navigate to personal space or home
-        this.router.navigate([ROUTER_TOKENS.LOGIN]);
+    ).subscribe(() => {
+        // TODO route to personal space or use routing guard
       }
     );
   }

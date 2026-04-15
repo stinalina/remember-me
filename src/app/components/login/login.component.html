@@ -21,7 +21,7 @@
             <div class="reme-validator-hint">{{ errorMessage }}</div>
           }
         </div>
-        <span>👉 Noch nicht dabei?  <a [routerLink]="['/', RouterTokens.REGISTER]" class="reme-link">Registriere dich</a> noch heute!</span>
+        <span>👉 Noch nicht dabei?  <button class="btn-ghost reme-link" (click)="requestRegistration.emit()">Registriere dich</button> noch heute!</span>
       </div>
     }
   </div>

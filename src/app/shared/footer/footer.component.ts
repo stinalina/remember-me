@@ -1,8 +1,8 @@
+import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
 import { environment } from '@environments/environment';
-import { NgTemplateOutlet } from 'node_modules/@angular/common/types/_common_module-chunk';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

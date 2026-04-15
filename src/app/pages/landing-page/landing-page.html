@@ -35,18 +35,18 @@
         gap-2
         mt-2 xl:mt-3"
         >
-        <a role="button" class="btn btn-sm xl:btn-lg"
-          [routerLink]="[RouterTokens.HOME]" routerLinkActive="md:btn-soft" [routerLinkActiveOptions]="{ exact: true }"
-          (click)="scrollToOutlet()">
-          Home</a>
-        <a role="button" class="btn btn-sm xl:btn-lg"
-          [routerLink]="[RouterTokens.FREE_NOTIFICATION]" routerLinkActive="md:btn-soft" [routerLinkActiveOptions]="{ exact: true }"
-          (click)="scrollToOutlet()">
-          Ausprobieren</a>
-        <a role="button" class="btn btn-sm xl:btn-lg"
-          [routerLink]="[RouterTokens.LOGIN]" routerLinkActive="md:btn-soft" [routerLinkActiveOptions]="{ exact: true }"
-          (click)="scrollToOutlet()">
-          Dran bleiben</a>
+        <button class="btn btn-sm xl:btn-lg"
+          [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Home"
+          (click)="this.selectedTabComponent.set(SelectedTab.Home); scrollToOutlet()">
+          Home</button>
+        <button class="btn btn-sm xl:btn-lg"
+          [class.btn-soft]="this.selectedTabComponent() === SelectedTab.FreeNotification"
+          (click)="this.selectedTabComponent.set(SelectedTab.FreeNotification); scrollToOutlet()">
+          Ausprobieren</button>
+        <button class="btn btn-sm xl:btn-lg"
+          [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Login"
+          (click)="this.selectedTabComponent.set(SelectedTab.Login); scrollToOutlet()">
+          Dran bleiben</button>
       </div>
       @if (this.showThemeToggle) {
         <reme-theme-toggle></reme-theme-toggle>
@@ -56,6 +56,22 @@
   </header>
 
   <section class="h-auto md:h-screen xl:h-screen items-center justify-center" #outletContainer>
-    <router-outlet name="landing-page-outlet"></router-outlet>
+    @switch (this.selectedTabComponent()) {
+      @case (SelectedTab.Login) {
+        <reme-login (requestRegistration)="this.selectedTabComponent.set(SelectedTab.Register)"></reme-login>
+      }
+      @case (SelectedTab.Register) {
+        <reme-register (requestLogin)="this.selectedTabComponent.set(SelectedTab.Login)"></reme-register>
+      }
+      @case (SelectedTab.FreeNotification) {
+        <reme-free-notification (requestRegistration)="this.selectedTabComponent.set(SelectedTab.Register)"></reme-free-notification>
+      }
+       @case (SelectedTab.Impressum) {
+        <reme-impressum></reme-impressum>
+      }
+       @default {
+        <reme-home></reme-home>
+       }
+    }
   </section>
 </main>

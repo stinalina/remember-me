@@ -1,6 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { ROUTER_TOKENS } from '@app/app.routes';
+import { ChangeDetectionStrategy, Component, output } from '@angular/core';
 import { CreateNotificationComponent } from '@shared/create-notification/create-notification.component';
 
 @Component({
@@ -9,9 +7,8 @@ import { CreateNotificationComponent } from '@shared/create-notification/create-
   templateUrl: 'free-notification.component.html',
   imports: [
     CreateNotificationComponent,
-    RouterLink
   ],
 })
 export class FreeNotificationComponent {
-  public readonly RouterTokens = ROUTER_TOKENS;
+  public readonly requestRegistration = output<void>();
 }
