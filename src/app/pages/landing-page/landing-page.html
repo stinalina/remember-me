@@ -37,14 +37,17 @@
         >
         <button class="btn btn-sm xl:btn-lg"
           [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Home"
+          routerLink="/"
           (click)="this.selectedTabComponent.set(SelectedTab.Home); scrollToOutlet()">
           Home</button>
         <button class="btn btn-sm xl:btn-lg"
           [class.btn-soft]="this.selectedTabComponent() === SelectedTab.FreeNotification"
+          routerLink="/"
           (click)="this.selectedTabComponent.set(SelectedTab.FreeNotification); scrollToOutlet()">
           Ausprobieren</button>
         <button class="btn btn-sm xl:btn-lg"
           [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Login"
+          routerLink="/"
           (click)="this.selectedTabComponent.set(SelectedTab.Login); scrollToOutlet()">
           Dran bleiben</button>
       </div>

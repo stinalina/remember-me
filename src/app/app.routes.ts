@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { ImpressumComponent } from '@app/pages/impressum/impressum.component';
 import { LandingPageComponent } from '@app/pages/landing-page/landing-page';
 
 export enum ROUTER_TOKENS {
@@ -14,7 +13,10 @@ export const routes: Routes = [
   },
   {
     path: ROUTER_TOKENS.IMPRESSUM,
-    loadComponent: () => ImpressumComponent
+    loadComponent: () => LandingPageComponent,
+    resolve: {
+      impressumSelected: () => true,
+    }
   },
   {
     path: '',
