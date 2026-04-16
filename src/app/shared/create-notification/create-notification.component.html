@@ -23,7 +23,7 @@
         placeholder=""
         (focusIn)="this.showPlaceholderAnimation = false" >
         @if(this.showPlaceholderAnimation) {
-          <span class="typewriter-placeholder" [innerHTML]="typedPlaceholder"></span>
+          <span class="typewriter-placeholder" [innerHTML]="typedPlaceholder()"></span>
         }
       </ngx-editor>
       @if(this.toolbar) {

@@ -60,7 +60,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   protected readonly sendingNotification = signal<boolean>(false);
   protected readonly placeholderSubject = 'Grüße von Notify!';
 
-  public typedPlaceholder = '';
+  public readonly typedPlaceholder = signal('');
   public showPlaceholderAnimation = true;
 
   private get nextDay(): string {
@@ -189,7 +189,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   }
 
   private updatePlaceholder(text: string): void {
-    this.typedPlaceholder = text;
+    this.typedPlaceholder.set(text);
   }
 
   private resetForm(): void {
