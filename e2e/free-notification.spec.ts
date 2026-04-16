@@ -4,8 +4,9 @@ test.describe('FreeNotificationComponent', () => {
   const testMail = `test-${Date.now()}@example.com`;
 
   test.beforeEach(async ({ page }) => {
-    await page.goto('/free-notification');
+    await page.goto('/');
     await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'Ausprobieren' }).click();
 
     // Set notification count to 5 (limit) in localStorage after page loads
     await page.evaluate((testMail) => {
@@ -14,12 +15,13 @@ test.describe('FreeNotificationComponent', () => {
     }, testMail);
   });
 
-  test('should show limit reached message after 3 notifications', async ({ page }) => {
+  test('should show limit reached message after 5 notifications', async ({ page }) => {
     // Reload page
     await page.reload();
+    await page.getByRole('button', { name: 'Ausprobieren' }).click();
     await page.waitForTimeout(1500); // Wait for placeholder animation
     
-    //Check that content in editir is cleared and editor is enabled
+    //Check that content in editor is cleared and editor is enabled
     const editorContent = await page.locator('.ProseMirror');
     expect(await editorContent.textContent()).toBe('');
     expect(await editorContent.isEnabled()).toBe(true);
@@ -69,7 +71,7 @@ test.describe('FreeNotificationComponent', () => {
     await page.waitForTimeout(500);
     
     // submit btn is enabled when new mail is entered
-    let buttonClass = await submitButton.getAttribute('class');
+    const buttonClass = await submitButton.getAttribute('class');
     expect(buttonClass).not.toContain('btn-disabled');
   });
 });

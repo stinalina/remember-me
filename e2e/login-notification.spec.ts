@@ -2,13 +2,9 @@ import { test, expect } from '@playwright/test';
 
 test.describe('LoginComponent', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/login');
+    await page.goto('/');
     await page.waitForLoadState('networkidle');
-    });
-
-  test('should route to register component', async ({ page }) => {
-    await page.getByText('Registriere dich', {exact: true}).click();
-    await expect(page).toHaveURL('/register');
+    await page.getByRole('button', { name: 'Dran bleiben' }).click();
   });
 
   test('login button should be disabled when email and password are empty', async ({ page }) => {
