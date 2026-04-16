@@ -9,18 +9,18 @@ describe('ToastService', () => {
       providers: [ToastService]
     });
     service = TestBed.inject(ToastService);
-    jasmine.clock().install();
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
-    jasmine.clock().uninstall();
+    vi.useRealTimers();
   });
 
   it('should add a toast and remove it after 3 sec when showToast is called', () => {
     expect(service.toastIds()).toEqual([]);
     service.showToast('Test toast', ToastType.Success, 3000);
     expect(service.toastIds().length).toBe(1);
-    jasmine.clock().tick(3000);
+    vi.advanceTimersByTime(3000);
     expect(service.toastIds()).toEqual([]);
   });
 });
