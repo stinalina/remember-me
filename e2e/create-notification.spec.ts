@@ -2,7 +2,10 @@ import { test, expect } from '@playwright/test';
 
 test.describe('CreateNotificationComponent', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/free-notification');
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'Ausprobieren' }).click();
+
     // Clear localStorage after page loads
     await page.evaluate(() => localStorage.clear());
     await page.waitForTimeout(500);
@@ -125,6 +128,8 @@ test.describe('CreateNotificationComponent', () => {
     
     // Reload page
     await page.reload();
+    await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'Ausprobieren' }).click();
     await page.waitForTimeout(500);
     
     // Mail should be prefilled

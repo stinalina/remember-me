@@ -2,9 +2,11 @@ import { test, expect } from '@playwright/test';
 
 test.describe('RegisterComponent', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/register');
+    await page.goto('/');
     await page.waitForLoadState('networkidle');
-    });
+    await page.getByRole('button', { name: 'Dran bleiben' }).click();
+    await page.getByText('Werde Mitglied', {exact: true}).click();
+  });
 
   test('should open dsgvo modal on clicking dsgvo', async ({ page }) => {
     // Find the RegisterComponent and click the DSGVO link inside it
