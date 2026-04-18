@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal } from "@angular/core";
+import { ContentFrameComponent } from "@app/shared/content-frame/content-rame.component";
 
 type Slogan = {
   title: string;
@@ -10,8 +11,7 @@ type Slogan = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'reme-home',
   templateUrl: 'home-page.component.html',
-  styles: [],
-  imports: []
+  imports: [ContentFrameComponent]
 })
 export class HomePage implements OnInit, OnDestroy {
   private readonly slogans: Slogan[] = [
