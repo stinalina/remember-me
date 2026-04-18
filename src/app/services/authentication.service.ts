@@ -45,7 +45,12 @@ export class AuthenticationService {
   }
 
   public signOut(): void {
-    from(signOut(this.fireAuth)).subscribe();
+    from(signOut(this.fireAuth)).pipe(
+      catchError(error => {
+      this.handleError(error);
+      return EMPTY; 
+    })
+    ).subscribe();
   }
 
   public getIdToken(): Observable<string | undefined> {

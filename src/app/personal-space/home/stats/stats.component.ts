@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ContentFrameComponent } from '@app/shared/content-frame/content-rame.component';
+import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.component';
 
 @Component({
   selector: 'reme-personal-stats',
