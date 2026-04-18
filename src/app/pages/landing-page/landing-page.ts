@@ -6,16 +6,9 @@ import { LoginComponent } from '@app/components/login/login.component';
 import { RegisterComponent } from '@app/components/register/register.component';
 import { HomePage } from '@app/pages/home/home-page.component';
 import { ImpressumComponent } from '@app/pages/impressum/impressum.component';
+import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/outlet-container';
 import { ThemeToggleComponent } from '@app/shared/theme-toggle/theme-toggle.component';
 import { environment } from '@environments/environment';
-
-enum SelectedTabComponentEnum {
-  Home,
-  Login,
-  Register,
-  FreeNotification,
-  Impressum
-}
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,7 +24,7 @@ enum SelectedTabComponentEnum {
     ImpressumComponent
   ],
 })
-export class LandingPageComponent {
+export class LandingPageComponent extends OutletContainer {
   public readonly impressumSelected = input(false);
   protected readonly outletContainerRef = viewChild.required<ElementRef>('outletContainer');
   public readonly showThemeToggle = !environment.production;
@@ -50,24 +43,11 @@ export class LandingPageComponent {
 
   private readonly location = inject(Location);
 
-  selectTab(tab: SelectedTabComponentEnum) {
+  protected override selectTab(tab: SelectedTabComponentEnum): void {
     this.selectedTabComponent.set(tab);
     if (tab !== SelectedTabComponentEnum.Impressum) {
       this.location.go('/');
     }
-    this.scrollToOutlet();
-  }
-
-  scrollToOutlet() {
-    setTimeout(() => {
-      const element = this.outletContainerRef().nativeElement;
-      if (element) {
-        const offset = element.offsetTop;
-        window.scrollTo({
-          top: offset,
-          behavior: 'smooth'
-        });
-      }
-    }, 150);
+    this.scrollToOutlet(this.outletContainerRef());
   }
 }

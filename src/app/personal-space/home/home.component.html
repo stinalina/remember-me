@@ -35,25 +35,25 @@
 
 <ng-template #menu>
   <nav class="flex flex-col gap-2 mt-2 xl:mt-3">
-    <button class="btn btn-sm xl:btn-lg"
+    <button class="btn btn-md xl:btn-lg"
       [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Notes"
       (click)="selectTab(SelectedTab.Notes)" type="button">
       <span class="material-symbols-outlined">note_stack</span>
       Meine Erinnerungen
     </button>
-        <button class="btn btn-sm xl:btn-lg"
+        <button class="btn btn-md xl:btn-lg"
       [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Stats"
       (click)="selectTab(SelectedTab.Stats)" type="button">
       <span class="material-symbols-outlined">query_stats</span>
       Statisiken
     </button>
-    <button class="btn btn-sm xl:btn-lg"
+    <button class="btn btn-md xl:btn-lg"
       [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Settings"
       (click)="selectTab(SelectedTab.Settings)" type="button">
       <span class="material-symbols-outlined">settings</span>
       Einstellungen
     </button>
-    <button class="btn btn-sm xl:btn-lg"
+    <button class="btn btn-md xl:btn-lg"
       [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Logout"
       (click)="selectTab(SelectedTab.Logout)" type="button">
       <span class="material-symbols-outlined">logout</span>
