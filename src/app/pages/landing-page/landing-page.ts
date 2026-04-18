@@ -34,9 +34,6 @@ enum SelectedTabComponentEnum {
 export class LandingPageComponent {
   public readonly impressumSelected = input(false);
   protected readonly outletContainerRef = viewChild.required<ElementRef>('outletContainer');
-  public readonly version = '1.0.0';
-  public readonly env = environment.production ? 'Prod Mode' : 'Dev Mode';
-  public readonly contactMail = environment.CONTACT_MAIL; 
   public readonly showThemeToggle = !environment.production;
 
   protected readonly SelectedTab = SelectedTabComponentEnum;

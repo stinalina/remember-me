@@ -44,8 +44,8 @@ export class AuthenticationService {
   );
   }
 
-  public signOut(): Observable<void> {
-    return from(signOut(this.fireAuth));
+  public signOut(): void {
+    from(signOut(this.fireAuth)).subscribe();
   }
 
   public getIdToken(): Observable<string | undefined> {
@@ -57,8 +57,9 @@ export class AuthenticationService {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private handleError(error: any): void {
-    let errorMessage = '';
+    let errorMessage: string;
     switch (error.code) {
       case 'auth/invalid-credential':
         errorMessage = 'Ungültige Anmeldedaten. Bitte überprüfe deine E-Mail-Adresse und dein Passwort.';

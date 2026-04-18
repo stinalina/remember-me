@@ -4,6 +4,7 @@ import { LandingPageComponent } from '@app/pages/landing-page/landing-page';
 export enum ROUTER_TOKENS {
   HOME = '',
   IMPRESSUM = 'impressum',
+  MYSPACE = 'myspace',
 }
 
 export const routes: Routes = [
@@ -17,6 +18,10 @@ export const routes: Routes = [
     resolve: {
       impressumSelected: () => true,
     }
+  },
+  {
+    path: ROUTER_TOKENS.MYSPACE,
+    loadComponent: () => import('@app/personal-space/home/home.component').then(m => m.HomeComponent),
   },
   {
     path: '',

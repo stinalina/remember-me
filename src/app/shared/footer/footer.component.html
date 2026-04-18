@@ -7,7 +7,7 @@
     <div class="submenu flex flex-row gap-2">
       <a [routerLink]="[RouterTokens.IMPRESSUM]">Impressum</a>
     </div>
-    <ng-content *ngTemplateOutlet="contact"></ng-content> 
+    <ng-container *ngTemplateOutlet="contact"></ng-container>
   </nav>
   <div class="footer-pen-pencil hidden xl:block">
     <img
