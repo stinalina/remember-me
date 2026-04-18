@@ -29,25 +29,25 @@
         Ich gebe dir rechtzeitig Bescheid, wenn deine Notizen fällig sind!<br/>
         Los geht's!
       </p>
-      <div class="
+      <nav class="
         flex 
         flex-col md:flex-row xl:flex-row 
         gap-2
         mt-2 xl:mt-3"
         >
-        <button class="btn btn-sm xl:btn-lg"
+        <button class="btn btn-md xl:btn-lg" type="button"
           [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Home"
           (click)="selectTab(SelectedTab.Home)">
           Home</button>
-        <button class="btn btn-sm xl:btn-lg"
+        <button class="btn btn-md xl:btn-lg" type="button"
           [class.btn-soft]="this.selectedTabComponent() === SelectedTab.FreeNotification"
           (click)="selectTab(SelectedTab.FreeNotification)">
           Ausprobieren</button>
-        <button class="btn btn-sm xl:btn-lg"
+        <button class="btn btn-md xl:btn-lg" type="button"
           [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Login"
           (click)="selectTab(SelectedTab.Login)">
           Dran bleiben</button>
-      </div>
+    </nav>
       @if (this.showThemeToggle) {
         <reme-theme-toggle></reme-theme-toggle>
       } 
