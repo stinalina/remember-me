@@ -1,5 +1,6 @@
+import { finalize } from 'rxjs';
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { NotesComponent } from '@app/personal-space/home/notes/notes.component';
 import { SettingsComponent } from '@app/personal-space/home/settings/settings.component';
 import { AuthService } from '@app/shared/authentication/auth.service';
@@ -30,7 +31,7 @@ export class HomeComponent extends OutletContainer {
   protected readonly SelectedTab = SelectedTabComponentEnum;
   protected readonly selectedTabComponent = signal<SelectedTabComponentEnum>(SelectedTabComponentEnum.Notes);
 
-  protected readonly username = signal<string>(this.userService.username() ?? 'Nutzer');
+  protected readonly username = computed<string>(() => this.userService.username() ?? 'Nutzer');
 
   protected override selectTab(tab: SelectedTabComponentEnum): void {
     this.selectedTabComponent.set(tab);
@@ -38,8 +39,10 @@ export class HomeComponent extends OutletContainer {
   }
 
   protected logout(): void {
-    this.authenticationService.signOut().subscribe(() => 
-      this.router.navigate([ROUTER_TOKENS.LOGIN])
-    );
+    this.authenticationService.signOut().pipe(
+      finalize(() => {
+        this.router.navigate([ROUTER_TOKENS.LOGIN]); //ignore logout failre and navigate to login page anyway
+      })
+    ).subscribe();
   }
 }

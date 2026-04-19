@@ -37,13 +37,13 @@ export class LandingPageComponent extends OutletContainer {
 
   private readonly location = inject(Location);
   private readonly authService = inject(AuthService);
-  private readonly routes = inject (Router);
+  private readonly router = inject (Router);
 
   constructor() {
     super();
     effect(() => {
       if (this.selectedTabComponent() === SelectedTabComponentEnum.Login && this.authService.isAuthenticated()) {
-        this.routes.navigate([ROUTER_TOKENS.HOME]);
+        this.router.navigate([ROUTER_TOKENS.HOME]);
       }
     });
   }

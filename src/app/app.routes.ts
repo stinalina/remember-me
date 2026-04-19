@@ -34,10 +34,6 @@ export const routes: Routes = [
     resolve: {
       selectedTab: () => SelectedTabComponentEnum.Login,
     }
-  },  {
-    path: '',
-    redirectTo: ROUTER_TOKENS.LANDING_PAGE,
-    pathMatch: 'full',
   },
   {
     path: '**',

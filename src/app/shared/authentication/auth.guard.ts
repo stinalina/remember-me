@@ -12,5 +12,5 @@ export const authGuard: CanActivateFn = async () => {
   await auth.authStateReady();
 
   // router.navigate gibt ein Promise zurück, was hier nicht gewünscht ist
-  return authService.isAuthenticated() || router.createUrlTree([ROUTER_TOKENS.LANDING_PAGE]);
+  return authService.isAuthenticated() || router.createUrlTree([ROUTER_TOKENS.LOGIN]);
 };

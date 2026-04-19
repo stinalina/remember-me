@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('LoginComponent', () => {
+test.describe('HomeComponent', () => {
   const testuserEmail = 'testuser@mail.de';
   const testuserPassword = 'test123';
 

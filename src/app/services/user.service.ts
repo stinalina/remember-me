@@ -9,5 +9,5 @@ export class UserService {
   public readonly currUser = signal<IUser | null>(null);
   public readonly freeNotificationsLimit = signal<number>(5);
 
-  public readonly username = signal<string | null>(this.localStorageService.getUserMail()?.split('@')[0] ?? null);
+  public readonly username = signal<string | null>(this.localStorageService.getUserMail?.split('@')[0] ?? null);
 }
