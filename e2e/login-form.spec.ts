@@ -27,5 +27,6 @@ test.describe('LoginComponent', () => {
     await page.getByTestId('login-reme-password-input').fill(testuserPassword);
     await page.getByRole('button', { name: 'Einloggen' }).click();
     await expect(page).toHaveURL(/.*home/);
+    await expect(page.getByTestId('home-username')).toHaveText('testuser');
   });
 });

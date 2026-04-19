@@ -18,7 +18,7 @@ export class LocalStorageService {
   public getSendedNotificationCount(userMail: string): number {
     const value = this.stoarge.getItem(this.getSendedNotificationCountKey(userMail))?.split('_');
     if (value) {
-      let month = new Date().getMonth();
+      const month = new Date().getMonth();
       const lastMonth = Number(value[1]);
       if (month !== lastMonth) {
         this.setNotificationCount(0, userMail);
@@ -41,7 +41,7 @@ export class LocalStorageService {
     }
     const value = this.stoarge.getItem(this.getSendedNotificationCountKey(user))?.split('_');
     let count = 1;
-    let month = new Date().getMonth();
+    const month = new Date().getMonth();
     if (value) {
       const lastMonth = Number(value[1]);
       count =  Number(value[0]);

@@ -7,6 +7,7 @@ import { StatsComponent } from "./stats/stats.component";
 import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/outlet-container';
 import { Router } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
+import { UserService } from '@app/services/user.service';
 
 @Component({
   selector: 'reme-personal-home',
@@ -23,10 +24,13 @@ export class HomeComponent extends OutletContainer {
   protected readonly outletContainerRef = viewChild.required<ElementRef>('outletContainer');
 
   private readonly router = inject(Router);
+  private readonly userService = inject(UserService);
   protected readonly authenticationService = inject(AuthService);
 
   protected readonly SelectedTab = SelectedTabComponentEnum;
   protected readonly selectedTabComponent = signal<SelectedTabComponentEnum>(SelectedTabComponentEnum.Notes);
+
+  protected readonly username = signal<string>(this.userService.username() ?? 'Nutzer');
 
   protected override selectTab(tab: SelectedTabComponentEnum): void {
     this.selectedTabComponent.set(tab);
