@@ -14,7 +14,7 @@ export class MailComponent {
   private readonly localStorageService = inject(LocalStorageService);
   
   public mailControl = new FormControl(
-    this.localStorageService.getUserMail() ?? '',
+    this.localStorageService.getUserMail ?? '',
     [Validators.required, Validators.email]
   );
 }
