@@ -3,22 +3,22 @@ import { LOCAL_STORAGE } from '@shared/storage.token';
 
 @Injectable ({ providedIn: 'root' })
 export class LocalStorageService {
-  private readonly stoarge = inject(LOCAL_STORAGE);
+  private readonly storage = inject(LOCAL_STORAGE);
 
   private readonly USER_MAIL_TOKEN = 'user_mail';
   public readonly storageVersion = signal(0);
 
   public get getUserMail(): string | null {
-    return this.stoarge.getItem(this.USER_MAIL_TOKEN);
+    return this.storage.getItem(this.USER_MAIL_TOKEN);
   }
 
   public setUserMail(value: string): void {
-    this.stoarge.setItem(this.USER_MAIL_TOKEN, value);
+    this.storage.setItem(this.USER_MAIL_TOKEN, value);
     this.storageVersion.update((version) => version + 1);
   }
 
   public getSendedNotificationCount(userMail: string): number {
-    const value = this.stoarge.getItem(this.getSendedNotificationCountKey(userMail))?.split('_');
+    const value = this.storage.getItem(this.getSendedNotificationCountKey(userMail))?.split('_');
     if (value) {
       const month = new Date().getMonth();
       const lastMonth = Number(value[1]);
@@ -41,7 +41,7 @@ export class LocalStorageService {
       console.error('User mail is not set in local storage. Cannot increase sended notification count.');
       return;
     }
-    const value = this.stoarge.getItem(this.getSendedNotificationCountKey(user))?.split('_');
+    const value = this.storage.getItem(this.getSendedNotificationCountKey(user))?.split('_');
     let count = 1;
     const month = new Date().getMonth();
     if (value) {
@@ -56,7 +56,7 @@ export class LocalStorageService {
 
   private setNotificationCount(count: number, userMail: string): void {
     const month = new Date().getMonth();
-    this.stoarge.setItem(this.getSendedNotificationCountKey(userMail), `${count}_${month}`);
+    this.storage.setItem(this.getSendedNotificationCountKey(userMail), `${count}_${month}`);
     this.storageVersion.update((version) => version + 1);
   }
 
