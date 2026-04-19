@@ -1,5 +1,5 @@
 import { Location } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, inject, input, linkedSignal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, ElementRef, inject, input, linkedSignal, viewChild } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { FreeNotificationComponent } from '@app/components/free-notification/free-notification.component';
 import { LoginComponent } from '@app/components/login/login.component';
@@ -39,12 +39,15 @@ export class LandingPageComponent extends OutletContainer {
   private readonly authService = inject(AuthService);
   private readonly routes = inject (Router);
 
+  constructor() {
+    super();
+    effect(() => {
+      if (this.selectedTabComponent() === SelectedTabComponentEnum.Login && this.authService.isAuthenticated()) {
+        this.routes.navigate([ROUTER_TOKENS.HOME]);
+      }
+    });
+  }
   protected override selectTab(tab: SelectedTabComponentEnum): void {
-    if (tab === SelectedTabComponentEnum.Login && this.authService.isAuthenticated()) {
-      this.routes.navigate([ROUTER_TOKENS.HOME]);
-      return;
-    }
-    
     this.selectedTabComponent.set(tab);
     if (tab !== SelectedTabComponentEnum.Impressum) {
       this.location.go('/');
