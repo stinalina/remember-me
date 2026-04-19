@@ -15,7 +15,7 @@ describe('Local Stoarge Service', () => {
 
   it('should set and get mail von local storage', () => {
     service.setUserMail(mail);
-    const mailFromStorage = service.getUserMail();
+    const mailFromStorage = service.getUserMail;
     expect(mailFromStorage).toEqual(mail);
   });
 
