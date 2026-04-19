@@ -26,7 +26,7 @@ export class LocalStorageService {
       }
       return Number(value[0]);
     }
-    return 0
+    return 0;
   }
 
   /**

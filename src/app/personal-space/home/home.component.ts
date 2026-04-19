@@ -9,6 +9,7 @@ import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/outlet-co
 import { Router } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
 import { UserService } from '@app/services/user.service';
+import { RangePipe } from '@app/shared/pipe/range.pipe';
 
 @Component({
   selector: 'reme-personal-home',
@@ -17,6 +18,7 @@ import { UserService } from '@app/services/user.service';
     SettingsComponent,
     NgTemplateOutlet,
     NotesComponent,
+    RangePipe,
     StatsComponent
 ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,6 +34,9 @@ export class HomeComponent extends OutletContainer {
   protected readonly selectedTabComponent = signal<SelectedTabComponentEnum>(SelectedTabComponentEnum.Notes);
 
   protected readonly username = computed<string>(() => this.userService.username() ?? 'Nutzer');
+  protected readonly freeNotificationsLimit = computed<number>(() => this.userService.freeNotificationsLimit());
+  protected readonly notificationsCount = computed<number>(() => this.userService.createdNotesThisMonthCount());
+  protected readonly usedNotesTooltip = computed<string>(() => `${this.notificationsCount()} von ${this.freeNotificationsLimit()} Erinnerungen erstellt diesen Monat.`);
 
   protected override selectTab(tab: SelectedTabComponentEnum): void {
     this.selectedTabComponent.set(tab);
