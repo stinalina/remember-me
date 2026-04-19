@@ -6,7 +6,7 @@ export class LocalStorageService {
   private readonly storage = inject(LOCAL_STORAGE);
 
   private readonly USER_MAIL_TOKEN = 'user_mail';
-  public readonly storageChangeCounter = signal(0);
+  public readonly storageChangeSignal = signal(0);
 
   public get getUserMail(): string | null {
     return this.storage.getItem(this.USER_MAIL_TOKEN);
@@ -14,7 +14,7 @@ export class LocalStorageService {
 
   public setUserMail(value: string): void {
     this.storage.setItem(this.USER_MAIL_TOKEN, value);
-    this.storageChangeCounter.update((version) => version + 1);
+    this.storageChangeSignal.update((version) => version + 1);
   }
 
   public getSendedNotificationCount(userMail: string): number {
@@ -57,7 +57,7 @@ export class LocalStorageService {
   private setNotificationCount(count: number, userMail: string): void {
     const month = new Date().getMonth();
     this.storage.setItem(this.getSendedNotificationCountKey(userMail), `${count}_${month}`);
-    this.storageChangeCounter.update((version) => version + 1);
+    this.storageChangeSignal.update((version) => version + 1);
   }
 
   private getSendedNotificationCountKey(userMail: string): string {

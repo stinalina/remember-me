@@ -10,11 +10,11 @@ export class UserService {
   public readonly freeNotificationsLimit = signal<number>(5);
 
   public readonly username = computed<string | null>(() => {
-    this.localStorageService.storageChangeCounter();
+    this.localStorageService.storageChangeSignal();
     return this.localStorageService.getUserMail?.split('@')[0] ?? null;
   });
   public readonly createdNotesThisMonthCount = computed<number>(() => {
-    this.localStorageService.storageChangeCounter();
+    this.localStorageService.storageChangeSignal();
     return this.localStorageService.getSendedNotificationCount(this.localStorageService.getUserMail ?? '');
   });
 }
