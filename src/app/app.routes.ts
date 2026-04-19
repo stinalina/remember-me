@@ -1,15 +1,22 @@
 import { Routes } from '@angular/router';
 import { LandingPageComponent } from '@app/pages/landing-page/landing-page';
+import { HomeComponent } from '@app/personal-space/home/home.component';
+import { authGuard } from '@app/shared/authentication/auth.guard';
 
 export enum ROUTER_TOKENS {
-  HOME = '',
+  LANDING_PAGE = '',
+  HOME = 'home',
   IMPRESSUM = 'impressum',
-  MYSPACE = 'myspace',
 }
 
 export const routes: Routes = [
   {
     path: ROUTER_TOKENS.HOME,
+    component: HomeComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: ROUTER_TOKENS.LANDING_PAGE,
     component: LandingPageComponent,
   },
   {
@@ -20,16 +27,12 @@ export const routes: Routes = [
     }
   },
   {
-    path: ROUTER_TOKENS.MYSPACE,
-    loadComponent: () => import('@app/personal-space/home/home.component').then(m => m.HomeComponent),
-  },
-  {
     path: '',
-    redirectTo: ROUTER_TOKENS.HOME,
+    redirectTo: ROUTER_TOKENS.LANDING_PAGE,
     pathMatch: 'full',
   },
   {
     path: '**',
-    redirectTo: ROUTER_TOKENS.HOME,
+    redirectTo: ROUTER_TOKENS.LANDING_PAGE,
   },
 ];
