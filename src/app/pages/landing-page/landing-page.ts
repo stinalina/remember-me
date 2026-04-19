@@ -1,14 +1,16 @@
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ElementRef, inject, input, linkedSignal, viewChild } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { FreeNotificationComponent } from '@app/components/free-notification/free-notification.component';
 import { LoginComponent } from '@app/components/login/login.component';
 import { RegisterComponent } from '@app/components/register/register.component';
 import { HomePage } from '@app/pages/home/home-page.component';
 import { ImpressumComponent } from '@app/pages/impressum/impressum.component';
+import { AuthService } from '@app/shared/authentication/auth.service';
 import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/outlet-container';
 import { ThemeToggleComponent } from '@app/shared/theme-toggle/theme-toggle.component';
 import { environment } from '@environments/environment';
+import { ROUTER_TOKENS } from './../../app.routes';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,8 +44,15 @@ export class LandingPageComponent extends OutletContainer {
   });
 
   private readonly location = inject(Location);
+  private readonly authService = inject(AuthService);
+  private readonly routes = inject (Router);
 
   protected override selectTab(tab: SelectedTabComponentEnum): void {
+    if (tab === SelectedTabComponentEnum.Login && this.authService.isAuthenticated()) {
+      this.routes.navigate([ROUTER_TOKENS.HOME]);
+      return;
+    }
+    
     this.selectedTabComponent.set(tab);
     if (tab !== SelectedTabComponentEnum.Impressum) {
       this.location.go('/');

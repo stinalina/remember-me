@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthenticationService } from '@app/services/authentication.service';
+import { AuthService } from '@app/shared/authentication/auth.service';
 import { ToastService, ToastType } from '@app/services/toast.service';
 import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.component';
 import { CheckboxComponent } from '@app/shared/input/checkbox/checkbox.component';
@@ -24,7 +24,7 @@ import * as dsgvo from '@assets/text/dsgvo.txt';
   ],
 })
 export class RegisterComponent {
-  private readonly authenticationService = inject(AuthenticationService);
+  private readonly authenticationService = inject(AuthService);
   private readonly toastService = inject(ToastService)
   private readonly destroyRef = inject(DestroyRef);
   protected readonly DsgvoText = dsgvo.default;
