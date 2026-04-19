@@ -1,11 +1,12 @@
-import { inject, Injectable } from "@angular/core";
-import { LOCAL_STORAGE } from "@shared/storage.token";
+import { inject, Injectable, signal } from '@angular/core';
+import { LOCAL_STORAGE } from '@shared/storage.token';
 
 @Injectable ({ providedIn: 'root' })
 export class LocalStorageService {
   private readonly stoarge = inject(LOCAL_STORAGE);
 
   private readonly USER_MAIL_TOKEN = 'user_mail';
+  public readonly storageVersion = signal(0);
 
   public get getUserMail(): string | null {
     return this.stoarge.getItem(this.USER_MAIL_TOKEN);
@@ -13,6 +14,7 @@ export class LocalStorageService {
 
   public setUserMail(value: string): void {
     this.stoarge.setItem(this.USER_MAIL_TOKEN, value);
+    this.storageVersion.update((version) => version + 1);
   }
 
   public getSendedNotificationCount(userMail: string): number {
@@ -55,6 +57,7 @@ export class LocalStorageService {
   private setNotificationCount(count: number, userMail: string): void {
     const month = new Date().getMonth();
     this.stoarge.setItem(this.getSendedNotificationCountKey(userMail), `${count}_${month}`);
+    this.storageVersion.update((version) => version + 1);
   }
 
   private getSendedNotificationCountKey(userMail: string): string {
