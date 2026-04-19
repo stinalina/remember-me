@@ -1,10 +1,14 @@
+import { finalize } from 'rxjs';
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { NotesComponent } from '@app/personal-space/home/notes/notes.component';
 import { SettingsComponent } from '@app/personal-space/home/settings/settings.component';
-import { AuthenticationService } from '@app/services/authentication.service';
+import { AuthService } from '@app/shared/authentication/auth.service';
 import { StatsComponent } from "./stats/stats.component";
 import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/outlet-container';
+import { Router } from '@angular/router';
+import { ROUTER_TOKENS } from '@app/app.routes';
+import { UserService } from '@app/services/user.service';
 
 @Component({
   selector: 'reme-personal-home',
@@ -20,13 +24,25 @@ import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/outlet-co
 export class HomeComponent extends OutletContainer {
   protected readonly outletContainerRef = viewChild.required<ElementRef>('outletContainer');
 
-  protected readonly authenticationService = inject(AuthenticationService);
+  private readonly router = inject(Router);
+  private readonly userService = inject(UserService);
+  protected readonly authenticationService = inject(AuthService);
 
   protected readonly SelectedTab = SelectedTabComponentEnum;
   protected readonly selectedTabComponent = signal<SelectedTabComponentEnum>(SelectedTabComponentEnum.Notes);
 
+  protected readonly username = computed<string>(() => this.userService.username() ?? 'Nutzer');
+
   protected override selectTab(tab: SelectedTabComponentEnum): void {
     this.selectedTabComponent.set(tab);
     this.scrollToOutlet(this.outletContainerRef());
+  }
+
+  protected logout(): void {
+    this.authenticationService.signOut().pipe(
+      finalize(() => {
+        this.router.navigate([ROUTER_TOKENS.LOGIN]); //ignore logout failre and navigate to login page anyway
+      })
+    ).subscribe();
   }
 }

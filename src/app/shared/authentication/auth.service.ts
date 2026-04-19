@@ -6,7 +6,7 @@ import { User, UserCredential } from 'firebase/auth';
 import { catchError, EMPTY, from, map, Observable, of, switchMap, tap } from "rxjs";
 
 @Injectable({providedIn: 'root'})
-export class AuthenticationService {
+export class AuthService {
   private readonly fireAuth: Auth = inject(Auth);
   private readonly toastService = inject(ToastService);
   private readonly localStorage = inject(LocalStorageService);
@@ -44,13 +44,13 @@ export class AuthenticationService {
   );
   }
 
-  public signOut(): void {
-    from(signOut(this.fireAuth)).pipe(
+  public signOut(): Observable<void> {
+    return from(signOut(this.fireAuth)).pipe(
       catchError(error => {
-      this.handleError(error);
-      return EMPTY; 
-    })
-    ).subscribe();
+        this.handleError(error);
+        return EMPTY; 
+      })
+    );
   }
 
   public getIdToken(): Observable<string | undefined> {

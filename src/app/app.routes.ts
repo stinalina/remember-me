@@ -1,35 +1,42 @@
 import { Routes } from '@angular/router';
 import { LandingPageComponent } from '@app/pages/landing-page/landing-page';
+import { HomeComponent } from '@app/personal-space/home/home.component';
+import { authGuard } from '@app/shared/authentication/auth.guard';
+import { SelectedTabComponentEnum } from '@app/shared/outlet-container';
 
 export enum ROUTER_TOKENS {
-  HOME = '',
+  LANDING_PAGE = '',
+  HOME = 'home',
   IMPRESSUM = 'impressum',
-  MYSPACE = 'myspace',
+  LOGIN = 'login',
 }
 
 export const routes: Routes = [
   {
     path: ROUTER_TOKENS.HOME,
+    component: HomeComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: ROUTER_TOKENS.LANDING_PAGE,
     component: LandingPageComponent,
   },
   {
     path: ROUTER_TOKENS.IMPRESSUM,
-    loadComponent: () => LandingPageComponent,
+    component: LandingPageComponent,
     resolve: {
-      impressumSelected: () => true,
+      selectedTab: () => SelectedTabComponentEnum.Impressum,
     }
   },
   {
-    path: ROUTER_TOKENS.MYSPACE,
-    loadComponent: () => import('@app/personal-space/home/home.component').then(m => m.HomeComponent),
-  },
-  {
-    path: '',
-    redirectTo: ROUTER_TOKENS.HOME,
-    pathMatch: 'full',
+    path: ROUTER_TOKENS.LOGIN,
+    component: LandingPageComponent,
+    resolve: {
+      selectedTab: () => SelectedTabComponentEnum.Login,
+    }
   },
   {
     path: '**',
-    redirectTo: ROUTER_TOKENS.HOME,
+    redirectTo: ROUTER_TOKENS.LANDING_PAGE,
   },
 ];

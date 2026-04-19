@@ -1,26 +1,21 @@
 <reme-content-frame>
-  @if (this.authenticationService.isAuthenticated()) {
-    Erfolgreich eingeloggt 
-    <button class="btn" (click)="this.authenticationService.signOut()">Logout</button>
-  } @else {
-    <div class="max-w-md">
-      <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">Einloggen & <br/> Dran bleiben!</h1>
-      <div class="md:py-4 xl:py-6 py-3 flex flex-col gap-3">
-        <reme-mail preId="login" #mail></reme-mail>
-        <reme-password preId="login" #pw></reme-password>
-        <reme-checkbox preId="login-remember-me" [(value)]="this.rememberMeFlag">
-          Angemeldet bleiben
-        </reme-checkbox>
-        <button class="btn w-full"
-          [disabled]="mail.mailControl.invalid || pw.passwordControl.invalid"
-          (click)="this.login(mail.mailControl.value!, pw.passwordControl.value!, this.rememberMeFlag)">
-          Einloggen
-        </button>
-        @if (errorMessage) {
-          <div class="reme-validator-hint">{{ errorMessage }}</div>
-        }
-      </div>
-      <span>👉 Noch nicht dabei?  <button class="btn-ghost reme-link" (click)="requestRegistration.emit()">Werde Mitglied</button>!</span>
-   </div>
-  }
+  <div class="max-w-md">
+    <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">Einloggen & <br/> Dran bleiben!</h1>
+    <div class="md:py-4 xl:py-6 py-3 flex flex-col gap-3">
+      <reme-mail preId="login" #mail></reme-mail>
+      <reme-password preId="login" #pw></reme-password>
+      <reme-checkbox preId="login-remember-me" [(value)]="this.rememberMeFlag">
+        Angemeldet bleiben
+      </reme-checkbox>
+      <button class="btn w-full" type="submit"
+        [disabled]="mail.mailControl.invalid || pw.passwordControl.invalid"
+        (click)="this.login(mail.mailControl.value!, pw.passwordControl.value!, this.rememberMeFlag)">
+        Einloggen
+      </button>
+      @if (errorMessage) {
+        <div class="reme-validator-hint">{{ errorMessage }}</div>
+      }
+    </div>
+    <span>👉 Noch nicht dabei?  <button class="btn-ghost reme-link" (click)="requestRegistration.emit()">Werde Mitglied</button>!</span>
+  </div>
 </reme-content-frame>

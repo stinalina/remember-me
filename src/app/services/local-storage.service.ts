@@ -7,7 +7,7 @@ export class LocalStorageService {
 
   private readonly USER_MAIL_TOKEN = 'user_mail';
 
-  public getUserMail(): string | null {
+  public get getUserMail(): string | null {
     return this.stoarge.getItem(this.USER_MAIL_TOKEN);
   }
 
@@ -18,7 +18,7 @@ export class LocalStorageService {
   public getSendedNotificationCount(userMail: string): number {
     const value = this.stoarge.getItem(this.getSendedNotificationCountKey(userMail))?.split('_');
     if (value) {
-      let month = new Date().getMonth();
+      const month = new Date().getMonth();
       const lastMonth = Number(value[1]);
       if (month !== lastMonth) {
         this.setNotificationCount(0, userMail);
@@ -34,14 +34,14 @@ export class LocalStorageService {
    * @param limit - default is 3; count won't increase when limit is reached
    */
   public increaseSendedNotificationCount(limit: number = 5): void {
-    const user = this.getUserMail();
+    const user = this.getUserMail;
     if (!user) {
       console.error('User mail is not set in local storage. Cannot increase sended notification count.');
       return;
     }
     const value = this.stoarge.getItem(this.getSendedNotificationCountKey(user))?.split('_');
     let count = 1;
-    let month = new Date().getMonth();
+    const month = new Date().getMonth();
     if (value) {
       const lastMonth = Number(value[1]);
       count =  Number(value[0]);

@@ -36,16 +36,16 @@
         mt-2 xl:mt-3"
         >
         <button class="btn btn-md xl:btn-lg" type="button"
-          [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Home"
-          (click)="selectTab(SelectedTab.Home)">
+          [class.btn-soft]="this.selectedTabComponent() === SelectedTabEnum.Home"
+          (click)="selectTab(SelectedTabEnum.Home)">
           Home</button>
         <button class="btn btn-md xl:btn-lg" type="button"
-          [class.btn-soft]="this.selectedTabComponent() === SelectedTab.FreeNotification"
-          (click)="selectTab(SelectedTab.FreeNotification)">
+          [class.btn-soft]="this.selectedTabComponent() === SelectedTabEnum.FreeNotification"
+          (click)="selectTab(SelectedTabEnum.FreeNotification)">
           Ausprobieren</button>
         <button class="btn btn-md xl:btn-lg" type="button"
-          [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Login"
-          (click)="selectTab(SelectedTab.Login)">
+          [class.btn-soft]="this.selectedTabComponent() === SelectedTabEnum.Login"
+          (click)="selectTab(SelectedTabEnum.Login)">
           Dran bleiben</button>
     </nav>
       @if (this.showThemeToggle) {
@@ -57,16 +57,16 @@
 
   <section class="h-auto md:h-screen xl:h-screen items-center justify-center" #outletContainer>
     @switch (this.selectedTabComponent()) {
-      @case (SelectedTab.Login) {
-        <reme-login (requestRegistration)="this.selectedTabComponent.set(SelectedTab.Register)"></reme-login>
+      @case (SelectedTabEnum.Login) {
+        <reme-login (requestRegistration)="this.selectedTabComponent.set(SelectedTabEnum.Register)"></reme-login>
       }
-      @case (SelectedTab.Register) {
-        <reme-register (requestLogin)="this.selectedTabComponent.set(SelectedTab.Login)"></reme-register>
+      @case (SelectedTabEnum.Register) {
+        <reme-register (requestLogin)="this.selectedTabComponent.set(SelectedTabEnum.Login)"></reme-register>
       }
-      @case (SelectedTab.FreeNotification) {
-        <reme-free-notification (requestRegistration)="this.selectedTabComponent.set(SelectedTab.Register)"></reme-free-notification>
+      @case (SelectedTabEnum.FreeNotification) {
+        <reme-free-notification (requestRegistration)="this.selectedTabComponent.set(SelectedTabEnum.Register)"></reme-free-notification>
       }
-       @case (SelectedTab.Impressum) {
+       @case (SelectedTabEnum.Impressum) {
         <reme-impressum></reme-impressum>
       }
        @default {
