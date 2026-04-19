@@ -7,7 +7,7 @@
       <reme-checkbox preId="login-remember-me" [(value)]="this.rememberMeFlag">
         Angemeldet bleiben
       </reme-checkbox>
-      <button class="btn w-full"
+      <button class="btn w-full" type="submit"
         [disabled]="mail.mailControl.invalid || pw.passwordControl.invalid"
         (click)="this.login(mail.mailControl.value!, pw.passwordControl.value!, this.rememberMeFlag)">
         Einloggen

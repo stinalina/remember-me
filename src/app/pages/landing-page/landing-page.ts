@@ -27,21 +27,13 @@ import { ROUTER_TOKENS } from './../../app.routes';
   ],
 })
 export class LandingPageComponent extends OutletContainer {
-  public readonly impressumSelected = input(false);
+  public readonly selectedTab = input(SelectedTabComponentEnum.Home);
+
   protected readonly outletContainerRef = viewChild.required<ElementRef>('outletContainer');
   public readonly showThemeToggle = !environment.production;
 
-  protected readonly SelectedTab = SelectedTabComponentEnum;
-  protected readonly selectedTabComponent = linkedSignal<boolean, SelectedTabComponentEnum>({
-    source: this.impressumSelected,
-    computation: (impressumSelected, previous) => {
-      if (impressumSelected) return SelectedTabComponentEnum.Impressum;
-      if (previous !== undefined && previous.value !== SelectedTabComponentEnum.Impressum) {
-        return previous.value;
-      }
-      return SelectedTabComponentEnum.Home;
-    },
-  });
+  protected readonly SelectedTabEnum = SelectedTabComponentEnum;
+  protected readonly selectedTabComponent = linkedSignal(this.selectedTab);
 
   private readonly location = inject(Location);
   private readonly authService = inject(AuthService);

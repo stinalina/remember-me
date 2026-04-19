@@ -35,7 +35,7 @@ export class HomeComponent extends OutletContainer {
 
   protected logout(): void {
     this.authenticationService.signOut().subscribe(() => 
-      this.router.navigate([ROUTER_TOKENS.LANDING_PAGE])
+      this.router.navigate([ROUTER_TOKENS.LOGIN])
     );
   }
 }
