@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Auth, browserLocalPersistence, browserSessionPersistence, createUserWithEmailAndPassword, setPersistence, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
+import { Auth, browserLocalPersistence, browserSessionPersistence, createUserWithEmailAndPassword, setPersistence, signInAnonymously, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
 import { LocalStorageService } from '@app/services/local-storage.service';
 import { ToastService, ToastType } from '@app/services/toast.service';
 import { User, UserCredential } from 'firebase/auth';
@@ -16,7 +16,11 @@ export class AuthService {
 
   constructor() {
     this.fireAuth.onAuthStateChanged(user => {
-      this.isAuthenticated.set(user !== null);
+      if (user === null) {
+        signInAnonymously(this.fireAuth);
+        return;
+      }
+      this.isAuthenticated.set(!user.isAnonymous);
       this.currentUser.set(user);
     });
   }
@@ -53,11 +57,13 @@ export class AuthService {
     );
   }
 
+  
   public getIdToken(): Observable<string | undefined> {
     const currentUser = this.fireAuth.currentUser;
     if (currentUser) {
       return from(currentUser.getIdToken());
     } else {
+      console.error('This should never happen. At least an anonymous user should be signed in.')
       return of(undefined);
     }
   }

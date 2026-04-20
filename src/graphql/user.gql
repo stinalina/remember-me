@@ -8,7 +8,7 @@ mutation InsertUser($mail: String!, $name: String!) {
 }
 
 query GetUserByMail($mail: String!) {
-  User(where: {Mail: {_eq:$ mail}}) {
+  User(where: {Mail: {_eq: $mail}}) {
     Id,
     Name
   }
