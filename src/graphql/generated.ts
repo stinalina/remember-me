@@ -967,7 +967,7 @@ export type InsertNotificationMutationVariables = Exact<{
 }>;
 
 
-export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', returning: Array<{ __typename?: 'Notification', Subject: string }> } | null };
+export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', affected_rows: number } | null };
 
 export type InsertUserMutationVariables = Exact<{
   mail: Scalars['String']['input'];
@@ -987,9 +987,7 @@ export type GetUserByMailQuery = { __typename?: 'query_root', User: Array<{ __ty
 export const InsertNotificationDocument = gql`
     mutation InsertNotification($objects: [Notification_insert_input!]!) {
   insert_Notification(objects: $objects) {
-    returning {
-      Subject
-    }
+    affected_rows
   }
 }
     `;
