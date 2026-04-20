@@ -3,7 +3,7 @@ import { Auth, browserLocalPersistence, browserSessionPersistence, createUserWit
 import { LocalStorageService } from '@app/services/local-storage.service';
 import { ToastService, ToastType } from '@app/services/toast.service';
 import { User, UserCredential } from 'firebase/auth';
-import { catchError, EMPTY, from, map, Observable, switchMap, tap } from "rxjs";
+import { catchError, EMPTY, from, map, Observable, of, switchMap, tap } from "rxjs";
 
 @Injectable({providedIn: 'root'})
 export class AuthService {
@@ -63,8 +63,8 @@ export class AuthService {
     if (currentUser) {
       return from(currentUser.getIdToken());
     } else {
-      console.error('This should never happen. At leat an anonym user should be signed in.');
-      return EMPTY;
+      console.error('This should never happen. At least an anonymous user should be signed in.')
+      return of(undefined);
     }
   }
 

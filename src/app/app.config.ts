@@ -9,14 +9,14 @@ import { environment } from '@environments/environment';
 import { provideApollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { routes } from './app.routes';
-import { authInterceptor } from '@app/shared/authentication/auth.interceptor';
+import { authHasuraInterceptor } from '@app/shared/authentication/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth()),
-    provideHttpClient(withInterceptors([authInterceptor])),
+    provideHttpClient(withInterceptors([authHasuraInterceptor])),
     provideApollo(() => {
       const httpLink = inject(HttpLink);
       return {
