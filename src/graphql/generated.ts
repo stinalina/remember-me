@@ -969,6 +969,13 @@ export type InsertNotificationMutationVariables = Exact<{
 
 export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', affected_rows: number } | null };
 
+export type NotificationByUserIdQueryVariables = Exact<{
+  userId?: InputMaybe<Scalars['uuid']['input']>;
+}>;
+
+
+export type NotificationByUserIdQuery = { __typename?: 'query_root', Notification: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, Subject: string, RememberCount: any, Id: any, DueDate: any }> };
+
 export type InsertUserMutationVariables = Exact<{
   mail: Scalars['String']['input'];
   name: Scalars['String']['input'];
@@ -997,6 +1004,29 @@ export const InsertNotificationDocument = gql`
   })
   export class InsertNotificationGQL extends Apollo.Mutation<InsertNotificationMutation, InsertNotificationMutationVariables> {
     document = InsertNotificationDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const NotificationByUserIdDocument = gql`
+    query NotificationByUserId($userId: uuid) {
+  Notification(order_by: {CreatedAt: desc}, where: {UserId: {_eq: $userId}}) {
+    Content
+    CreatedAt
+    Subject
+    RememberCount
+    Id
+    DueDate
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class NotificationByUserIdGQL extends Apollo.Query<NotificationByUserIdQuery, NotificationByUserIdQueryVariables> {
+    document = NotificationByUserIdDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

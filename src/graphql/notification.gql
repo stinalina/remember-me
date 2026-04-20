@@ -3,3 +3,14 @@ mutation InsertNotification($objects: [Notification_insert_input!]!) {
     affected_rows
   }
 }
+
+query NotificationByUserId($userId: uuid) {
+  Notification(order_by: {CreatedAt: desc}, where: {UserId: {_eq: $userId}}) {
+    Content
+    CreatedAt
+    Subject
+    RememberCount
+    Id
+    DueDate
+  }
+}
