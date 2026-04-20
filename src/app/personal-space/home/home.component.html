@@ -18,6 +18,21 @@
         alt="profil-bild"
         src="https://img.daisyui.com/images/stock/photo-1567653418876-5bb0e566e1c2.webp" />
       <ng-container *ngTemplateOutlet="menu"></ng-container>
+      <p class="mt-3">Bisher erstellt:</p>
+      <div class="w-full max-w-xs tooltip tooltip-bottom"
+        data-testid="home-notifications-tooltip"
+        [attr.data-tip]="this.usedNotesTooltip()">
+        <input type="range" class="range" step="1"
+          data-testid="home-notifications-range"
+          min="0" [max]="this.freeNotificationsLimit()"
+          [value]="this.notificationsCount()"
+          [disabled]="true"/>
+          <div class="flex justify-between px-2.5 mt-2 text-xs tooltip">
+            @for(num of this.freeNotificationsLimit() | range; track $index) {
+              <span>{{ num }}</span>
+            }
+          </div>
+        </div>
     </div>
   </header>
 

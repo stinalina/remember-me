@@ -43,7 +43,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     subject: ['', Validators.maxLength(100)],
     additionalInfo: [''],
     content: ['', htmlContentValidator()],
-    mail: [this.localStorageService.getUserMail() ?? '',
+    mail: [this.localStorageService.getUserMail ?? '',
       [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService, this.freeNotificationsLimit())]],
     dateTime: [this.nextDay, Validators.required],
   });
@@ -181,7 +181,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   }
 
   private checkIfMaxSendedNotificationCountIsReached(): boolean {
-    const mail = this.localStorageService.getUserMail() ?? '';
+    const mail = this.localStorageService.getUserMail ?? '';
     const count = this.localStorageService.getSendedNotificationCount(mail);
     const limitReached = count >= this.freeNotificationsLimit();
     this.limitReached.set(limitReached);
@@ -196,7 +196,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     this.myForm.reset({
       subject: '',
       content: '',
-      mail: this.localStorageService.getUserMail() ?? '',
+      mail: this.localStorageService.getUserMail ?? '',
       dateTime: this.nextDay
     });
   }

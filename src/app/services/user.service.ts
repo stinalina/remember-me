@@ -1,6 +1,6 @@
-import { inject, Injectable, signal } from "@angular/core";
-import { LocalStorageService } from "@app/services/local-storage.service";
-import { IUser } from "@shared/models";
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { LocalStorageService } from '@app/services/local-storage.service';
+import { IUser } from '@shared/models';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -9,5 +9,12 @@ export class UserService {
   public readonly currUser = signal<IUser | null>(null);
   public readonly freeNotificationsLimit = signal<number>(5);
 
-  public readonly username = signal<string | null>(this.localStorageService.getUserMail?.split('@')[0] ?? null);
+  public readonly username = computed<string | null>(() => {
+    this.localStorageService.storageChangeSignal();
+    return this.localStorageService.getUserMail?.split('@')[0] ?? null;
+  });
+  public readonly createdNotesThisMonthCount = computed<number>(() => {
+    this.localStorageService.storageChangeSignal();
+    return this.localStorageService.getSendedNotificationCount(this.localStorageService.getUserMail ?? '');
+  });
 }

@@ -36,3 +36,8 @@
 .submenu a:hover {
   text-decoration: underline
 }
+
+input.range:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
