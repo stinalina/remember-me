@@ -1,6 +1,14 @@
 <reme-content-frame>
   <section>
     <h1>Notes</h1>
-    <p>No notes available yet.</p>
+    @if (this.notificationStore.isLoading()) {
+      <p>Loading...</p>
+      <span className="loading loading-dots loading-xl"></span>
+    } @else if (this.notificationStore.error()) {
+      <p>Error: {{ this.notificationStore.error() }}</p>
+    }
+    @else {
+      <p>{{ this.notificationStore.value() | json }}</p>
+    }
   </section>
 </reme-content-frame>

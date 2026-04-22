@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LandingPageComponent } from '@app/pages/landing-page/landing-page';
 import { HomeComponent } from '@app/personal-space/home/home.component';
 import { authGuard } from '@app/shared/authentication/auth.guard';
+import { userResolver } from '@app/shared/authentication/user.resolver';
 import { SelectedTabComponentEnum } from '@app/shared/outlet-container';
 
 export enum ROUTER_TOKENS {
@@ -16,6 +17,9 @@ export const routes: Routes = [
     path: ROUTER_TOKENS.HOME,
     component: HomeComponent,
     canActivate: [authGuard],
+    resolve: {
+      user: userResolver,
+    },
   },
   {
     path: ROUTER_TOKENS.LANDING_PAGE,
