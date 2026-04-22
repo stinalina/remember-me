@@ -45,7 +45,6 @@ export class HomeComponent extends OutletContainer {
 
   protected logout(): void {
     this.authenticationService.signOut().pipe(
-      //TODO warte bis logout request abgeschlossen ist, bevor zur login page navigiert wir
       finalize(() => {
         this.router.navigate([ROUTER_TOKENS.LOGIN]); //ignore logout failre and navigate to login page anyway
       })
