@@ -1,13 +1,13 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthService } from '@app/shared/authentication/auth.service';
+import { Router } from '@angular/router';
+import { ROUTER_TOKENS } from '@app/app.routes';
 import { ToastService, ToastType } from '@app/services/toast.service';
+import { AuthService } from '@app/shared/authentication/auth.service';
 import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.component';
 import { CheckboxComponent } from '@app/shared/input/checkbox/checkbox.component';
 import { MailComponent } from '@app/shared/mail/mail.component';
 import { PasswordComponent } from '@app/shared/password/password.component';
-import { Router } from '@angular/router';
-import { ROUTER_TOKENS } from '@app/app.routes';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,7 +26,7 @@ export class LoginComponent {
   protected readonly authenticationService = inject(AuthService);
   private readonly toastService = inject(ToastService)
   private readonly destroyRef = inject(DestroyRef);
-  private readonly router = inject(Router);
+  private readonly router = inject(Router); 
 
   protected errorMessage: string | null = null;
   protected rememberMeFlag = true;
@@ -41,7 +41,8 @@ export class LoginComponent {
 
     this.authenticationService.signIn(mail, password, rememberMe).pipe(
       takeUntilDestroyed(this.destroyRef),
-    ).subscribe(
+    )
+    .subscribe(
       () => this.router.navigate([ROUTER_TOKENS.HOME])
     );
   }

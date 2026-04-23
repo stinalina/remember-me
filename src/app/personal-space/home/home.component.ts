@@ -1,15 +1,15 @@
-import { finalize } from 'rxjs';
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
-import { NotesComponent } from '@app/personal-space/home/notes/notes.component';
-import { SettingsComponent } from '@app/personal-space/home/settings/settings.component';
-import { AuthService } from '@app/shared/authentication/auth.service';
-import { StatsComponent } from "./stats/stats.component";
-import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/outlet-container';
 import { Router } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
+import { NotesComponent } from '@app/personal-space/home/notes/notes.component';
+import { SettingsComponent } from '@app/personal-space/home/settings/settings.component';
 import { UserService } from '@app/services/user.service';
+import { AuthService } from '@app/shared/authentication/auth.service';
+import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/outlet-container';
 import { RangePipe } from '@app/shared/pipe/range.pipe';
+import { finalize } from 'rxjs';
+import { StatsComponent } from "./stats/stats.component";
 
 @Component({
   selector: 'reme-personal-home',

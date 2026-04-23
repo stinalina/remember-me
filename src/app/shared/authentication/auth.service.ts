@@ -49,6 +49,7 @@ export class AuthService {
   }
 
   public signOut(): Observable<void> {
+    this.isAuthenticated.set(false);
     return from(signOut(this.fireAuth)).pipe(
       catchError(error => {
         this.handleError(error);
