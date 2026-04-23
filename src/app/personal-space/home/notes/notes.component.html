@@ -1,7 +1,7 @@
 <reme-content-frame>
   <section>
     <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">Erinnerungen</h1>
-    <div class="md:py-4 xl:py-6 py-3 flex flex-col gap-3">
+    <div class="md:py-4 xl:py-6 py-3 grid grid-cols-3 gap-3">
       @if (this.notificationStore.isLoading()) {
         <p>Loading...</p>
         <span className="loading loading-dots loading-xl"></span>
@@ -10,12 +10,7 @@
       }
       @else {
         @for (notification of this.notificationStore.value(); track notification.id) {
-          <div className="notification">
-            <small>{{ notification.subject }}</small>
-            <p>{{ notification.content }}</p>
-            <small>{{ notification.createdAt }}</small>
-            <small>{{ notification.dueDate }}</small>
-          </div>
+          <reme-notification [notification]="notification"></reme-notification>
         }
       }
     </div>

@@ -1,0 +1,31 @@
+<div class="card w-xs bg-base-100 shadow-sm">
+  <div class="card-body">
+    <span class="badge badge-xs badge-warning">Fällig: {{ notification().dueDate | date:'short' }}</span>
+
+    <div class="flex flex-col gap-1 h-full">
+      <h1 class="text-xl font-bold">{{ notification().subject }}</h1>
+      <div class="
+        border
+        rounded-md 
+        bg-base-100 
+        text-justify 
+        text-sm md:text-sm xl:text-base"
+        >
+        <p class="
+          md:p-3 xl:p-4 p-2
+          overflow-auto text-wrap 
+          h-[20vh]
+          text-xs md:text-xs xl:text-sm"
+          [innerHTML]="notification().content"></p>
+      </div>
+    </div>
+
+    <!-- <div class="card-actions mt-4 flex flex-row gap-2 justify-center">
+      <button type="button" class="btn btn-primary">Bearbeiten</button>
+      <button type="button" class="btn btn-primary">Draft</button>
+      <button type="button" class="btn btn-primary">Löschen</button>
+    </div> -->
+    <div class="card-footer mt-4">
+      <span class="text-sm text-gray-500">Erstellt am: {{ notification().createdAt| date:'short' }}</span>
+  </div>
+</div>
