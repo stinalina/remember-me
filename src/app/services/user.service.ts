@@ -1,4 +1,5 @@
-import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { computed, DestroyRef, effect, inject, Injectable, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LocalStorageService } from '@app/services/local-storage.service';
 import { AuthService } from '@app/shared/authentication/auth.service';
 import { GetUserByMailGQL } from '@hasura/generated';
@@ -10,6 +11,7 @@ export class UserService {
   private readonly localStorageService = inject(LocalStorageService);
   private readonly getUserByMailGQL = inject(GetUserByMailGQL);
   private readonly authService = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
 
   public readonly currUser = signal<IUser | null>(null);
   public readonly freeNotificationsLimit = signal<number>(5);
@@ -28,7 +30,9 @@ export class UserService {
     effect(() => {
       const user = this.authService.currentUser();
       if (user?.email && this.authService.isAuthenticated()) {
-        this.loadUser(user.email).subscribe();
+        this.loadUser(user.email).pipe(
+          takeUntilDestroyed(this.destroyRef)
+        ).subscribe();
       }
     })
   }

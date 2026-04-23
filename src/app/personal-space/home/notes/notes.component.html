@@ -4,7 +4,7 @@
     <div class="md:py-4 xl:py-6 py-3 grid grid-cols-3 gap-3">
       @if (this.notificationStore.isLoading()) {
         <p>Loading...</p>
-        <span className="loading loading-dots loading-xl"></span>
+        <span class="loading loading-dots loading-xl"></span>
       } @else if (this.notificationStore.error()) {
         <p>Error: {{ this.notificationStore.error() }}</p>
       }
