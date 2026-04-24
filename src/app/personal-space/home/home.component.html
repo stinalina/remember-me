@@ -10,13 +10,20 @@
     >
     <div class="flex flex-col justify-center items-center gap-3">
       <h1 class="text-2xl md:text-3xl xl:text-4xl font-bold text-center">
-          Willkommen<br/>
-          <span data-testid="home-username">{{ this.username() }}</span>!
-        </h1>
-      <img
-        class="mask mask-pentagon"
-        alt="profil-bild"
-        src="https://img.daisyui.com/images/stock/photo-1567653418876-5bb0e566e1c2.webp" />
+        Willkommen<br/>
+        <span data-testid="home-username">{{ this.username() }}</span>!
+      </h1>
+      <div>
+        <img
+          class="mask mask-pentagon"
+          alt="profil-bild"
+          src="https://img.daisyui.com/images/stock/photo-1567653418876-5bb0e566e1c2.webp" />
+          <a type="button" 
+            class="btn btn-ghost"
+            onclick="avatarDialog.showModal()">
+            <span class="material-symbols-outlined">ar_on_you</span>
+      </a>
+      </div>
       <ng-container *ngTemplateOutlet="menu"></ng-container>
       <p class="mt-3">Bisher erstellt:</p>
       <div class="w-full max-w-xs tooltip tooltip-bottom"
@@ -78,3 +85,5 @@
     </button>
   </nav>
 </ng-template>
+
+<reme-avatar-dialog (selectAvatar)="changeAvatar($event)"></reme-avatar-dialog>

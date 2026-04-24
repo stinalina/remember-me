@@ -10,11 +10,13 @@ import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/outlet-co
 import { RangePipe } from '@app/shared/pipe/range.pipe';
 import { finalize } from 'rxjs';
 import { StatsComponent } from "./stats/stats.component";
+import { AvatarDialog } from '@app/personal-space/components/avatar-dialog/avatar.dialog';
 
 @Component({
   selector: 'reme-personal-home',
   templateUrl: './home.component.html',
   imports: [
+    AvatarDialog,
     SettingsComponent,
     NgTemplateOutlet,
     NotesComponent,
@@ -49,5 +51,13 @@ export class HomeComponent extends OutletContainer {
         this.router.navigate([ROUTER_TOKENS.LOGIN]); //ignore logout failre and navigate to login page anyway
       })
     ).subscribe();
+  }
+
+  protected changeAvatar(value: string): void {
+    console.log('Avatar ändern: ' + value);
+  }
+
+  protected changeUsername(value: string): void {
+    console.log('Username ändern ' + value);
   }
 }

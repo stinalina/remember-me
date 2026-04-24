@@ -1,0 +1,19 @@
+<dialog id="avatarDialog" class="modal">
+  <div class="modal-box pb-2">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <div class="grid grid-cols-5 gap-y-2 justify-items-center">
+      @for (name of AvatarNames; track $index) {
+        <button type="button" class="btn btn-xl btn-square tooltip"
+        [attr.data-tip]="name"
+        (click)="selectAvatar.emit(name)">
+        <img [src]="name | avatarImage" [alt]="name">
+      </button>
+    }
+    </div>
+    <small class="text-gray-500 w-full text-center">*Avatars provided by 
+      <a class="reme-link" href="https://dicebear.com" target="_blank" rel="noopener noreferrer">DiceBear</a>
+    </small>
+  </div>
+</dialog>
