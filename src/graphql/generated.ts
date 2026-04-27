@@ -1067,14 +1067,6 @@ export type UpdatePreferencesMutationVariables = Exact<{
 
 export type UpdatePreferencesMutation = { __typename?: 'mutation_root', update_User?: { __typename?: 'User_mutation_response', returning: Array<{ __typename?: 'User', Preferences: any }> } | null };
 
-export type UpdateUsernameMutationVariables = Exact<{
-  id: Scalars['uuid']['input'];
-  name: Scalars['String']['input'];
-}>;
-
-
-export type UpdateUsernameMutation = { __typename?: 'mutation_root', update_User?: { __typename?: 'User_mutation_response', returning: Array<{ __typename?: 'User', Name: string }> } | null };
-
 export type InsertNotificationMutationVariables = Exact<{
   objects: Array<Notification_Insert_Input> | Notification_Insert_Input;
 }>;
@@ -1138,26 +1130,6 @@ export const UpdatePreferencesDocument = gql`
   })
   export class UpdatePreferencesGQL extends Apollo.Mutation<UpdatePreferencesMutation, UpdatePreferencesMutationVariables> {
     document = UpdatePreferencesDocument;
-    
-    constructor(apollo: Apollo.Apollo) {
-      super(apollo);
-    }
-  }
-export const UpdateUsernameDocument = gql`
-    mutation UpdateUsername($id: uuid!, $name: String!) {
-  update_User(where: {Id: {_eq: $id}}, _set: {Name: $name}) {
-    returning {
-      Name
-    }
-  }
-}
-    `;
-
-  @Injectable({
-    providedIn: 'root'
-  })
-  export class UpdateUsernameGQL extends Apollo.Mutation<UpdateUsernameMutation, UpdateUsernameMutationVariables> {
-    document = UpdateUsernameDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

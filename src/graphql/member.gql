@@ -12,11 +12,3 @@ mutation UpdatePreferences($id: uuid!, $preferences: jsonb!) {
     }
   }
 }
-
-mutation UpdateUsername($id: uuid!, $name: String!) {
-  update_User(where: {Id: {_eq: $id}}, _set: {Name: $name}) {
-    returning {
-      Name
-    }
-  }
-}
