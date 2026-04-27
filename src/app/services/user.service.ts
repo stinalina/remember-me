@@ -51,6 +51,7 @@ export class UserService {
         else {
           console.error(`User with mail ${mail} not found.`);
           this.currUser.set(null);
+          throw new Error(`Hasura query did not return user data for mail: ${mail}`);
         }
       })
     );

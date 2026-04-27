@@ -6,8 +6,10 @@ import { IUser } from '@shared/models';
 import { filter, first, timeout, catchError } from 'rxjs/operators';
 import { EMPTY } from 'rxjs';
 import { ROUTER_TOKENS } from '@app/app.routes';
+import { ToastService, ToastType } from '@app/services/toast.service';
 
 export const userResolver: ResolveFn<IUser> = () => {
+  const toastService = inject(ToastService);
   const userService = inject(UserService);
   const router = inject(Router);
 
@@ -15,7 +17,8 @@ export const userResolver: ResolveFn<IUser> = () => {
     filter((user): user is IUser => user !== null),
     first(),
     timeout(3_000),
-    catchError(() => {
+    catchError((error) => {
+      toastService.showToast(error.message, ToastType.Error);
       router.navigate([ROUTER_TOKENS.LOGIN]);
       return EMPTY;
     })
