@@ -31,4 +31,9 @@ test.describe('HomeComponent', () => {
     await page.getByRole('button', { name: 'Abmelden' }).click();
     await expect(page).toHaveURL(/.*login/);
   });
+
+  test('should show correct avatar image based on preferences', async ({ page }) => {
+    const avatarImage = page.getByAltText('profil-bild');
+    await expect(avatarImage).toHaveAttribute('src', 'https://api.dicebear.com/9.x/adventurer/svg?seed=Kingston');
+  });
 });

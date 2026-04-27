@@ -1,6 +1,7 @@
 export const environment = {
   production: true,
 
+  DICEBEAR_URL: 'https://api.dicebear.com/9.x/adventurer/svg',
   HASURA_URL: 'https://hasura.orangemeadow-efd57554.germanywestcentral.azurecontainerapps.io/v1/graphql',
   BACKEND_URL: 'https://fa-rememberme-backend-cchucab0bsdpepb5.germanywestcentral-01.azurewebsites.net',
   SEND_WELCOME_MAIL_URL: '/api/sendWelcomeMail',
