@@ -41,3 +41,7 @@ input.range:disabled {
   cursor: default;
   opacity: 0.8;
 }
+
+.reme-mouse-pointer {
+   cursor: pointer;
+}

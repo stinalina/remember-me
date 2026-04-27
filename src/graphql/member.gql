@@ -1,0 +1,22 @@
+query GetMemberById($id: uuid!) {
+  User(where: {Id: {_eq: $id}}) {
+    Name,
+    Preferences
+  }
+}
+
+mutation UpdatePreferences($id: uuid!, $preferences: jsonb!) {
+  update_User(where: {Id: {_eq: $id}}, _set: {Preferences: $preferences}) {
+    returning {
+      Preferences
+    }
+  }
+}
+
+mutation UpdateUsername($id: uuid!, $name: String!) {
+  update_User(where: {Id: {_eq: $id}}, _set: {Name: $name}) {
+    returning {
+      Name
+    }
+  }
+}

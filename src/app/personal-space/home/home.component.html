@@ -13,17 +13,23 @@
         Willkommen<br/>
         <span data-testid="home-username">{{ this.username() }}</span>!
       </h1>
-      <div>
-        <img
-          class="mask mask-pentagon"
-          alt="profil-bild"
-          src="https://img.daisyui.com/images/stock/photo-1567653418876-5bb0e566e1c2.webp" />
-          <a type="button" 
-            class="btn btn-ghost"
-            onclick="avatarDialog.showModal()">
-            <span class="material-symbols-outlined">ar_on_you</span>
-      </a>
+      <div class="avatar indicator">
+        <div class="ring-primary ring-offset-base-100 w-36 rounded-full ring-2 ring-offset-2">
+          <img alt="profil-bild"
+            src="{{ this.avatarName() | avatarImage}}" />
+        </div>
+        <a type="button" 
+          class="indicator-item indicator-bottom indicator-end reme-mouse-pointer"
+          data-testid="home-open-avatar-dialog-button"
+          onclick="avatarDialog.showModal()">
+          <span class="material-symbols-outlined">ar_on_you</span>
+        </a>
       </div>
+      <!-- <button type="button">
+        <span class="reme-mouse-pointer badge badge-lg badge-warning font-bold">
+          @{{ this.username() }}
+        </span>
+      </button> -->
       <ng-container *ngTemplateOutlet="menu"></ng-container>
       <p class="mt-3">Bisher erstellt:</p>
       <div class="w-full max-w-xs tooltip tooltip-bottom"
