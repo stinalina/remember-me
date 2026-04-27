@@ -81,7 +81,7 @@ export class NotificationService {
   private sendWelcomeMail(user: IUser): void {
     const payload = {
       Mail: user.mail,
-      Name: user.name === this.unkownUserName ? '' : user.name
+      Name: user.mail.split('@')[0]
     };
 
     const url = environment.BACKEND_URL + environment.SEND_WELCOME_MAIL_URL;
