@@ -73,8 +73,4 @@ export class HomeComponent extends OutletContainer {
     this.memberService.updatePreferences(this.userService.currUser()!.userId, { avatarName: value })
       .subscribe();
   }
-
-  protected changeUsername(value: string): void {
-    console.log('Username ändern ' + value);
-  }
 }
