@@ -7,7 +7,7 @@ import { ToastService, ToastType } from '@app/services/toast.service';
 import { UserService } from '@app/services/user.service';
 import { IUser } from '@shared/models';
 import { EMPTY } from 'rxjs';
-import { catchError, filter, switchMap, timeout } from 'rxjs/operators';
+import { catchError, filter, switchMap, timeout, first } from 'rxjs/operators';
 
 export const memberResolver: ResolveFn<void> = () => {
   const toastService = inject(ToastService);
@@ -17,6 +17,7 @@ export const memberResolver: ResolveFn<void> = () => {
 
   return toObservable(userService.currUser).pipe(
     filter((user): user is IUser => user !== null),
+    first(),
     timeout(3_000),
     catchError((error) => {
       toastService.showToast(error.message, ToastType.Error);
