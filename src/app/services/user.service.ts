@@ -32,7 +32,7 @@ export class UserService {
     effect(() => {
       const user = this.authService.currentUser();
       if (user?.email && this.authService.isAuthenticated()) {
-        this.getUserByMailOrCreateUserIfNotExists(user.email).pipe(
+        this.loadUserFromDb(user.email).pipe(
           takeUntilDestroyed(this.destroyRef)
         ).subscribe();
       }
