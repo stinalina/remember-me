@@ -1084,6 +1084,7 @@ export type GetNotificationByUserIdQuery = { __typename?: 'query_root', Notifica
 export type InsertUserMutationVariables = Exact<{
   mail: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  preferences: Scalars['jsonb']['input'];
 }>;
 
 
@@ -1177,8 +1178,8 @@ export const GetNotificationByUserIdDocument = gql`
     }
   }
 export const InsertUserDocument = gql`
-    mutation InsertUser($mail: String!, $name: String!) {
-  insert_User(objects: {Mail: $mail, Name: $name}) {
+    mutation InsertUser($mail: String!, $name: String!, $preferences: jsonb!) {
+  insert_User(objects: {Mail: $mail, Name: $name, Preferences: $preferences}) {
     returning {
       Id
       Name

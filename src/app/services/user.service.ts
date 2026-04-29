@@ -1,5 +1,6 @@
 import { computed, DestroyRef, effect, inject, Injectable, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { InitialPreferences } from '@app/personal-space/data/preferences.model';
 import { LocalStorageService } from '@app/services/local-storage.service';
 import { AuthService } from '@app/shared/authentication/auth.service';
 import { GetUserByMailGQL, InsertUserGQL } from '@hasura/generated';
@@ -40,7 +41,7 @@ export class UserService {
 
   public addUserToDb(mail: string): Observable<IUser> {
     const name = mail.split('@')[0];
-    return this.insertUserGQL.mutate({ variables: { mail, name} }).pipe(
+    return this.insertUserGQL.mutate({ variables: { mail, name, preferences: InitialPreferences } }).pipe(
       map(res => ({
         mail,
         name: res.data?.insert_User?.returning[0].Name ?? '',

@@ -41,8 +41,7 @@ export class LoginComponent {
 
     this.authenticationService.signIn(mail, password, rememberMe).pipe(
       takeUntilDestroyed(this.destroyRef),
-    )
-    .subscribe(
+    ).subscribe(
       () => this.router.navigate([ROUTER_TOKENS.HOME])
     );
   }
