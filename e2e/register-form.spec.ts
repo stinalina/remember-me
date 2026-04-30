@@ -44,4 +44,23 @@ test.describe('RegisterComponent', () => {
     const registerButton = page.getByRole('button', { name: 'Loslegen!' });
     await expect(registerButton).toBeEnabled();
   });
+
+  test('new registered user should succesfully added to DB and navigated to personal space', async ({ page }) => {
+    const username = `test${Date.now()}`;
+    const uniqueMail = `${username}@example.com`;
+    await page.getByTestId('register-mail-reme-mail-input').fill(uniqueMail);
+    await page.getByTestId('register-pw-reme-password-input').fill('password123');
+    await page.getByTestId('register-repeat-pw-reme-password-input').fill('password123');
+    await page.getByTestId('register-dsgvo-checkbox').check();
+    await page.getByRole('button', { name: 'Loslegen!' }).click();
+    await page.waitForURL('/login');
+
+    // Warte 3 Sekunden, um sicherzustellen, dass der Benutzer in der Datenbank erstellt wurde
+    await page.waitForTimeout(3000);
+
+    await page.getByTestId('login-reme-mail-input').fill(uniqueMail);
+    await page.getByTestId('login-reme-password-input').fill('password123');
+    await page.getByRole('button', { name: 'Einloggen' }).click();
+    await expect(page).toHaveURL(/.*home/, { timeout: 5000 });
+  });
 });
