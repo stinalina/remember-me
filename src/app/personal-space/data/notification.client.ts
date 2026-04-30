@@ -38,7 +38,7 @@ export class NotificationClient {
   public deleteNotification(id: string): Observable<boolean> {
     return this.deleteNotificationByIdGQL.mutate({ variables: { id } }).pipe(
       takeUntilDestroyed(this.destroyRef),
-      map(() => true),
+      map(result => Boolean(result.data?.delete_Notification_by_pk)),
       catchError(error => {
         console.error('Error deleting notification:', error);
         return of(false);
