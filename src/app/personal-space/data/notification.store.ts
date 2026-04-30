@@ -4,6 +4,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { NotificationClient } from '@app/personal-space/data/notification.client';
 import { ToastService, ToastType } from '@app/services/toast.service';
 import {
+  patchState,
   signalStore,
   withMethods,
   withProps,
@@ -27,7 +28,7 @@ export const NotificationStore = signalStore(
     deleteNotification(id: string): void {
       store._notificationClient.deleteNotification(id).subscribe(success => {
         if (success) {
-          store._reload();
+          patchState(store, { value: store.value()?.filter(n => n.id !== id) ?? [] });
         }
         else {
           store._toastService.showToast('Ups.. Das Backend ist wohl nicht erreichbar.', ToastType.Error);
