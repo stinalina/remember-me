@@ -10,7 +10,9 @@
       }
       @else {
         @for (notification of this.notificationStore.value(); track notification.id) {
-          <reme-notification [notification]="notification"></reme-notification>
+          <reme-notification [notification]="notification"
+            (deleteNotification)="this.notificationStore.deleteNotification($event)">
+          </reme-notification>
         }
       }
     </div>
