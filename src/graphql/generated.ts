@@ -1074,6 +1074,13 @@ export type InsertNotificationMutationVariables = Exact<{
 
 export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', affected_rows: number } | null };
 
+export type DeleteNotificationByIdMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
+
+
+export type DeleteNotificationByIdMutation = { __typename?: 'mutation_root', delete_Notification_by_pk?: { __typename?: 'Notification', Id: any } | null };
+
 export type GetNotificationByUserIdQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['uuid']['input']>;
 }>;
@@ -1149,6 +1156,24 @@ export const InsertNotificationDocument = gql`
   })
   export class InsertNotificationGQL extends Apollo.Mutation<InsertNotificationMutation, InsertNotificationMutationVariables> {
     document = InsertNotificationDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const DeleteNotificationByIdDocument = gql`
+    mutation DeleteNotificationById($id: uuid!) {
+  delete_Notification_by_pk(Id: $id) {
+    Id
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DeleteNotificationByIdGQL extends Apollo.Mutation<DeleteNotificationByIdMutation, DeleteNotificationByIdMutationVariables> {
+    document = DeleteNotificationByIdDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);
