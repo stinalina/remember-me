@@ -58,43 +58,8 @@ describe('UserService', () => {
     expect(service.username()).toBe('new.user');
   });
 
-  it('should update created notes count when count changes', () => {
-    localStorageService.setUserMail('counter@example.de');
-    expect(service.createdNotesThisMonthCount()).toBe(0);
-    localStorageService.increaseSendedNotificationCount();
-    expect(service.createdNotesThisMonthCount()).toBe(1);
-  });
-
-  it('should set currUser when authenticated user is available', () => {
-    expect(service.currUser()).toBeNull();
-    mockCurrentUser.set({ email: 'test@example.de' });
-    mockIsAuthenticated.set(true);
-    TestBed.tick();
-    expect(mockGetUserByMailGQL.fetch).toHaveBeenCalledWith({ variables: { mail: 'test@example.de' } });
-    expect(service.currUser()).toEqual({
-      mail: 'test@example.de',
-      name: 'Max Mustermann',
-      userId: 'user-123',
-    });
-  });
-
-  it('should not load user when not authenticated', () => {
-    mockCurrentUser.set({ email: 'test@example.de' });
-    mockIsAuthenticated.set(false);
-    TestBed.tick();
-    expect(mockGetUserByMailGQL.fetch).not.toHaveBeenCalled();
-    expect(service.currUser()).toBeNull();
-  });
-
-  it('should set currUser to null when user is not found in database', () => {
-    mockGetUserByMailGQL.fetch.mockReturnValue(of({ data: { User: [] } }));
-    mockCurrentUser.set({ email: 'unknown@example.de' });
-    mockIsAuthenticated.set(true);
-    TestBed.tick();
-    expect(service.currUser()).toBeNull();
-  });
-
   it('should create a new user if user does not exist', async () => {
+    mockGetUserByMailGQL.fetch.mockReturnValue(of({ data: { User: [] } }));
     const result = await firstValueFrom(service.getUserByMailOrCreateUserIfNotExists(mail));
     expect(mockInsertUserGQL.mutate).toHaveBeenCalled();
     expect(result.newCreated).toBe(true);
@@ -107,6 +72,34 @@ describe('UserService', () => {
     const result = await firstValueFrom(service.getUserByMailOrCreateUserIfNotExists(mail));
     expect(mockInsertUserGQL.mutate).not.toHaveBeenCalled();
     expect(result.newCreated).toBe(false);
+  });
+
+  it('should update created notes count when count changes', () => {
+    localStorageService.setUserMail('counter@example.de');
+    expect(service.createdNotesThisMonthCount()).toBe(0);
+    localStorageService.increaseSendedNotificationCount();
+    expect(service.createdNotesThisMonthCount()).toBe(1);
+  });
+
+  it('should set currUser when authenticated user is available', () => {
+    mockCurrentUser.set({ email: 'test@example.de' });
+    mockIsAuthenticated.set(true);
+    TestBed.tick();
+    expect(mockGetUserByMailGQL.fetch).toHaveBeenCalledWith({ variables: { mail: 'test@example.de' } });
+    expect(service.currUser()).toEqual({
+      mail: 'test@example.de',
+      name: 'Max Mustermann',
+      userId: 'user-123',
+      newCreated: false,
+    });
+  });
+
+  it('should set currUser to null when user is not found in database', () => {
+    mockGetUserByMailGQL.fetch.mockReturnValue(of({ data: { User: [] } }));
+    mockCurrentUser.set({ email: 'unknown@example.de' });
+    mockIsAuthenticated.set(true);
+    TestBed.tick();
+    expect(service.currUser()).toBeNull();
   });
 });
 
