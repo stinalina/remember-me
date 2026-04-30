@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { InsertNotificationGQL, InsertUserGQL } from '@hasura/generated';
+import { InsertNotificationGQL } from '@hasura/generated';
 import { INotification, IUser } from '@shared/models';
 import { firstValueFrom, of, throwError } from 'rxjs';
 import { NotificationService } from './notification.service';
@@ -8,7 +8,6 @@ import { NotificationService } from './notification.service';
 describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
   let service: NotificationService;
 
-  let mockInsertUserGQL: { mutate: ReturnType<typeof vi.fn> };
   let mockInsertNotificationGQL: { mutate: ReturnType<typeof vi.fn> };
   let httpMock: { post: ReturnType<typeof vi.fn> };
 
@@ -27,11 +26,6 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
   };
 
   beforeEach(() => {
-    mockInsertUserGQL = {
-      mutate: vi.fn().mockReturnValue(
-        of({ data: { insert_User: { returning: [{ Name: 'Heinz', Id: 'def-456' }] } } })
-      )
-    };
     mockInsertNotificationGQL = { mutate: vi.fn().mockReturnValue(of({ data: {} })) };
     httpMock = { post: vi.fn().mockReturnValue(of({})) };
 
@@ -39,7 +33,6 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
       providers: [
         NotificationService,
         { provide: HttpClient, useValue: httpMock },
-        { provide: InsertUserGQL, useValue: mockInsertUserGQL },
         { provide: InsertNotificationGQL, useValue: mockInsertNotificationGQL }
       ]
     });

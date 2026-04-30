@@ -1,7 +1,7 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { firstValueFrom, of } from 'rxjs';
-import { GetUserByMailGQL } from '@hasura/generated';
+import { GetUserByMailGQL, InsertUserGQL } from '@hasura/generated';
 import { AuthService } from '@app/shared/authentication/auth.service';
 import { LocalStorageService } from './local-storage.service';
 import { UserService } from './user.service';
@@ -19,10 +19,17 @@ describe('UserService', () => {
   let service: UserService;
   let localStorageService: LocalStorageService;
   let mockGetUserByMailGQL: { fetch: ReturnType<typeof vi.fn> };
+  let mockInsertUserGQL: { mutate: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
     mockCurrentUser.set(null);
     mockIsAuthenticated.set(false);
+
+    mockInsertUserGQL = {
+      mutate: vi.fn().mockReturnValue(
+        of({ data: { insert_User: { returning: [{ Name: 'Heinz', Id: 'def-456' }] } } })
+      )
+    };
 
     mockGetUserByMailGQL = {
       fetch: vi.fn().mockReturnValue(
@@ -36,6 +43,7 @@ describe('UserService', () => {
         UserService,
         { provide: AuthService, useValue: mockAuthService },
         { provide: GetUserByMailGQL, useValue: mockGetUserByMailGQL },
+        { provide: InsertUserGQL, useValue: mockInsertUserGQL },
       ]
     });
 
@@ -88,6 +96,7 @@ describe('UserService', () => {
 
   it('should create a new user if user does not exist', async () => {
     const result = await firstValueFrom(service.getUserByMailOrCreateUserIfNotExists(mail));
+    expect(mockInsertUserGQL.mutate).toHaveBeenCalled();
     expect(result.newCreated).toBe(true);
   });
   
@@ -96,6 +105,7 @@ describe('UserService', () => {
       of({ data: { User: [{ Name: 'Horst', Id: 'abc-123' }] } })
     );
     const result = await firstValueFrom(service.getUserByMailOrCreateUserIfNotExists(mail));
+    expect(mockInsertUserGQL.mutate).not.toHaveBeenCalled();
     expect(result.newCreated).toBe(false);
   });
 });
