@@ -2,6 +2,7 @@ import { withResource } from '@angular-architects/ngrx-toolkit';
 import { inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { NotificationClient } from '@app/personal-space/data/notification.client';
+import { ToastService, ToastType } from '@app/services/toast.service';
 import {
   signalStore,
   withMethods,
@@ -13,6 +14,7 @@ export const NotificationStore = signalStore(
 
   withProps(() => ({
     _notificationClient: inject(NotificationClient),
+    _toastService: inject(ToastService),
   })),
 
   withResource((store) => rxResource({
@@ -26,6 +28,9 @@ export const NotificationStore = signalStore(
       store._notificationClient.deleteNotification(id).subscribe(success => {
         if (success) {
           store._reload();
+        }
+        else {
+          store._toastService.showToast('Ups.. Das Backend ist wohl nicht erreichbar.', ToastType.Error);
         }
       });
     }

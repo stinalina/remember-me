@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { INotification } from '@app/personal-space/data/notification.model';
 import { SafeHtmlPipe } from '@shared/pipe/safe-html.pipe';
 
 @Component({
   selector: 'reme-notification',
-  templateUrl: './notification.html',
+  templateUrl: './notification.component.html',
   imports: [
     CommonModule,
     SafeHtmlPipe,
@@ -14,4 +14,5 @@ import { SafeHtmlPipe } from '@shared/pipe/safe-html.pipe';
 })
 export class NotificationComponent {
   public readonly notification = input.required<INotification>();
+  public readonly deleteNotification = output<string>();
 }
