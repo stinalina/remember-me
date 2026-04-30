@@ -1,11 +1,12 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
 import { GetUserByMailGQL } from '@hasura/generated';
 import { AuthService } from '@app/shared/authentication/auth.service';
 import { LocalStorageService } from './local-storage.service';
 import { UserService } from './user.service';
 
+const mail = 'test@mail.de';
 const mockCurrentUser = signal<{ email: string } | null>(null);
 const mockIsAuthenticated = signal<boolean>(false);
 
@@ -83,6 +84,19 @@ describe('UserService', () => {
     mockIsAuthenticated.set(true);
     TestBed.tick();
     expect(service.currUser()).toBeNull();
+  });
+
+  it('should create a new user if user does not exist', async () => {
+    const result = await firstValueFrom(service.getUserByMailOrCreateUserIfNotExists(mail));
+    expect(result.newCreated).toBe(true);
+  });
+  
+  it('should return existing user if user exists', async () => {
+    mockGetUserByMailGQL.fetch.mockReturnValue(
+      of({ data: { User: [{ Name: 'Horst', Id: 'abc-123' }] } })
+    );
+    const result = await firstValueFrom(service.getUserByMailOrCreateUserIfNotExists(mail));
+    expect(result.newCreated).toBe(false);
   });
 });
 
