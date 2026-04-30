@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { INotification } from '@app/personal-space/data/notification.model';
+import { ConfirmDialog } from '@app/shared/confirmation-dialog/confirmation.dialog';
 import { SafeHtmlPipe } from '@shared/pipe/safe-html.pipe';
 
 @Component({
@@ -8,6 +9,7 @@ import { SafeHtmlPipe } from '@shared/pipe/safe-html.pipe';
   templateUrl: './notification.component.html',
   imports: [
     CommonModule,
+    ConfirmDialog,
     SafeHtmlPipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,

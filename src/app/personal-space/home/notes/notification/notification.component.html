@@ -26,7 +26,7 @@
     <div class="card-footer">
       <div class="card-actions flex flex-row gap-2 justify-end">
         <button type="button" class="btn btn-xs btn-square"
-          (click)="deleteNotification.emit(notification.id)">
+          (click)="deleteDialog.show()">
           <span class="material-symbols-outlined">delete</span>
         </button>
       </div>
@@ -35,3 +35,8 @@
       </small>
   </div>
 </div>
+
+<reme-confirm-dialog #deleteDialog
+  warning="Notiz dauerhaft löschen?"
+  (confirm)="deleteNotification.emit(notification.id)">
+</reme-confirm-dialog>

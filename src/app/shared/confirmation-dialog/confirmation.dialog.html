@@ -1,0 +1,11 @@
+<dialog #dialogRef class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Achtung!</h3>
+    <p class="py-4">{{ this.warning() }}</p>
+    <div class="modal-action">
+
+      <button type="button" class="btn" (click)="close()">Abbrechen</button>
+      <button type="submit" class="btn btn-error" (click)="onConfirm()">Passt!</button>
+    </div>
+  </div>
+</dialog>
