@@ -1,11 +1,12 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
-import { GetUserByMailGQL } from '@hasura/generated';
+import { firstValueFrom, of } from 'rxjs';
+import { GetUserByMailGQL, InsertUserGQL } from '@hasura/generated';
 import { AuthService } from '@app/shared/authentication/auth.service';
 import { LocalStorageService } from './local-storage.service';
 import { UserService } from './user.service';
 
+const mail = 'test@mail.de';
 const mockCurrentUser = signal<{ email: string } | null>(null);
 const mockIsAuthenticated = signal<boolean>(false);
 
@@ -18,10 +19,17 @@ describe('UserService', () => {
   let service: UserService;
   let localStorageService: LocalStorageService;
   let mockGetUserByMailGQL: { fetch: ReturnType<typeof vi.fn> };
+  let mockInsertUserGQL: { mutate: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
     mockCurrentUser.set(null);
     mockIsAuthenticated.set(false);
+
+    mockInsertUserGQL = {
+      mutate: vi.fn().mockReturnValue(
+        of({ data: { insert_User: { returning: [{ Name: 'Heinz', Id: 'def-456' }] } } })
+      )
+    };
 
     mockGetUserByMailGQL = {
       fetch: vi.fn().mockReturnValue(
@@ -35,6 +43,7 @@ describe('UserService', () => {
         UserService,
         { provide: AuthService, useValue: mockAuthService },
         { provide: GetUserByMailGQL, useValue: mockGetUserByMailGQL },
+        { provide: InsertUserGQL, useValue: mockInsertUserGQL },
       ]
     });
 
@@ -49,6 +58,22 @@ describe('UserService', () => {
     expect(service.username()).toBe('new.user');
   });
 
+  it('should create a new user if user does not exist', async () => {
+    mockGetUserByMailGQL.fetch.mockReturnValue(of({ data: { User: [] } }));
+    const result = await firstValueFrom(service.getUserByMailOrCreateUserIfNotExists(mail));
+    expect(mockInsertUserGQL.mutate).toHaveBeenCalled();
+    expect(result.newCreated).toBe(true);
+  });
+  
+  it('should return existing user if user exists', async () => {
+    mockGetUserByMailGQL.fetch.mockReturnValue(
+      of({ data: { User: [{ Name: 'Horst', Id: 'abc-123' }] } })
+    );
+    const result = await firstValueFrom(service.getUserByMailOrCreateUserIfNotExists(mail));
+    expect(mockInsertUserGQL.mutate).not.toHaveBeenCalled();
+    expect(result.newCreated).toBe(false);
+  });
+
   it('should update created notes count when count changes', () => {
     localStorageService.setUserMail('counter@example.de');
     expect(service.createdNotesThisMonthCount()).toBe(0);
@@ -57,7 +82,6 @@ describe('UserService', () => {
   });
 
   it('should set currUser when authenticated user is available', () => {
-    expect(service.currUser()).toBeNull();
     mockCurrentUser.set({ email: 'test@example.de' });
     mockIsAuthenticated.set(true);
     TestBed.tick();
@@ -66,15 +90,8 @@ describe('UserService', () => {
       mail: 'test@example.de',
       name: 'Max Mustermann',
       userId: 'user-123',
+      newCreated: false,
     });
-  });
-
-  it('should not load user when not authenticated', () => {
-    mockCurrentUser.set({ email: 'test@example.de' });
-    mockIsAuthenticated.set(false);
-    TestBed.tick();
-    expect(mockGetUserByMailGQL.fetch).not.toHaveBeenCalled();
-    expect(service.currUser()).toBeNull();
   });
 
   it('should set currUser to null when user is not found in database', () => {

@@ -27,13 +27,14 @@ import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
 })
 export class CreateNotificationComponent implements OnInit, OnDestroy {
   private readonly notificationService = inject(NotificationService);
+  private readonly userService = inject(UserService);
   private readonly fb = inject(FormBuilder);
   private readonly sessionStorage = inject(SESSION_STORAGE);
   private readonly localStorageService = inject(LocalStorageService);
   private readonly toastService = inject(ToastService);
   private readonly typewriterEffectService = inject(TypewriterEffectService);
 
-  private readonly freeNotificationsLimit = inject(UserService).freeNotificationsLimit;
+  private readonly freeNotificationsLimit = this.userService.freeNotificationsLimit;
   private readonly limitReached = signal<boolean>(false);
 
   public readonly editor: Editor = new Editor();
@@ -153,7 +154,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     } satisfies INotification;
 
     this.sendingNotification.set(true)
-    this.notificationService.getUserByMailOrCreateUserIfNotExists(notification.mail).pipe(
+    this.userService.getUserByMailOrCreateUserIfNotExists(notification.mail).pipe(
       delay(500), // prevent race condition when new user is created and immediately receives a notification
       switchMap((user: IUser) => this.notificationService.createNotification(notification, user)),
       catchError((error) => {

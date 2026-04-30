@@ -1,47 +1,20 @@
 import { HttpClient } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
-import { catchError, map, Observable, of, switchMap } from 'rxjs';
-import { GetUserByMailGQL, InsertNotificationGQL, InsertNotificationMutationVariables, InsertUserGQL } from "@hasura/generated";
-import { INotification, IUser } from "@shared/models";
-import { ToastService, ToastType } from "./toast.service";
+import { DestroyRef, inject, Injectable } from "@angular/core";
 import { environment } from "@environments/environment";
+import { InsertNotificationGQL, InsertNotificationMutationVariables } from "@hasura/generated";
+import { INotification, IUser } from "@shared/models";
+import { catchError, map, Observable, of } from 'rxjs';
+import { ToastService, ToastType } from "./toast.service";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
+  private readonly destroyRef = inject(DestroyRef);
   private readonly httpClient = inject(HttpClient);
   private readonly toastService = inject(ToastService);
   
-  private readonly insertUserGQL = inject(InsertUserGQL);
-  private readonly getUserByMailGQL = inject(GetUserByMailGQL);
   private readonly insertNotificationGQL = inject(InsertNotificationGQL);
-
-  private readonly unkownUserName = 'Unknown';
   
-  public getUserByMailOrCreateUserIfNotExists(mail: string): Observable<IUser> {
-    return this.getUserByMailGQL.fetch({ variables: { mail } }).pipe(
-      switchMap((result) => {
-        const userExists = result.data?.User.length !== 0;
-        if (userExists) {
-          return of({
-            mail,
-            name: result.data?.User[0].Name ?? '',
-            userId: result.data?.User[0].Id,
-            newCreated: false
-          } satisfies IUser);
-        } else {
-          return this.insertUserGQL.mutate({ variables: { mail, name: this.unkownUserName } }).pipe(
-            map((res) => ({
-              mail,
-              name: res.data?.insert_User?.returning[0].Name ?? '',
-              userId: res.data?.insert_User?.returning[0].Id,
-              newCreated: true
-            } satisfies IUser)
-          ));
-        }
-      })
-    );
-  }
-
   /**
    * Inserts notification and send email.
    * @param notification 
@@ -59,6 +32,7 @@ export class NotificationService {
       ]
     };
     return this.insertNotificationGQL.mutate({variables}).pipe(
+      takeUntilDestroyed(this.destroyRef),
       map(() => {
         if (user.newCreated === true) {
           this.sendWelcomeMail(user);
@@ -81,12 +55,13 @@ export class NotificationService {
   private sendWelcomeMail(user: IUser): void {
     const payload = {
       Mail: user.mail,
-      Name: user.name === this.unkownUserName ? '' : user.name
+      Name: user.mail.split('@')[0]
     };
 
     const url = environment.BACKEND_URL + environment.SEND_WELCOME_MAIL_URL;
-    this.httpClient.post(url, payload)
-    .subscribe({
+    this.httpClient.post(url, payload).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       error: (error) => console.error(`Error sending welcome email: ${JSON.stringify(error)}`)
     });
   }
