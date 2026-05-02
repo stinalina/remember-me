@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
-import { LandingPageComponent } from '@app/pages/landing-page/landing-page';
+import { LandingPageComponent } from '@app/anonym-space/pages/landing-page/landing-page';
 import { HomeComponent } from '@app/personal-space/home/home.component';
-import { authGuard } from '@app/shared/authentication/auth.guard';
 import { memberResolver } from '@app/personal-space/utils/member.resolver';
+import { authGuard } from '@app/shared/authentication/auth.guard';
 import { SelectedTabComponentEnum } from '@app/shared/outlet-container';
 
 export enum ROUTER_TOKENS {

@@ -4,13 +4,13 @@ import { Router, RouterModule } from '@angular/router';
 import { FreeNotificationComponent } from '@app/anonym-space/components/free-notification/free-notification.component';
 import { LoginComponent } from '@app/anonym-space/components/login/login.component';
 import { RegisterComponent } from '@app/anonym-space/components/register/register.component';
-import { HomePage } from '@app/pages/home/home-page.component';
-import { ImpressumComponent } from '@app/pages/impressum/impressum.component';
+import { HomePage } from '@app/anonym-space/pages/home/home-page.component';
+import { ImpressumComponent } from '@app/anonym-space/pages/impressum/impressum.component';
+import { ROUTER_TOKENS } from '@app/app.routes';
 import { AuthService } from '@app/shared/authentication/auth.service';
 import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/outlet-container';
 import { ThemeToggleComponent } from '@app/shared/theme-toggle/theme-toggle.component';
 import { environment } from '@environments/environment';
-import { ROUTER_TOKENS } from './../../app.routes';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

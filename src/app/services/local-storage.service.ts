@@ -23,7 +23,6 @@ export class LocalStorageService {
       const month = new Date().getMonth();
       const lastMonth = Number(value[1]);
       if (month !== lastMonth) {
-        this.setNotificationCount(0, userMail);
         return 0;
       }
       return Number(value[0]);
