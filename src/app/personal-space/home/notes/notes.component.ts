@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NotificationStore } from '@app/personal-space/data/notification.store';
 import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.component';
 import { NotificationComponent } from "./notification/notification.component";
+import { Navbar } from '@app/personal-space/home/notes/navbar/navbar';
 
 @Component({
   selector: 'reme-personal-notes',
@@ -10,6 +11,7 @@ import { NotificationComponent } from "./notification/notification.component";
   imports: [
     CommonModule,
     ContentFrameComponent,
+    Navbar,
     NotificationComponent,
 ],
   changeDetection: ChangeDetectionStrategy.OnPush,
