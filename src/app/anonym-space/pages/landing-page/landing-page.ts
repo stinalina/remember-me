@@ -1,9 +1,9 @@
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, ElementRef, inject, input, linkedSignal, viewChild } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { FreeNotificationComponent } from '@app/components/free-notification/free-notification.component';
-import { LoginComponent } from '@app/components/login/login.component';
-import { RegisterComponent } from '@app/components/register/register.component';
+import { FreeNotificationComponent } from '@app/anonym-space/components/free-notification/free-notification.component';
+import { LoginComponent } from '@app/anonym-space/components/login/login.component';
+import { RegisterComponent } from '@app/anonym-space/components/register/register.component';
 import { HomePage } from '@app/pages/home/home-page.component';
 import { ImpressumComponent } from '@app/pages/impressum/impressum.component';
 import { AuthService } from '@app/shared/authentication/auth.service';

@@ -39,7 +39,7 @@
         "./src/app/services/*"
       ],
       "@components/*": [
-        "./src/app/components/*"
+        "src/app/anonym-space/components/*"
       ],
       "@pages/*": [
         "./src/app/pages/*"
