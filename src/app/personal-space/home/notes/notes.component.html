@@ -1,7 +1,7 @@
 <reme-content-frame [fullHeight]="true">
   <section class="h-full">
     <reme-navbar></reme-navbar>
-    <div class="md:py-4 xl:py-6 py-3 grid grid-cols-3 gap-3">
+    <div class="py-6 grid grid-cols-3 gap-3 h-[85vh] px-1 overflow-auto">
       @if (this.notificationStore.isLoading()) {
         <p>Loading...</p>
         <span class="loading loading-dots loading-xl"></span>
@@ -17,11 +17,15 @@
             (deleteNotification)="this.notificationStore.deleteNotification($event)">
           </reme-notification>
         }
-        @for (g of trailingGhostCount() | range; track g) {
+        @for (elem of trailingGhostCount() -1 | range; track $index) {
           <ng-container *ngTemplateOutlet="ghostCard"></ng-container>
         }
         <div class="col-span-3"><div class="divider my-0"></div></div>
-        @for (g of 3 | range; track g) {
+        @for (elem of 2 | range; track $index) {
+          <ng-container *ngTemplateOutlet="ghostCard"></ng-container>
+        }
+        <div class="col-span-3"><div class="divider my-0"></div></div>
+        @for (elem of 2 | range; track $index) {
           <ng-container *ngTemplateOutlet="ghostCard"></ng-container>
         }
       }
