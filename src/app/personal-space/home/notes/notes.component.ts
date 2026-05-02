@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NotificationStore } from '@app/personal-space/data/notification.store';
 import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.component';
@@ -12,10 +12,12 @@ import { Navbar } from '@app/personal-space/home/notes/navbar/navbar';
     CommonModule,
     ContentFrameComponent,
     Navbar,
+    NgTemplateOutlet,
     NotificationComponent,
 ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotesComponent {
+  protected readonly todayDate = new Date();
   protected readonly notificationStore = inject(NotificationStore);
 }
