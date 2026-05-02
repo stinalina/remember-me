@@ -1,6 +1,5 @@
 <reme-content-frame [fullHeight]="true">
   <section class="h-full">
-    <!-- <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">Erinnerungen</h1> -->
     <reme-navbar></reme-navbar>
     <div class="md:py-4 xl:py-6 py-3 grid grid-cols-3 gap-3">
       @if (this.notificationStore.isLoading()) {
@@ -8,13 +7,22 @@
         <span class="loading loading-dots loading-xl"></span>
       } @else if (this.notificationStore.error()) {
         <p>Error: {{ this.notificationStore.error() }}</p>
-      }
-      @else {
+      } @else {
         <ng-container *ngTemplateOutlet="placeholderForCreateNew"></ng-container>
-        @for (notification of this.notificationStore.value(); track notification.id) {
+        @for (notification of this.notificationStore.value(); track notification.id; let i = $index) {
+          @if (i % 3 === 2) {
+            <div class="col-span-3"><div class="divider my-0"></div></div>
+          }
           <reme-notification [notification]="notification"
             (deleteNotification)="this.notificationStore.deleteNotification($event)">
           </reme-notification>
+        }
+        @for (g of trailingGhostCount() | range; track g) {
+          <ng-container *ngTemplateOutlet="ghostCard"></ng-container>
+        }
+        <div class="col-span-3"><div class="divider my-0"></div></div>
+        @for (g of 3 | range; track g) {
+          <ng-container *ngTemplateOutlet="ghostCard"></ng-container>
         }
       }
     </div>
@@ -22,7 +30,7 @@
 </reme-content-frame>
 
 <ng-template #placeholderForCreateNew>
-<div class="skeleton card xl:w-xs shadow-sm bg-gray-100">
+<div #placeholderCard class="skeleton card xl:w-xs shadow-sm bg-gray-100">
   <div class="card-body p-4 pb-1">
     <span class="skeleton badge badge-sm badge-warning font-bold">
       Fällig: XX.XX.XXXX
@@ -40,4 +48,8 @@
     </small>
   </div>
 </div>
+</ng-template>
+
+<ng-template #ghostCard>
+<div class="card border-2 border-dashed h-[315] border-base-300 xl:w-xs opacity-40"></div>
 </ng-template>
