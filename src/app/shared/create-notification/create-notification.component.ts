@@ -1,19 +1,18 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TypewriterActionType, TypewriterEffectService } from '@app/services/typewriter-effect.service';
 import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
 import { restrictFreeLimitValidator } from '@app/shared/validators/restrict-free-limit.validator';
 import { LocalStorageService } from '@services/local-storage.service';
-import { NotificationService } from '@services/notification.service';
 import { ToastService, ToastType } from '@services/toast.service';
 import { UserService } from '@services/user.service';
 import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '@shared/editor-config.token';
-import { INotification, IUser } from '@shared/models';
+import { ICreateNotification } from '@shared/models';
 import { SESSION_STORAGE } from '@shared/storage.token';
 import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
-import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
+import { catchError, EMPTY, finalize, Observable } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,13 +25,15 @@ import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
   ] 
 })
 export class CreateNotificationComponent implements OnInit, OnDestroy {
-  private readonly notificationService = inject(NotificationService);
+  public readonly createNotificationAction = input.required<(notification: ICreateNotification) => Observable<void>>();
+
   private readonly userService = inject(UserService);
   private readonly fb = inject(FormBuilder);
   private readonly sessionStorage = inject(SESSION_STORAGE);
   private readonly localStorageService = inject(LocalStorageService);
   private readonly toastService = inject(ToastService);
   private readonly typewriterEffectService = inject(TypewriterEffectService);
+  private readonly destroyRef = inject(DestroyRef);
 
   private readonly freeNotificationsLimit = this.userService.freeNotificationsLimit;
   private readonly limitReached = signal<boolean>(false);
@@ -151,12 +152,12 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
       content: this.myForm.value.content!,
       dueDate: this.myForm.value.dateTime!.toString(),
       mail: this.myForm.value.mail!
-    } satisfies INotification;
+    } satisfies ICreateNotification;
 
     this.sendingNotification.set(true)
-    this.userService.getUserByMailOrCreateUserIfNotExists(notification.mail).pipe(
-      delay(500), // prevent race condition when new user is created and immediately receives a notification
-      switchMap((user: IUser) => this.notificationService.createNotification(notification, user)),
+
+    this.createNotificationAction()(notification).pipe(
+      takeUntilDestroyed(this.destroyRef),
       catchError((error) => {
         console.error(`Error creating notification.\n Error message: ${error.message}\n Stack trace: ${error.stack}`);
         this.toastService.showToast('Error creating notification. Please try again.', ToastType.Error);

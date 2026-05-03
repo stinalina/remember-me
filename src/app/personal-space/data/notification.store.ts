@@ -2,6 +2,7 @@ import { withResource } from '@angular-architects/ngrx-toolkit';
 import { inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { NotificationClient } from '@app/personal-space/data/notification.client';
+import { INotification } from '@app/personal-space/data/notification.model';
 import { ToastService, ToastType } from '@app/services/toast.service';
 import {
   patchState,
@@ -34,6 +35,16 @@ export const NotificationStore = signalStore(
           store._toastService.showToast('Ups.. Das Backend ist wohl nicht erreichbar.', ToastType.Error);
         }
       });
-    }
+    },
+    insertNotification(notification: INotification): void {
+      store._notificationClient.insertNotification(notification).subscribe(success => {
+        if (success) {
+          patchState(store, { value: [...(store.value() ?? []), notification] });
+        }
+        else {
+          store._toastService.showToast('Ups.. Das Backend ist wohl nicht erreichbar.', ToastType.Error);
+        }
+      });
+    },
   })),
 );

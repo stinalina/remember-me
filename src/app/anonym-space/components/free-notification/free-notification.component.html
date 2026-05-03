@@ -2,7 +2,7 @@
   <div class="max-w-md">
     <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">Notiz erstellen</h1>
     <div class="md:py-3 xl:py-6 py-3">
-      <reme-create-notification></reme-create-notification>
+      <reme-create-notification [createNotificationAction]="this.createNotification.bind(this)"/>
     </div>
       <span>👉 Notiz überarbeiten? <button class="btn-ghost reme-link" (click)="requestRegistration.emit()">Melde dich noch heute an!</button></span>
   </div>

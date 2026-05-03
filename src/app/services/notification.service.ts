@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { DestroyRef, inject, Injectable } from "@angular/core";
 import { environment } from "@environments/environment";
 import { InsertNotificationGQL, InsertNotificationMutationVariables } from "@hasura/generated";
-import { INotification, IUser } from "@shared/models";
+import { ICreateNotification, IUser } from "@shared/models";
 import { catchError, map, Observable, of } from 'rxjs';
 import { ToastService, ToastType } from "./toast.service";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
@@ -20,7 +20,7 @@ export class NotificationService {
    * @param notification 
    * @returns a bollean indicating whether the operation was successful.
    */
-  public createNotification(notification: INotification, user: IUser): Observable<boolean> {
+  public createNotification(notification: ICreateNotification, user: IUser): Observable<boolean> {
     const variables: InsertNotificationMutationVariables = {
       objects: [
         {

@@ -7,6 +7,7 @@ import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.c
 import { RangePipe } from '@app/shared/pipe/range.pipe';
 import { NotificationComponent } from "./notification/notification.component";
 import { CreateNotificationDialog } from '@app/personal-space/home/notes/create-notification/create-notification.dialog';
+import { INotification } from '@app/personal-space/data/notification.model';
 
 @Component({
   selector: 'reme-personal-notes',
@@ -33,6 +34,15 @@ export class NotesComponent {
   });
 
   protected openCreateNoteModal(): void {
-    CreateNotificationDialog.open(this.dialog);
+    CreateNotificationDialog.open(this.dialog)
+    .subscribe((result: INotification | undefined) => {
+      if (result) {
+        console.dir(result);
+        this.notificationStore.insertNotification(result);
+      }
+      else {
+        // Creation aborted
+      }
+    });
   }
 }
