@@ -37,14 +37,7 @@ export const NotificationStore = signalStore(
       });
     },
     insertNotification(notification: INotification): void {
-      store._notificationClient.insertNotification(notification).subscribe(success => {
-        if (success) {
-          patchState(store, { value: [...(store.value() ?? []), notification] });
-        }
-        else {
-          store._toastService.showToast('Ups.. Das Backend ist wohl nicht erreichbar.', ToastType.Error);
-        }
-      });
+      patchState(store, { value: [...(store.value() ?? []), notification] });
     },
   })),
 );

@@ -1,6 +1,14 @@
 mutation InsertNotification($objects: [Notification_insert_input!]!) {
   insert_Notification(objects: $objects) {
-    affected_rows
+    returning {
+      Content
+      CreatedAt
+      DueDate
+      Id
+      UserId
+      Subject
+      RememberCount
+    }
   }
 }
 

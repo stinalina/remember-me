@@ -1,18 +1,21 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, OnInit, output, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { INotification } from '@app/personal-space/data/notification.model';
 import { TypewriterActionType, TypewriterEffectService } from '@app/services/typewriter-effect.service';
 import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
 import { restrictFreeLimitValidator } from '@app/shared/validators/restrict-free-limit.validator';
+import { Notification_Insert_Input } from '@hasura/generated';
 import { LocalStorageService } from '@services/local-storage.service';
+import { NotificationService } from '@services/notification.service';
 import { ToastService, ToastType } from '@services/toast.service';
 import { UserService } from '@services/user.service';
 import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '@shared/editor-config.token';
-import { ICreateNotification } from '@shared/models';
+import { IUser } from '@shared/models';
 import { SESSION_STORAGE } from '@shared/storage.token';
 import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
-import { catchError, EMPTY, finalize, Observable } from 'rxjs';
+import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,15 +28,15 @@ import { catchError, EMPTY, finalize, Observable } from 'rxjs';
   ] 
 })
 export class CreateNotificationComponent implements OnInit, OnDestroy {
-  public readonly createNotificationAction = input.required<(notification: ICreateNotification) => Observable<void>>();
+  public readonly createdNotification = output<INotification | undefined>();
 
+  private readonly notificationService = inject(NotificationService);
   private readonly userService = inject(UserService);
   private readonly fb = inject(FormBuilder);
   private readonly sessionStorage = inject(SESSION_STORAGE);
   private readonly localStorageService = inject(LocalStorageService);
   private readonly toastService = inject(ToastService);
   private readonly typewriterEffectService = inject(TypewriterEffectService);
-  private readonly destroyRef = inject(DestroyRef);
 
   private readonly freeNotificationsLimit = this.userService.freeNotificationsLimit;
   private readonly limitReached = signal<boolean>(false);
@@ -148,29 +151,32 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     }
 
     const notification = {
-      subject: this.myForm.value.subject || this.placeholderSubject,
-      content: this.myForm.value.content!,
-      dueDate: this.myForm.value.dateTime!.toString(),
-      mail: this.myForm.value.mail!
-    } satisfies ICreateNotification;
+      Subject: this.myForm.value.subject || this.placeholderSubject,
+      Content: this.myForm.value.content!,
+      DueDate: this.myForm.value.dateTime!.toString(),
+      UserId: this.userService.currUser()?.userId,
+    } satisfies Notification_Insert_Input;
 
     this.sendingNotification.set(true)
-
-    this.createNotificationAction()(notification).pipe(
-      takeUntilDestroyed(this.destroyRef),
+    this.userService.getUserByMailOrCreateUserIfNotExists(this.myForm.value.mail!).pipe(
+      delay(500), // prevent race condition when new user is created and immediately receives a notification
+      switchMap((user: IUser) => this.notificationService.createNotification(notification, user)),
       catchError((error) => {
         console.error(`Error creating notification.\n Error message: ${error.message}\n Stack trace: ${error.stack}`);
         this.toastService.showToast('Error creating notification. Please try again.', ToastType.Error);
         this.retry.set(true);
+        this.createdNotification.emit(undefined);
         return EMPTY;
       }),
       finalize(() => {
         this.sendingNotification.set(false);
         this.retry.set(false);
       })
-    ).subscribe(() => {
+    ).subscribe((result) => {
+      this.createdNotification.emit(result);
+
       this.resetForm();
-      this.localStorageService.setUserMail(notification.mail);
+      this.localStorageService.setUserMail(this.myForm.value.mail!);
       this.localStorageService.increaseSendedNotificationCount();
       if (this.checkIfMaxSendedNotificationCountIsReached()) {
         this.toastService.showToast(
