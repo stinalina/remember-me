@@ -37,7 +37,6 @@ export class NotesComponent {
     CreateNotificationDialog.open(this.dialog)
     .subscribe((result: INotification | undefined) => {
       if (result) {
-        console.dir(result);
         this.notificationStore.insertNotification(result);
       }
       else {
