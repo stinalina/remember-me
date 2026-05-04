@@ -18,7 +18,12 @@ export class CreateNotificationDialog {
   private dialogRef: DialogRef<INotification | undefined> = inject(DialogRef);
   
   public static open(dialog: Dialog): Observable<INotification | undefined> {
-    return dialog.open<INotification | undefined>(CreateNotificationDialog).closed;
+    return dialog.open<INotification | undefined>(CreateNotificationDialog,
+      {
+        hasBackdrop: false,
+        disableClose: true
+      }
+    ).closed;
   }
 
   protected close(result: INotification | undefined): void {

@@ -37,7 +37,7 @@ export const NotificationStore = signalStore(
       });
     },
     insertNotification(notification: INotification): void {
-      patchState(store, { value: [...(store.value() ?? []), notification] });
+      patchState(store, { value: [notification, ...(store.value() ?? [])] });
     },
   })),
 );
