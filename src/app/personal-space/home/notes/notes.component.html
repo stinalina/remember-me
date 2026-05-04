@@ -17,16 +17,23 @@
             (deleteNotification)="this.notificationStore.deleteNotification($event)">
           </reme-notification>
         }
+
         @for (elem of trailingGhostCount() -1 | range; track $index) {
           <ng-container *ngTemplateOutlet="ghostCard"></ng-container>
         }
-        <div class="col-span-3"><div class="divider my-0"></div></div>
-        @for (elem of 2 | range; track $index) {
-          <ng-container *ngTemplateOutlet="ghostCard"></ng-container>
+
+        @let notesCount = this.notificationStore.value()?.length ?? 0;
+        @if (notesCount <= 3) {
+          <div class="col-span-3"><div class="divider my-0"></div></div>
+          @for (elem of 2 | range; track $index) {
+            <ng-container *ngTemplateOutlet="ghostCard"></ng-container>
+          }
         }
-        <div class="col-span-3"><div class="divider my-0"></div></div>
-        @for (elem of 2 | range; track $index) {
-          <ng-container *ngTemplateOutlet="ghostCard"></ng-container>
+        @else if (notesCount <= 6) {
+          <div class="col-span-3"><div class="divider my-0"></div></div>
+          @for (elem of 2 | range; track $index) {
+            <ng-container *ngTemplateOutlet="ghostCard"></ng-container>
+          }
         }
       }
     </div>
