@@ -45,9 +45,11 @@ export class LocalStorageService {
     const month = new Date().getMonth();
     if (value) {
       const lastMonth = Number(value[1]);
-      count =  Number(value[0]);
-      if (month === lastMonth && count < limit) {
-        count++;
+      if (month === lastMonth) {
+        count = Number(value[0]);
+        if (count < limit) {
+          count++;
+        }
       }
     }
     this.setNotificationCount(count, user);

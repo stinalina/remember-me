@@ -22,7 +22,7 @@ export class NotificationService {
    * @returns a bollean indicating whether the operation was successful.
    */
   public createNotification(insertNotification: Notification_Insert_Input, user: IUser): Observable<INotification | undefined> {
-    return this.insertNotificationGQL.mutate({ variables: { objects: insertNotification }}).pipe(
+    return this.insertNotificationGQL.mutate({ variables: { objects: [insertNotification] }}).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap(() => {
         if (user.newCreated === true) {
