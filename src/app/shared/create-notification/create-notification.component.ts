@@ -150,6 +150,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
       return;
     }
 
+    const mail = this.myForm.value.mail!;
     const notification = {
       Subject: this.myForm.value.subject || this.placeholderSubject,
       Content: this.myForm.value.content!,
@@ -158,7 +159,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     } satisfies Notification_Insert_Input;
 
     this.sendingNotification.set(true)
-    this.userService.getUserByMailOrCreateUserIfNotExists(this.myForm.value.mail!).pipe(
+    this.userService.getUserByMailOrCreateUserIfNotExists(mail).pipe(
       delay(500), // prevent race condition when new user is created and immediately receives a notification
       switchMap((user: IUser) => this.notificationService.createNotification(notification, user)),
       catchError((error) => {
@@ -174,7 +175,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
       })
     ).subscribe((result) => {
       this.resetForm();
-      this.localStorageService.setUserMail(this.myForm.value.mail!);
+      this.localStorageService.setUserMail(mail);
       this.localStorageService.increaseSendedNotificationCount();
       if (this.checkIfMaxSendedNotificationCountIsReached()) {
         this.toastService.showToast(
