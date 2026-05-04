@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, output } from '@angular/core';
+import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.component';
 import { CreateNotificationComponent } from '@shared/create-notification/create-notification.component';
 
 @Component({
@@ -7,7 +8,8 @@ import { CreateNotificationComponent } from '@shared/create-notification/create-
   templateUrl: 'free-notification.component.html',
   imports: [
     CreateNotificationComponent,
-  ],
+    ContentFrameComponent,
+],
 })
 export class FreeNotificationComponent {
   public readonly requestRegistration = output<void>();

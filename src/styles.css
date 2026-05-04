@@ -1,4 +1,5 @@
 @import './utils.css';
+@import '@angular/cdk/overlay-prebuilt.css';
 
 @font-face {
   font-family: 'Material Symbols Outlined';

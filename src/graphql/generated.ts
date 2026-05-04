@@ -1072,7 +1072,7 @@ export type InsertNotificationMutationVariables = Exact<{
 }>;
 
 
-export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', affected_rows: number } | null };
+export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', returning: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, UserId: any, Subject: string, RememberCount: any }> } | null };
 
 export type DeleteNotificationByIdMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -1146,7 +1146,15 @@ export const UpdatePreferencesDocument = gql`
 export const InsertNotificationDocument = gql`
     mutation InsertNotification($objects: [Notification_insert_input!]!) {
   insert_Notification(objects: $objects) {
-    affected_rows
+    returning {
+      Content
+      CreatedAt
+      DueDate
+      Id
+      UserId
+      Subject
+      RememberCount
+    }
   }
 }
     `;

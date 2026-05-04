@@ -5,7 +5,7 @@ import { UserService } from "@app/services/user.service";
 import { DeleteNotificationByIdGQL, GetNotificationByUserIdGQL } from "@hasura/generated";
 import { catchError, map, Observable, of } from "rxjs";
 
-@Injectable({ providedIn: 'root' }) //TODO just in home
+@Injectable({ providedIn: 'root' })
 export class NotificationClient {
   private readonly destroyRef = inject(DestroyRef);
   private readonly userService = inject(UserService);

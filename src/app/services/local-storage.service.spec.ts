@@ -34,4 +34,18 @@ describe('Local Stoarge Service', () => {
     const newCount = service.getSendedNotificationCount(mail);
     expect(newCount).toEqual(count === 0 ? 1 : count);
   });
+
+  it('should reset count to 1 when stored month differs from current month', () => {
+    service.setUserMail(mail);
+    // Seed a stale entry from a previous month with a high count
+    const previousMonth = (new Date().getMonth() + 11) % 12;
+    const staleCount = 42;
+    const key = `sended_notifications_count_${mail}`;
+    window.localStorage.setItem(key, `${staleCount}_${previousMonth}`);
+
+    service.increaseSendedNotificationCount(10000);
+
+    const newCount = service.getSendedNotificationCount(mail);
+    expect(newCount).toEqual(1);
+  });
 });

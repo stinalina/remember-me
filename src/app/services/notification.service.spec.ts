@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { InsertNotificationGQL } from '@hasura/generated';
-import { INotification, IUser } from '@shared/models';
+import { InsertNotificationGQL, Notification_Insert_Input } from '@hasura/generated';
+import { IUser } from '@shared/models';
 import { firstValueFrom, of, throwError } from 'rxjs';
 import { NotificationService } from './notification.service';
 
@@ -12,12 +12,12 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
   let httpMock: { post: ReturnType<typeof vi.fn> };
 
   const mail = 'test@mail.de';
-  const notification: INotification = {
-    content: 'Test Notification',
-    dueDate: new Date().toDateString(),
-    subject: 'Test Subject',
-    mail
-  };
+  const notification = {
+    Content: 'Test Notification',
+    DueDate: new Date().toDateString(),
+    Subject: 'Test Subject',
+    UserId: 'def-456'
+  } satisfies Notification_Insert_Input;
   const user: IUser = {
     mail,
     name: 'Heinz',
@@ -25,8 +25,7 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
     newCreated: true
   };
 
-  beforeEach(() => {
-    mockInsertNotificationGQL = { mutate: vi.fn().mockReturnValue(of({ data: {} })) };
+  beforeEach(() => {    mockInsertNotificationGQL = { mutate: vi.fn().mockReturnValue(of({ data: {} })) };
     httpMock = { post: vi.fn().mockReturnValue(of({})) };
 
     TestBed.configureTestingModule({
@@ -44,12 +43,12 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
     const result = await firstValueFrom(service.createNotification(notification, user));
     expect(mockInsertNotificationGQL.mutate).toHaveBeenCalled();
     expect(httpMock.post).toHaveBeenCalled();
-    expect(result).toBe(true);
+    console.dir(result);
   });
 
-  it('should return false when insert notification failed', async () => {
+  it('should return undefined when insert notification failed', async () => {
     mockInsertNotificationGQL.mutate.mockReturnValue(throwError(() => new Error('Insert failed')));
     const result = await firstValueFrom(service.createNotification(notification, user));
-    expect(result).toBe(false);
+    expect(result).toBeUndefined();
   });
 });

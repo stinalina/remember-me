@@ -1,4 +1,4 @@
-export interface INotification {
+export interface ICreateNotification {
   subject: string;
   content: string;
   dueDate: string;
