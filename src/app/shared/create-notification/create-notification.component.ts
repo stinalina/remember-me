@@ -173,8 +173,6 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
         this.retry.set(false);
       })
     ).subscribe((result) => {
-      this.createdNotification.emit(result);
-
       this.resetForm();
       this.localStorageService.setUserMail(this.myForm.value.mail!);
       this.localStorageService.increaseSendedNotificationCount();
@@ -185,6 +183,8 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
           10000
         );
       }
+
+      this.createdNotification.emit(result);
     });
   }
 
@@ -200,7 +200,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     this.typedPlaceholder.set(text);
   }
 
-  private resetForm(): void {
+  public resetForm(): void {
     this.myForm.reset({
       subject: '',
       content: '',

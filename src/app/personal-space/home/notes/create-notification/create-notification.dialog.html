@@ -1,8 +1,8 @@
  <div class="card bg-base-100 shadow-sm">
   <div class="card-body">
     <button type="button" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-      aria-label="Dialog schließen" (click)="this.close(undefined)">✕</button>
+      aria-label="Dialog schließen" (click)="createNotification.resetForm(); this.close(undefined)">✕</button>
     <h1 class="text-lg font-bold">Erinnerung erstellen</h1>
-    <reme-create-notification (createdNotification)="close($event)"></reme-create-notification>
+    <reme-create-notification #createNotification (createdNotification)="close($event)"></reme-create-notification>
   </div>
 </div>
