@@ -44,4 +44,17 @@ export class NotesComponent {
       }
     });
   }
+
+  protected openEditNoteModal(notification: INotification): void {
+    console.dir(notification);
+    // CreateNotificationDialog.open(this.dialog, { notification })
+    // .subscribe((result: INotification | undefined) => {
+    //   if (result) {
+    //     this.notificationStore.updateNotification(result);
+    //   }
+    //   else {
+    //     // Edit aborted
+    //   }
+    // });
+  }
 }
