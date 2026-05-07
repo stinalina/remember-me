@@ -41,16 +41,17 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
 
   private readonly freeNotificationsLimit = this.userService.freeNotificationsLimit;
   private readonly limitReached = signal<boolean>(false);
+  protected readonly mailNotChangebel = signal<boolean>(this.userService.currUser()?.mail != null);
 
   public readonly editor: Editor = new Editor();
   public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);
   
-  protected readonly myForm = this.fb.group({
+  protected myForm = this.fb.group({
     subject: ['', Validators.maxLength(100)],
     additionalInfo: [''],
     content: ['', htmlContentValidator()],
-    mail: [this.localStorageService.getUserMail ?? '',
-      [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService, this.freeNotificationsLimit())]],
+    mail: [ {value: this.localStorageService.getUserMail ?? '', disabled: this.mailNotChangebel()},
+        [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService, this.freeNotificationsLimit())]],
     dateTime: [this.nextDay, Validators.required],
   });
 
@@ -76,6 +77,17 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   }
 
   constructor() {
+    effect(() => {
+      this.myForm = this.fb.group({
+        subject: [this.notification()?.subject ?? '', Validators.maxLength(100)],
+        additionalInfo: [''],
+        content: [this.notification()?.content ?? '', htmlContentValidator()],
+         mail: [ {value: this.localStorageService.getUserMail ?? '', disabled: this.mailNotChangebel()},
+          [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService, this.freeNotificationsLimit())]],
+        dateTime: [this.notification()?.dueDate ?? this.nextDay, Validators.required],
+      });
+    });
+
     effect(() => {
       if (this.limitReached()) {
         this.resetForm();
