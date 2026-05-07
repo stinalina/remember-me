@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, OnInit, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { INotification } from '@app/personal-space/data/notification.model';
@@ -19,16 +19,17 @@ import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'reme-create-notification',
-  templateUrl: 'create-notification.component.html',
-  styleUrl: 'create-notification.component.scss',
+  selector: 'reme-notification-editor',
+  templateUrl: 'notification-editor.component.html',
+  styleUrl: 'notification-editor.component.scss',
   imports: [  
     NgxEditorModule,
     ReactiveFormsModule
   ] 
 })
-export class CreateNotificationComponent implements OnInit, OnDestroy {
-  public readonly createdNotification = output<INotification | undefined>();
+export class NotificationEditorComponent implements OnInit, OnDestroy {
+  public readonly editorMode = input<'create' | 'edit'>('create');
+  public readonly notificationChanged = output<INotification | undefined>();
 
   private readonly notificationService = inject(NotificationService);
   private readonly userService = inject(UserService);
@@ -166,7 +167,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
         console.error(`Error creating notification.\n Error message: ${error.message}\n Stack trace: ${error.stack}`);
         this.toastService.showToast('Error creating notification. Please try again.', ToastType.Error);
         this.retry.set(true);
-        this.createdNotification.emit(undefined);
+        this.notificationChanged.emit(undefined);
         return EMPTY;
       }),
       finalize(() => {
@@ -185,7 +186,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
         );
       }
 
-      this.createdNotification.emit(result);
+      this.notificationChanged.emit(result);
     });
   }
 

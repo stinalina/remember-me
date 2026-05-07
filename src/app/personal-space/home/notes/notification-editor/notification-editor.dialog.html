@@ -2,7 +2,9 @@
   <div class="card-body">
     <button type="button" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
       aria-label="Dialog schließen" (click)="createNotification.resetForm(); this.close(undefined)">✕</button>
-    <h1 class="text-lg font-bold">Erinnerung erstellen</h1>
-    <reme-create-notification #createNotification (createdNotification)="close($event)"></reme-create-notification>
+    <h1 class="text-lg font-bold">{{ mode === 'create' ? 'Erinnerung erstellen' : 'Erinnerung bearbeiten' }}</h1>
+    <reme-notification-editor #createNotification 
+      [editorMode]="this.mode" (notificationChanged)="close($event)" >
+    </reme-notification-editor>
   </div>
 </div>
