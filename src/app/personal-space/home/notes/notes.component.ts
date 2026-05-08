@@ -47,8 +47,7 @@ export class NotesComponent {
   protected openEditNoteModal(notification: INotification): void {
     NotificationDialog.open(this.dialog, 'edit', notification).subscribe((result: INotification | undefined) => {
       if (result) {
-        console.dir(result);
-        //this.notificationStore.insertNotification(result);
+        this.notificationStore.updateNotification(result);
       }
       else {
         // Edit aborted
