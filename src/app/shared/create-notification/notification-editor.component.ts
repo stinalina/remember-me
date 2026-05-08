@@ -1,12 +1,12 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, OnInit, output, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { INotification } from '@app/personal-space/data/notification.model';
 import { TypewriterActionType, TypewriterEffectService } from '@app/services/typewriter-effect.service';
 import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
 import { restrictFreeLimitValidator } from '@app/shared/validators/restrict-free-limit.validator';
-import { Notification_Insert_Input } from '@hasura/generated';
+import { Notification_Insert_Input, Notification_Set_Input } from '@hasura/generated';
 import { LocalStorageService } from '@services/local-storage.service';
 import { NotificationService } from '@services/notification.service';
 import { ToastService, ToastType } from '@services/toast.service';
@@ -19,37 +19,41 @@ import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  selector: 'reme-create-notification',
-  templateUrl: 'create-notification.component.html',
-  styleUrl: 'create-notification.component.scss',
+  selector: 'reme-notification-editor',
+  templateUrl: 'notification-editor.component.html',
+  styleUrl: 'notification-editor.component.scss',
   imports: [  
     NgxEditorModule,
     ReactiveFormsModule
   ] 
 })
-export class CreateNotificationComponent implements OnInit, OnDestroy {
-  public readonly createdNotification = output<INotification | undefined>();
+export class NotificationEditorComponent implements OnInit, OnDestroy {
+  public readonly editorMode = input<'create' | 'edit'>('create');
+  public readonly notification = input<INotification | undefined>(undefined);
+  public readonly notificationChanged = output<INotification | undefined>();
 
   private readonly notificationService = inject(NotificationService);
   private readonly userService = inject(UserService);
   private readonly fb = inject(FormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly sessionStorage = inject(SESSION_STORAGE);
   private readonly localStorageService = inject(LocalStorageService);
   private readonly toastService = inject(ToastService);
   private readonly typewriterEffectService = inject(TypewriterEffectService);
-
+  
   private readonly freeNotificationsLimit = this.userService.freeNotificationsLimit;
   private readonly limitReached = signal<boolean>(false);
+  protected readonly mailNotChangebel = signal<boolean>(this.userService.currUser()?.mail != null);
 
   public readonly editor: Editor = new Editor();
   public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);
   
-  protected readonly myForm = this.fb.group({
+  protected myForm = this.fb.group({
     subject: ['', Validators.maxLength(100)],
     additionalInfo: [''],
     content: ['', htmlContentValidator()],
-    mail: [this.localStorageService.getUserMail ?? '',
-      [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService, this.freeNotificationsLimit())]],
+    mail: [ {value: this.localStorageService.getUserMail ?? '', disabled: this.mailNotChangebel()},
+        [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService, this.freeNotificationsLimit())]],
     dateTime: [this.nextDay, Validators.required],
   });
 
@@ -57,7 +61,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     initialValue: this.myForm.status,
   });
   public readonly canSubmitForm = computed(() =>  {
-    return this.formStatus() === 'VALID';
+    return this.formStatus() === 'VALID' || this.editorMode() === 'edit';
   });
 
   protected readonly now = this.nextDay;
@@ -66,7 +70,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   protected readonly placeholderSubject = 'Grüße von Notify!';
 
   public readonly typedPlaceholder = signal('');
-  public showPlaceholderAnimation = true;
+  public readonly showPlaceholderAnimation = linkedSignal(() => this.editorMode() === 'create');
 
   private get nextDay(): string {
     const date = new Date();
@@ -75,6 +79,21 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
   }
 
   constructor() {
+    effect(() => {
+      let dueDate = this.notification()?.dueDate;
+      if (dueDate) {
+        dueDate = new DatePipe('en-US').transform(dueDate, 'yyyy-MM-dd')!;
+      }
+      this.myForm = this.fb.group({
+        subject: [this.notification()?.subject ?? '', Validators.maxLength(100)],
+        additionalInfo: [''],
+        content: [this.notification()?.content ?? '', htmlContentValidator()],
+        mail: [ {value: this.localStorageService.getUserMail ?? '', disabled: this.mailNotChangebel()},
+          [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService, this.freeNotificationsLimit())]],
+        dateTime: [dueDate ?? this.nextDay, Validators.required],
+      });
+    });
+
     effect(() => {
       if (this.limitReached()) {
         this.resetForm();
@@ -90,7 +109,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
           { type: TypewriterActionType.LINEBREAK },
           { type: TypewriterActionType.TYPE, text: ' *Reason: This is still in development mode and every request to the database costs money.' },
         ]);
-        this.showPlaceholderAnimation = true;
+        this.showPlaceholderAnimation.set(true);
         this.typewriterEffectService.animatePlaceholder(this.updatePlaceholder.bind(this));
       }
     });
@@ -100,7 +119,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     if (!this.checkIfMaxSendedNotificationCountIsReached()) {
       this.restoreDraftIfExists();
     
-    if (this.showPlaceholderAnimation) {
+    if (this.showPlaceholderAnimation()) {
       this.typewriterEffectService.setActions([
         { type: TypewriterActionType.PAUSE, duration: 1000 },
         { type: TypewriterActionType.TYPE, text: 'Im März diesmal wirklich dran denken Tickets für das Sommerfes' },
@@ -126,7 +145,7 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     const form = this.myForm.value;
-    if (form.content && form.content.length > 0) {
+    if (this.editorMode() == 'create' && form.content && form.content.length > 0) {
       this.sessionStorage.setItem('notificationDraft', JSON.stringify(this.myForm.value));
     }
     this.editor.destroy();
@@ -136,37 +155,53 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
     const draft = this.sessionStorage.getItem('notificationDraft');
     if (draft) {
       this.myForm.setValue(JSON.parse(draft));
-      this.showPlaceholderAnimation = false;
+      this.showPlaceholderAnimation.set(false);
     }
   }
 
-  public createNotification(): void {
-    if (this.myForm.value.additionalInfo && this.myForm.value.additionalInfo.length > 0) {
-      this.toastService.showToast('Bot detected. If you are not a bot, please try again.', ToastType.Error);
-      this.myForm.value.additionalInfo = '';
-      return;
-    }
-    if (!this.canSubmitForm()) {
-      return;
-    }
-
-    const mail = this.myForm.value.mail!;
+  private updateNotification(): void {
+    const formValue = this.myForm.getRawValue(); //also get disabled fields
     const notification = {
-      Subject: this.myForm.value.subject || this.placeholderSubject,
-      Content: this.myForm.value.content!,
-      DueDate: this.myForm.value.dateTime!.toString(),
+      Subject: formValue.subject || this.placeholderSubject,
+      Content: formValue.content!,
+      DueDate: formValue.dateTime!.toString(),
+    } satisfies Notification_Set_Input;
+
+    this.notificationService.updateNotification(notification, this.notification()!.id).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      catchError((error) => {
+        console.error(`Error updating notification.\n Error message: ${error.message}\n Stack trace: ${error.stack}`);
+        this.toastService.showToast('Error updating notification. Please try again.', ToastType.Error);
+        this.retry.set(true);
+        this.notificationChanged.emit(undefined);
+        return EMPTY;
+      }),
+    ).subscribe(result => {
+      this.resetForm();
+      this.localStorageService.increaseSendedNotificationCount();
+      this.notificationChanged.emit(result);
+    });
+  }
+
+  private createNotification(): void {
+    const formValue = this.myForm.getRawValue(); //also get disabled fields
+    const mail = formValue.mail!;
+    const notification = {
+      Subject: formValue.subject || this.placeholderSubject,
+      Content: formValue.content!,
+      DueDate: formValue.dateTime!.toString(),
       UserId: this.userService.currUser()?.userId,
     } satisfies Notification_Insert_Input;
 
     this.sendingNotification.set(true)
     this.userService.getUserByMailOrCreateUserIfNotExists(mail).pipe(
-      delay(500), // prevent race condition when new user is created and immediately receives a notification
+      delay(500), // prevent race condition when new user is createdand immediately receives a notification
       switchMap((user: IUser) => this.notificationService.createNotification(notification, user)),
       catchError((error) => {
         console.error(`Error creating notification.\n Error message: ${error.message}\n Stack trace: ${error.stack}`);
         this.toastService.showToast('Error creating notification. Please try again.', ToastType.Error);
         this.retry.set(true);
-        this.createdNotification.emit(undefined);
+        this.notificationChanged.emit(undefined);
         return EMPTY;
       }),
       finalize(() => {
@@ -185,8 +220,25 @@ export class CreateNotificationComponent implements OnInit, OnDestroy {
         );
       }
 
-      this.createdNotification.emit(result);
+      this.notificationChanged.emit(result);
     });
+  }
+
+  public processSubmit(): void {
+    if (this.myForm.value.additionalInfo && this.myForm.value.additionalInfo.length > 0) {
+      this.toastService.showToast('Bot detected. If you are not a bot, please try again.', ToastType.Error);
+      this.myForm.value.additionalInfo = '';
+      return undefined;
+    }
+    if (!this.canSubmitForm()) {
+      return undefined;
+    }
+
+    if (this.editorMode() === 'edit') {
+      this.updateNotification();
+    } else {
+      this.createNotification();
+    }
   }
 
   private checkIfMaxSendedNotificationCountIsReached(): boolean {

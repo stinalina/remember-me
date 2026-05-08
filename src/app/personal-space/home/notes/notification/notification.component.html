@@ -26,6 +26,11 @@
     <div class="card-footer">
       <div class="card-actions flex flex-row gap-2 justify-end">
         <button type="button" class="btn btn-xs btn-square"
+          aria-label="Notiz bearbeiten"
+          (click)="editClicked.emit()">
+          <span class="material-symbols-outlined">edit_square</span>
+        </button>
+        <button type="button" class="btn btn-xs btn-square"
           aria-label="Notiz löschen"
           (click)="deleteDialog.show()">
           <span class="material-symbols-outlined">delete</span>
@@ -39,5 +44,5 @@
 
 <reme-confirm-dialog #deleteDialog
   warning="Notiz dauerhaft löschen?"
-  (confirm)="deleteNotification.emit(notification.id)">
+  (confirm)="deleteNotification.emit()">
 </reme-confirm-dialog>

@@ -6,7 +6,7 @@ import { Navbar } from '@app/personal-space/home/notes/navbar/navbar';
 import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.component';
 import { RangePipe } from '@app/shared/pipe/range.pipe';
 import { NotificationComponent } from "./notification/notification.component";
-import { CreateNotificationDialog } from '@app/personal-space/home/notes/create-notification/create-notification.dialog';
+import { NotificationEditorDialog as NotificationDialog } from '@app/personal-space/home/notes/notification-editor/notification-editor.dialog';
 import { INotification } from '@app/personal-space/data/notification.model';
 
 @Component({
@@ -34,13 +34,23 @@ export class NotesComponent {
   });
 
   protected openCreateNoteModal(): void {
-    CreateNotificationDialog.open(this.dialog)
-    .subscribe((result: INotification | undefined) => {
+    NotificationDialog.open(this.dialog, 'create').subscribe((result: INotification | undefined) => {
       if (result) {
         this.notificationStore.insertNotification(result);
       }
       else {
         // Creation aborted
+      }
+    });
+  }
+
+  protected openEditNoteModal(notification: INotification): void {
+    NotificationDialog.open(this.dialog, 'edit', notification).subscribe((result: INotification | undefined) => {
+      if (result) {
+        this.notificationStore.updateNotification(result);
+      }
+      else {
+        // Edit aborted
       }
     });
   }

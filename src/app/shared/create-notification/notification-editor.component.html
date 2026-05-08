@@ -1,4 +1,4 @@
-<form [formGroup]="this.myForm" (ngSubmit)="this.createNotification()"
+<form [formGroup]="this.myForm" (ngSubmit)="this.processSubmit()"
   class="
     shadow-lg 
     md:p-2.5 xl:p-3 p-2
@@ -21,8 +21,8 @@
         formControlName="content"
         outputFormat="html"
         placeholder=""
-        (focusIn)="this.showPlaceholderAnimation = false" >
-        @if(this.showPlaceholderAnimation) {
+        (focusIn)="this.showPlaceholderAnimation.set(false)" >
+        @if(this.showPlaceholderAnimation()) {
           <span class="typewriter-placeholder" [innerHTML]="typedPlaceholder()"></span>
         }
       </ngx-editor>
@@ -83,7 +83,8 @@
         @if (this.sendingNotification()) {
           <span class="loading loading-spinner"></span>
         }
-        {{ this.sendingNotification() ? 'Senden...' : 'Notiz erstellen' }}
+        @let submitBtnText = this.editorMode() === 'edit' ? 'Änderungen speichern' : 'Notiz erstellen';
+        {{ this.sendingNotification() ? 'Senden...' : submitBtnText }}
       </button>
     </div>
   </div>

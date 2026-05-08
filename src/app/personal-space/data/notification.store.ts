@@ -39,5 +39,10 @@ export const NotificationStore = signalStore(
     insertNotification(notification: INotification): void {
       patchState(store, { value: [notification, ...(store.value() ?? [])] });
     },
+    updateNotification(notification: INotification): void {
+      const currentNotifications = store.value() ?? [];
+      const updatedNotifications = currentNotifications.map(n => n.id === notification.id ? notification : n);
+      patchState(store, { value: updatedNotifications });
+    }
   })),
 );
