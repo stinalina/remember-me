@@ -60,7 +60,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     initialValue: this.myForm.status,
   });
   public readonly canSubmitForm = computed(() =>  {
-    return this.formStatus() === 'VALID';
+    return this.formStatus() === 'VALID' || this.editorMode() === 'edit';
   });
 
   protected readonly now = this.nextDay;
