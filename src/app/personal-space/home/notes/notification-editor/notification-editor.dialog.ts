@@ -1,4 +1,4 @@
-import { Dialog, DialogRef } from '@angular/cdk/dialog';
+import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { INotification } from '@app/personal-space/data/notification.model';
@@ -16,8 +16,9 @@ import { Observable } from 'rxjs';
 })
 export class NotificationEditorDialog {
   private dialogRef: DialogRef<INotification | undefined> = inject(DialogRef);
-  protected mode: 'create' | 'edit' = inject(DialogRef).config.data.mode;
-  protected notification: INotification | undefined = inject(DialogRef).config.data.notification;
+  private readonly data = inject(DIALOG_DATA) as { mode: 'create' | 'edit', notification?: INotification };
+  protected mode: 'create' | 'edit' = this.data.mode;
+  protected notification: INotification | undefined = this.data.notification;
 
   public static open(dialog: Dialog, mode: 'create' | 'edit', notification?: INotification): Observable<INotification | undefined> {
     return dialog.open<INotification | undefined>(NotificationEditorDialog,
