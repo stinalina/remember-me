@@ -53,8 +53,8 @@ export class NotificationService {
     )
   }
 
-  public updateNotification(insertNotification: Notification_Set_Input, id: string): Observable<INotification | undefined> {
-    return this.updateNotificationGQL.mutate({ variables: { id, object: insertNotification }}).pipe(
+  public updateNotification(updatedNotification: Notification_Set_Input, id: string): Observable<INotification | undefined> {
+    return this.updateNotificationGQL.mutate({ variables: { id, object: updatedNotification }}).pipe(
       takeUntilDestroyed(this.destroyRef),
       map((result) => {
         const notification = result.data?.update_Notification_by_pk;
