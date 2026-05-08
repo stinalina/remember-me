@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, OnDestroy, OnInit, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { INotification } from '@app/personal-space/data/notification.model';
@@ -29,6 +29,7 @@ import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
 })
 export class NotificationEditorComponent implements OnInit, OnDestroy {
   public readonly editorMode = input<'create' | 'edit'>('create');
+  public readonly notification = input<INotification | undefined>(undefined);
   public readonly notificationChanged = output<INotification | undefined>();
 
   private readonly notificationService = inject(NotificationService);
@@ -38,7 +39,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   private readonly localStorageService = inject(LocalStorageService);
   private readonly toastService = inject(ToastService);
   private readonly typewriterEffectService = inject(TypewriterEffectService);
-
+  
   private readonly freeNotificationsLimit = this.userService.freeNotificationsLimit;
   private readonly limitReached = signal<boolean>(false);
   protected readonly mailNotChangebel = signal<boolean>(this.userService.currUser()?.mail != null);
@@ -68,7 +69,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   protected readonly placeholderSubject = 'Grüße von Notify!';
 
   public readonly typedPlaceholder = signal('');
-  public showPlaceholderAnimation = true;
+  public readonly showPlaceholderAnimation = linkedSignal(() => this.editorMode() === 'create');
 
   private get nextDay(): string {
     const date = new Date();
@@ -78,13 +79,17 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
 
   constructor() {
     effect(() => {
+      let dueDate = this.notification()?.dueDate;
+      if (dueDate) {
+        dueDate = new DatePipe('en-US').transform(dueDate, 'yyyy-MM-dd')!;
+      }
       this.myForm = this.fb.group({
         subject: [this.notification()?.subject ?? '', Validators.maxLength(100)],
         additionalInfo: [''],
         content: [this.notification()?.content ?? '', htmlContentValidator()],
          mail: [ {value: this.localStorageService.getUserMail ?? '', disabled: this.mailNotChangebel()},
           [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService, this.freeNotificationsLimit())]],
-        dateTime: [this.notification()?.dueDate ?? this.nextDay, Validators.required],
+        dateTime: [dueDate ?? this.nextDay, Validators.required],
       });
     });
 
@@ -103,7 +108,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
           { type: TypewriterActionType.LINEBREAK },
           { type: TypewriterActionType.TYPE, text: ' *Reason: This is still in development mode and every request to the database costs money.' },
         ]);
-        this.showPlaceholderAnimation = true;
+        this.showPlaceholderAnimation.set(true);
         this.typewriterEffectService.animatePlaceholder(this.updatePlaceholder.bind(this));
       }
     });
@@ -113,7 +118,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     if (!this.checkIfMaxSendedNotificationCountIsReached()) {
       this.restoreDraftIfExists();
     
-    if (this.showPlaceholderAnimation) {
+    if (this.showPlaceholderAnimation()) {
       this.typewriterEffectService.setActions([
         { type: TypewriterActionType.PAUSE, duration: 1000 },
         { type: TypewriterActionType.TYPE, text: 'Im März diesmal wirklich dran denken Tickets für das Sommerfes' },
@@ -149,7 +154,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     const draft = this.sessionStorage.getItem('notificationDraft');
     if (draft) {
       this.myForm.setValue(JSON.parse(draft));
-      this.showPlaceholderAnimation = false;
+      this.showPlaceholderAnimation.set(false);
     }
   }
 

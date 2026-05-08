@@ -16,14 +16,15 @@ import { Observable } from 'rxjs';
 })
 export class NotificationEditorDialog {
   private dialogRef: DialogRef<INotification | undefined> = inject(DialogRef);
-  protected mode: 'create' | 'edit' = inject(DialogRef).config.data;
-  
-  public static open(dialog: Dialog, mode: 'create' | 'edit'): Observable<INotification | undefined> {
+  protected mode: 'create' | 'edit' = inject(DialogRef).config.data.mode;
+  protected notification: INotification | undefined = inject(DialogRef).config.data.notification;
+
+  public static open(dialog: Dialog, mode: 'create' | 'edit', notification?: INotification): Observable<INotification | undefined> {
     return dialog.open<INotification | undefined>(NotificationEditorDialog,
       {
         hasBackdrop: false,
         disableClose: true,
-        data: mode
+        data: { mode, notification }
       },
     ).closed;
   }
