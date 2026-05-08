@@ -12,6 +12,18 @@ mutation InsertNotification($objects: [Notification_insert_input!]!) {
   }
 }
 
+mutation UpdateNotificationById($id: uuid!, $object: Notification_set_input!) {
+  update_Notification_by_pk(pk_columns: {Id: $id}, _set: $object) {
+    Content
+    CreatedAt
+    DueDate
+    Id
+    UserId
+    Subject
+    RememberCount
+  }
+}
+
 mutation DeleteNotificationById($id: uuid!) {
   delete_Notification_by_pk(Id: $id) {
     Id

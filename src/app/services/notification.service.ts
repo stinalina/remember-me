@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { DestroyRef, inject, Injectable } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { environment } from "@environments/environment";
-import { InsertNotificationGQL, Notification_Insert_Input } from "@hasura/generated";
+import { InsertNotificationGQL, Notification_Insert_Input, Notification_Set_Input, UpdateNotificationByIdGQL } from "@hasura/generated";
 import { IUser } from "@shared/models";
 import { catchError, map, Observable, of, tap } from 'rxjs';
 import { ToastService, ToastType } from "./toast.service";
@@ -15,6 +15,7 @@ export class NotificationService {
   private readonly toastService = inject(ToastService);
   
   private readonly insertNotificationGQL = inject(InsertNotificationGQL);
+  private readonly updateNotificationGQL = inject(UpdateNotificationByIdGQL);
   
   /**
    * Inserts notification and send email.
@@ -50,6 +51,31 @@ export class NotificationService {
         return of(undefined);
       })
     )
+  }
+
+  public updateNotification(insertNotification: Notification_Set_Input, id: string): Observable<INotification | undefined> {
+    return this.updateNotificationGQL.mutate({ variables: { id, object: insertNotification }}).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      map((result) => {
+        const notification = result.data?.update_Notification_by_pk;
+        if (!notification) {
+          this.toastService.showToast('Error updating notification. Please try again.', ToastType.Error);
+          return undefined;
+        }
+        return ({
+          id: notification?.Id ?? '',
+          subject: notification?.Subject ?? '',
+          content: notification?.Content ?? '',
+          dueDate: notification?.DueDate ?? '',
+          createdAt: notification?.CreatedAt ?? '',
+        }) satisfies INotification;
+      }),
+      catchError((error) => {
+        console.error(`Error updating notification: ${JSON.stringify(error)}`);
+        this.toastService.showToast('Oh nein! Das hat leider nicht geklappt!', ToastType.Error);
+        return of(undefined);
+      })
+    );
   }
 
   /**

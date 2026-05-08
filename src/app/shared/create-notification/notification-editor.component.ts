@@ -1,12 +1,12 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { INotification } from '@app/personal-space/data/notification.model';
 import { TypewriterActionType, TypewriterEffectService } from '@app/services/typewriter-effect.service';
 import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
 import { restrictFreeLimitValidator } from '@app/shared/validators/restrict-free-limit.validator';
-import { Notification_Insert_Input } from '@hasura/generated';
+import { Notification_Insert_Input, Notification_Set_Input } from '@hasura/generated';
 import { LocalStorageService } from '@services/local-storage.service';
 import { NotificationService } from '@services/notification.service';
 import { ToastService, ToastType } from '@services/toast.service';
@@ -35,6 +35,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   private readonly notificationService = inject(NotificationService);
   private readonly userService = inject(UserService);
   private readonly fb = inject(FormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
   private readonly sessionStorage = inject(SESSION_STORAGE);
   private readonly localStorageService = inject(LocalStorageService);
   private readonly toastService = inject(ToastService);
@@ -87,7 +88,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
         subject: [this.notification()?.subject ?? '', Validators.maxLength(100)],
         additionalInfo: [''],
         content: [this.notification()?.content ?? '', htmlContentValidator()],
-         mail: [ {value: this.localStorageService.getUserMail ?? '', disabled: this.mailNotChangebel()},
+        mail: [ {value: this.localStorageService.getUserMail ?? '', disabled: this.mailNotChangebel()},
           [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService, this.freeNotificationsLimit())]],
         dateTime: [dueDate ?? this.nextDay, Validators.required],
       });
@@ -158,27 +159,43 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  public createNotification(): void {
-    if (this.myForm.value.additionalInfo && this.myForm.value.additionalInfo.length > 0) {
-      this.toastService.showToast('Bot detected. If you are not a bot, please try again.', ToastType.Error);
-      this.myForm.value.additionalInfo = '';
-      return;
-    }
-    if (!this.canSubmitForm()) {
-      return;
-    }
-
-    const mail = this.myForm.value.mail!;
+  private updateNotification(): void {
+    const formValue = this.myForm.getRawValue(); //also get disabled fields
     const notification = {
-      Subject: this.myForm.value.subject || this.placeholderSubject,
-      Content: this.myForm.value.content!,
-      DueDate: this.myForm.value.dateTime!.toString(),
+      Subject: formValue.subject || this.placeholderSubject,
+      Content: formValue.content!,
+      DueDate: formValue.dateTime!.toString(),
+    } satisfies Notification_Set_Input;
+
+    this.notificationService.updateNotification(notification, this.notification()!.id).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      catchError((error) => {
+        console.error(`Error updating notification.\n Error message: ${error.message}\n Stack trace: ${error.stack}`);
+        this.toastService.showToast('Error updating notification. Please try again.', ToastType.Error);
+        this.retry.set(true);
+        this.notificationChanged.emit(undefined);
+        return EMPTY;
+      }),
+    ).subscribe(result => {
+      this.resetForm();
+      this.localStorageService.increaseSendedNotificationCount();
+      this.notificationChanged.emit(result);
+    });
+  }
+
+  private createNotification(): void {
+    const formValue = this.myForm.getRawValue(); //also get disabled fields
+    const mail = formValue.mail!;
+    const notification = {
+      Subject: formValue.subject || this.placeholderSubject,
+      Content: formValue.content!,
+      DueDate: formValue.dateTime!.toString(),
       UserId: this.userService.currUser()?.userId,
     } satisfies Notification_Insert_Input;
 
     this.sendingNotification.set(true)
     this.userService.getUserByMailOrCreateUserIfNotExists(mail).pipe(
-      delay(500), // prevent race condition when new user is created and immediately receives a notification
+      delay(500), // prevent race condition when new user is createdand immediately receives a notification
       switchMap((user: IUser) => this.notificationService.createNotification(notification, user)),
       catchError((error) => {
         console.error(`Error creating notification.\n Error message: ${error.message}\n Stack trace: ${error.stack}`);
@@ -205,6 +222,23 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
 
       this.notificationChanged.emit(result);
     });
+  }
+
+  public processSubmit(): void {
+    if (this.myForm.value.additionalInfo && this.myForm.value.additionalInfo.length > 0) {
+      this.toastService.showToast('Bot detected. If you are not a bot, please try again.', ToastType.Error);
+      this.myForm.value.additionalInfo = '';
+      return undefined;
+    }
+    if (!this.canSubmitForm()) {
+      return undefined;
+    }
+
+    if (this.editorMode() === 'edit') {
+      this.updateNotification();
+    } else {
+      this.createNotification();
+    }
   }
 
   private checkIfMaxSendedNotificationCountIsReached(): boolean {
