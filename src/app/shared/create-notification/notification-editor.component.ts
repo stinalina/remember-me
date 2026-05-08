@@ -139,7 +139,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy(): void {
     const form = this.myForm.value;
-    if (form.content && form.content.length > 0) {
+    if (this.editorMode() == 'create' && form.content && form.content.length > 0) {
       this.sessionStorage.setItem('notificationDraft', JSON.stringify(this.myForm.value));
     }
     this.editor.destroy();
