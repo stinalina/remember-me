@@ -1,52 +1,19 @@
-[debug] [2026-05-08T08:42:25.503Z] ----------------------------------------------------------------------
-[debug] [2026-05-08T08:42:25.504Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\sboehmig\AppData\Local\npm-cache\_npx\ba4f1959e38407b5\node_modules\firebase-tools\lib\bin\firebase.js emulators:start --only auth --project rememberme-d356c
-[debug] [2026-05-08T08:42:25.504Z] CLI Version:   15.17.0
-[debug] [2026-05-08T08:42:25.504Z] Platform:      win32
-[debug] [2026-05-08T08:42:25.505Z] Node Version:  v24.15.0
-[debug] [2026-05-08T08:42:25.505Z] Time:          Fri May 08 2026 10:42:25 GMT+0200 (Mitteleuropäische Sommerzeit)
-[debug] [2026-05-08T08:42:25.505Z] ----------------------------------------------------------------------
+[debug] [2026-05-09T06:07:00.239Z] ----------------------------------------------------------------------
+[debug] [2026-05-09T06:07:00.241Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\sboehmig\AppData\Local\npm-cache\_npx\ba4f1959e38407b5\node_modules\firebase-tools\lib\bin\firebase.js emulators:start --only auth --project rememberme-d356c
+[debug] [2026-05-09T06:07:00.242Z] CLI Version:   15.17.0
+[debug] [2026-05-09T06:07:00.242Z] Platform:      win32
+[debug] [2026-05-09T06:07:00.242Z] Node Version:  v24.15.0
+[debug] [2026-05-09T06:07:00.242Z] Time:          Sat May 09 2026 08:07:00 GMT+0200 (Mitteleuropäische Sommerzeit)
+[debug] [2026-05-09T06:07:00.242Z] ----------------------------------------------------------------------
 [debug] 
-[debug] [2026-05-08T08:42:26.236Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2026-05-08T08:42:26.237Z] > authorizing via signed-in user (salina.boehmig95@gmail.com)
+[debug] [2026-05-09T06:07:02.711Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-05-09T06:07:02.711Z] > authorizing via signed-in user (salina.boehmig95@gmail.com)
 [info] i  emulators: Starting emulators: auth {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth"}}
-[debug] [2026-05-08T08:42:26.245Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2026-05-08T08:42:26.245Z] [auth] Authentication Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2026-05-08T08:42:26.245Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}]},"metadata":{"message":"assigned listening specs for emulators"}}
-[debug] [2026-05-08T08:42:26.248Z] Write emulator hub locator at C:\Users\sboehmig\AppData\Local\Temp\hub-rememberme-d356c.json
-[debug] [2026-05-08T08:42:32.007Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase SQL Connect VSCode extension, this is expected and not an issue.
-[info] 
-┌─────────────────────────────────────────────────────────────┐
-│ ✔  All emulators ready! It is now safe to connect your app. │
-│ i  View Emulator UI at http://127.0.0.1:4000/               │
-└─────────────────────────────────────────────────────────────┘
-
-┌────────────────┬────────────────┬────────────────────────────┐
-│ Emulator       │ Host:Port      │ View in Emulator UI        │
-├────────────────┼────────────────┼────────────────────────────┤
-│ Authentication │ 127.0.0.1:9099 │ http://127.0.0.1:4000/auth │
-└────────────────┴────────────────┴────────────────────────────┘
-  Emulator Hub host: 127.0.0.1 port: 4400
-  Other reserved ports: 4500
-
-Issues? Report them at https://github.com/firebase/firebase-tools/issues and attach the *-debug.log files.
- 
-[debug] [2026-05-08T08:50:53.174Z] ----------------------------------------------------------------------
-[debug] [2026-05-08T08:50:53.176Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\sboehmig\AppData\Local\npm-cache\_npx\ba4f1959e38407b5\node_modules\firebase-tools\lib\bin\firebase.js emulators:start --only auth --project rememberme-d356c
-[debug] [2026-05-08T08:50:53.176Z] CLI Version:   15.17.0
-[debug] [2026-05-08T08:50:53.176Z] Platform:      win32
-[debug] [2026-05-08T08:50:53.176Z] Node Version:  v24.15.0
-[debug] [2026-05-08T08:50:53.176Z] Time:          Fri May 08 2026 10:50:53 GMT+0200 (Mitteleuropäische Sommerzeit)
-[debug] [2026-05-08T08:50:53.176Z] ----------------------------------------------------------------------
-[debug] 
-[debug] [2026-05-08T08:50:53.867Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
-[debug] [2026-05-08T08:50:53.868Z] > authorizing via signed-in user (salina.boehmig95@gmail.com)
-[info] i  emulators: Starting emulators: auth {"metadata":{"emulator":{"name":"hub"},"message":"Starting emulators: auth"}}
-[debug] [2026-05-08T08:50:53.876Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2026-05-08T08:50:53.876Z] [auth] Authentication Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
-[debug] [2026-05-08T08:50:53.876Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}]},"metadata":{"message":"assigned listening specs for emulators"}}
-[debug] [2026-05-08T08:50:53.880Z] Found emulator hub locator: {"version":"15.17.0","origins":["http://127.0.0.1:4400","http://[::1]:4400"],"pid":38060}
-[debug] [2026-05-08T08:50:53.880Z] Write emulator hub locator at C:\Users\sboehmig\AppData\Local\Temp\hub-rememberme-d356c.json
-[debug] [2026-05-08T08:50:57.021Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase SQL Connect VSCode extension, this is expected and not an issue.
+[debug] [2026-05-09T06:07:02.722Z] [logging] Logging Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-05-09T06:07:02.723Z] [auth] Authentication Emulator only supports listening on one address (127.0.0.1). Not listening on ::1
+[debug] [2026-05-09T06:07:02.723Z] assigned listening specs for emulators {"user":{"hub":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"ui":[{"address":"127.0.0.1","family":"IPv4","port":4000},{"address":"::1","family":"IPv6","port":4000}],"logging":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"auth":[{"address":"127.0.0.1","family":"IPv4","port":9099}]},"metadata":{"message":"assigned listening specs for emulators"}}
+[debug] [2026-05-09T06:07:02.726Z] Write emulator hub locator at C:\Users\sboehmig\AppData\Local\Temp\hub-rememberme-d356c.json
+[debug] [2026-05-09T06:07:07.852Z] Could not find VSCode notification endpoint: FetchError: request to http://localhost:40001/vscode/notify failed, reason: . If you are not running the Firebase SQL Connect VSCode extension, this is expected and not an issue.
 [info] 
 ┌─────────────────────────────────────────────────────────────┐
 │ ✔  All emulators ready! It is now safe to connect your app. │

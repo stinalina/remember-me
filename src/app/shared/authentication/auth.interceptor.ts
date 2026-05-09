@@ -11,6 +11,14 @@ export function authHasuraInterceptor(
   if (!req.url.startsWith(environment.HASURA_URL)) {
     return next(req);
   }
+
+  if (environment.HASURA_ADMIN_SECRET) {
+    const adminSecretReq = req.clone({
+      headers: req.headers.set('x-hasura-admin-secret', environment.HASURA_ADMIN_SECRET),
+    });
+    return next(adminSecretReq);
+  }
+
   const authService = inject(AuthService);
   return authService.getIdToken().pipe(
       switchMap(token => {
