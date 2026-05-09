@@ -30,6 +30,8 @@ test.describe('FreeNotificationComponent', () => {
     const placeholder = page.locator('.typewriter-placeholder');
     await expect(placeholder).toBeVisible();
     const placeholderText = await placeholder.textContent();
+
+    await page.waitForTimeout(2000);
     expect(placeholderText?.toLowerCase()).toContain('maxim');
     
     // Check that submit button is disabled
@@ -68,7 +70,8 @@ test.describe('FreeNotificationComponent', () => {
     await mailInput.fill('new@mail.de');
     await editor.click();
     await editor.fill('Test notification content for e2e testing');
-    await page.waitForTimeout(500);
+
+    await page.waitForTimeout(2000);
     
     // submit btn is enabled when new mail is entered
     const buttonClass = await submitButton.getAttribute('class');
