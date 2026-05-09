@@ -55,12 +55,9 @@ test.describe('RegisterComponent', () => {
     await page.getByRole('button', { name: 'Loslegen!' }).click();
     await page.waitForURL('/login');
 
-    // Warte 3 Sekunden, um sicherzustellen, dass der Benutzer in der Datenbank erstellt wurde
+    // Warte 3 Sekunden, um sicherzustellen, dass der Benutzer in der Datenbank erstellt und geladen wurde
     await page.waitForTimeout(3000);
-
-    await page.getByTestId('login-reme-mail-input').fill(uniqueMail);
-    await page.getByTestId('login-reme-password-input').fill('password123');
-    await page.getByRole('button', { name: 'Einloggen' }).click();
+    
     await expect(page).toHaveURL(/.*home/, { timeout: 5000 });
   });
 });

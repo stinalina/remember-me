@@ -1,8 +1,6 @@
-import { computed, DestroyRef, effect, inject, Injectable, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { InitialPreferences } from '@app/personal-space/data/preferences.model';
 import { LocalStorageService } from '@app/services/local-storage.service';
-import { AuthService } from '@app/shared/authentication/auth.service';
 import { GetUserByMailGQL, InsertUserGQL } from '@hasura/generated';
 import { IUser } from '@shared/models';
 import { map, Observable, of, switchMap } from 'rxjs';
@@ -12,9 +10,6 @@ export class UserService {
   private readonly localStorageService = inject(LocalStorageService);
   private readonly getUserByMailGQL = inject(GetUserByMailGQL);
   private readonly insertUserGQL = inject(InsertUserGQL);
-  private readonly authService = inject(AuthService);
-  private readonly destroyRef = inject(DestroyRef);
-
   public readonly currUser = signal<IUser | null>(null);
   public readonly freeNotificationsLimit = signal<number>(5);
 
@@ -27,17 +22,6 @@ export class UserService {
     this.localStorageService.storageChangeSignal();
     return this.localStorageService.getSendedNotificationCount(this.localStorageService.getUserMail ?? '');
   });
-
-  constructor() {
-    effect(() => {
-      const user = this.authService.currentUser();
-      if (user?.email && this.authService.isAuthenticated()) {
-        this.loadUserFromDb(user.email).pipe(
-          takeUntilDestroyed(this.destroyRef)
-        ).subscribe();
-      }
-    })
-  }
 
   public addUserToDb(mail: string): Observable<IUser> {
     const name = mail.split('@')[0];
