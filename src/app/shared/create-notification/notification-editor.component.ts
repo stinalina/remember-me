@@ -48,7 +48,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   public readonly editor: Editor = new Editor();
   public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);
   
-  protected myForm = this.fb.group({
+  protected readonly myForm = this.fb.group({
     subject: ['', Validators.maxLength(100)],
     additionalInfo: [''],
     content: ['', htmlContentValidator()],
@@ -84,14 +84,22 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
       if (dueDate) {
         dueDate = new DatePipe('en-US').transform(dueDate, 'yyyy-MM-dd')!;
       }
-      this.myForm = this.fb.group({
-        subject: [this.notification()?.subject ?? '', Validators.maxLength(100)],
-        additionalInfo: [''],
-        content: [this.notification()?.content ?? '', htmlContentValidator()],
-        mail: [ {value: this.localStorageService.getUserMail ?? '', disabled: this.mailNotChangebel()},
-          [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService, this.freeNotificationsLimit())]],
-        dateTime: [dueDate ?? this.nextDay, Validators.required],
+
+      this.myForm.reset({
+        subject: this.notification()?.subject ?? '',
+        additionalInfo: '',
+        content: this.notification()?.content ?? '',
+        mail: this.localStorageService.getUserMail ?? '',
+        dateTime: dueDate ?? this.nextDay,
       });
+
+      const mailControl = this.myForm.controls.mail;
+      if (this.mailNotChangebel()) {
+        mailControl.disable();
+      } else {
+        mailControl.enable();
+      }
+      this.myForm.updateValueAndValidity();
     });
 
     effect(() => {

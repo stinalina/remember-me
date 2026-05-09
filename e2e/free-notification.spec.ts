@@ -35,7 +35,7 @@ test.describe('FreeNotificationComponent', () => {
     expect(placeholderText?.toLowerCase()).toContain('maxim');
     
     // Check that submit button is disabled
-    const submitButton = page.getByRole('button', { name: /Notiz erstellen|Senden/ });
+    const submitButton = page.locator('#create-notification-apply');
     const buttonClass = await submitButton.getAttribute('class');
     expect(buttonClass).toContain('btn-disabled');
 
@@ -64,7 +64,7 @@ test.describe('FreeNotificationComponent', () => {
   test('should send notification when limit is reached but new mail entered', async ({ page }) => {
     const mailInput = page.getByRole('textbox', { name: 'Sende Erinnerung an:' });
     const editor = page.locator('.ProseMirror');
-    const submitButton = page.getByRole('button', { name: 'Notiz erstellen' });
+    const submitButton = page.locator('#create-notification-apply');
 
     // Fill all fields with valid data
     await mailInput.fill('new@mail.de');
