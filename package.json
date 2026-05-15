@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "start": "ng serve",
-    "e2e": "ng serve --configuration e2e",
+    "e2e": "playwright test",
+    "e2e:serve": "ng serve --configuration e2e",
     "build": "ng build",
     "test": "ng test",
     "test-workflow": "ng test --configuration ci",

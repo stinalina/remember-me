@@ -6,7 +6,7 @@ import { MemberService } from '@app/personal-space/utils/member.service';
 import { ToastService, ToastType } from '@app/services/toast.service';
 import { UserService } from '@app/services/user.service';
 import { EMPTY } from 'rxjs';
-import { catchError, switchMap, timeout } from 'rxjs/operators';
+import { catchError, switchMap, tap, timeout } from 'rxjs/operators';
 
 export const memberResolver: ResolveFn<void> = () => {
   const toastService = inject(ToastService);
@@ -27,12 +27,15 @@ export const memberResolver: ResolveFn<void> = () => {
     timeout(5_000),
     catchError((error) => {
       toastService.showToast('Fehler beim Laden der Benutzerdaten: ' + error.message, ToastType.Error);
+      userService.currUser.set(null);
       router.navigate([ROUTER_TOKENS.LOGIN]);
       return EMPTY;
     }),
-    switchMap(user => memberService.loadMember(user.userId)),
+    tap((user) => userService.currUser.set(user)),
+    switchMap((user) => memberService.loadMember(user.userId)),
     catchError((error) => {
       toastService.showToast('Fehler beim Laden des Users: ' + error.message, ToastType.Error);
+      userService.currUser.set(null);
       router.navigate([ROUTER_TOKENS.LOGIN]);
       return EMPTY;
     }),

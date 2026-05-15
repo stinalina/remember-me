@@ -29,9 +29,9 @@ test.describe('FreeNotificationComponent', () => {
     // Check that placeholder with limit message is shown
     const placeholder = page.locator('.typewriter-placeholder');
     await expect(placeholder).toBeVisible();
-    const placeholderText = await placeholder.textContent();
-
     await page.waitForTimeout(2000);
+
+    const placeholderText = await placeholder.textContent();
     expect(placeholderText?.toLowerCase()).toContain('maxim');
     
     // Check that submit button is disabled
