@@ -50,6 +50,9 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 
+# Firebase
+firebase-debug.log
+
 ### Azurite ###
 # Azurite queue
 __queuestorage__

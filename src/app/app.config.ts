@@ -5,7 +5,7 @@ import localeDe from '@angular/common/locales/de';
 
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { getAuth, provideAuth } from '@angular/fire/auth';
+import { connectAuthEmulator, getAuth, provideAuth } from '@angular/fire/auth';
 import { InMemoryCache } from '@apollo/client';
 import { environment } from '@environments/environment';
 import { provideApollo } from 'apollo-angular';
@@ -20,7 +20,14 @@ export const appConfig: ApplicationConfig = {
     { provide: LOCALE_ID, useValue: 'de' },
     provideBrowserGlobalErrorListeners(),
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-    provideAuth(() => getAuth()),
+    provideAuth(() => {
+      const auth = getAuth();
+      if (environment.firebaseAuthEmulator.enabled) {
+        const { host, port } = environment.firebaseAuthEmulator;
+        connectAuthEmulator(auth, `http://${host}:${port}`, { disableWarnings: true });
+      }
+      return auth;
+    }),
     provideHttpClient(withInterceptors([authHasuraInterceptor])),
     provideApollo(() => {
       const httpLink = inject(HttpLink);
