@@ -11,7 +11,10 @@ import { memberResolver } from './member.resolver';
 describe('memberResolver', () => {
   let mockAuth: { currentUser: { email?: string } | null };
   let mockRouter: { navigate: ReturnType<typeof vi.fn> };
-  let mockUserService: { getUserByMailOrCreateUserIfNotExists: ReturnType<typeof vi.fn> };
+  let mockUserService: {
+    getUserByMailOrCreateUserIfNotExists: ReturnType<typeof vi.fn>;
+    currUser: { set: ReturnType<typeof vi.fn> };
+  };
   let mockMemberService: { loadMember: ReturnType<typeof vi.fn> };
   let mockToastService: { showToast: ReturnType<typeof vi.fn> };
 
@@ -32,7 +35,10 @@ describe('memberResolver', () => {
   beforeEach(() => {
     mockAuth = { currentUser: null };
     mockRouter = { navigate: vi.fn() };
-    mockUserService = { getUserByMailOrCreateUserIfNotExists: vi.fn() };
+    mockUserService = {
+      getUserByMailOrCreateUserIfNotExists: vi.fn(),
+      currUser: { set: vi.fn() },
+    };
     mockMemberService = { loadMember: vi.fn() };
     mockToastService = { showToast: vi.fn() };
 
