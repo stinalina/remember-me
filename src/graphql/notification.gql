@@ -8,6 +8,7 @@ mutation InsertNotification($objects: [Notification_insert_input!]!) {
       UserId
       Subject
       RememberCount
+      Mail
     }
   }
 }
@@ -21,6 +22,7 @@ mutation UpdateNotificationById($id: uuid!, $object: Notification_set_input!) {
     UserId
     Subject
     RememberCount
+    Mail
   }
 }
 
@@ -38,5 +40,6 @@ query GetNotificationByUserId($userId: uuid) {
     RememberCount
     Id
     DueDate
+    Mail
   }
 }

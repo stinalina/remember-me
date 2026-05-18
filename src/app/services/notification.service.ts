@@ -43,6 +43,7 @@ export class NotificationService {
           content: notification?.Content ?? '',
           dueDate: notification?.DueDate ?? '',
           createdAt: notification?.CreatedAt ?? '',
+          mail: notification?.Mail ?? '',
         }) satisfies INotification;
       }),
       catchError((error) => {
@@ -68,6 +69,7 @@ export class NotificationService {
           content: notification?.Content ?? '',
           dueDate: notification?.DueDate ?? '',
           createdAt: notification?.CreatedAt ?? '',
+          mail: notification?.Mail ?? '',
         }) satisfies INotification;
       }),
       catchError((error) => {
