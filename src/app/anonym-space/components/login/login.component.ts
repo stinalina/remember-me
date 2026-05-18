@@ -35,7 +35,7 @@ export class LoginComponent {
     this.errorMessage = null;
 
     if (!mail || !password) {
-      this.toastService.showToast('Bitte geben Sie eine gültige E-Mail und ein Passwort ein.', ToastType.Warning);
+      this.toastService.showToast('Bitte gebe eine gültige E-Mail und ein Passwort ein.', ToastType.Warning);
       return;
     }
 
@@ -43,6 +43,21 @@ export class LoginComponent {
       takeUntilDestroyed(this.destroyRef),
     ).subscribe(
       () => this.router.navigate([ROUTER_TOKENS.HOME])
+    );
+  }
+
+  public forgetPassword(mail: string | null): void {
+    this.errorMessage = null;
+
+    if (!mail) {
+      this.toastService.showToast('Bitte gebe eine gültige E-Mail ein.', ToastType.Warning);
+      return;
+    }
+    
+    this.authenticationService.sendPasswordResetEmail(mail).pipe(
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe(
+      () => this.toastService.showToast('Anweisungen zum Zurücksetzen des Passworts wurden an Ihre E-Mail gesendet (falls vorhanden).', ToastType.Info)
     );
   }
 }
