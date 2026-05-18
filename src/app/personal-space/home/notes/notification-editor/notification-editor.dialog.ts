@@ -26,7 +26,7 @@ export class NotificationEditorDialog {
         hasBackdrop: false,
         disableClose: true,
         data: { mode, notification },
-        maxWidth: '30rem',
+        maxWidth: '31rem',
       },
     ).closed;
   }
