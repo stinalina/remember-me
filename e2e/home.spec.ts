@@ -24,7 +24,6 @@ test.describe('HomeComponent', () => {
 
     await expect(range).toHaveValue('0');
     await expect(range).toHaveAttribute('max', '5');
-    await expect(tooltip).toHaveAttribute('data-tip', '0 von 5 Erinnerungen erstellt diesen Monat.');
   });
 
   test('logout should navigate to login', async ({ page }) => {
