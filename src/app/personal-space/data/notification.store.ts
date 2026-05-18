@@ -1,5 +1,5 @@
 import { withResource } from '@angular-architects/ngrx-toolkit';
-import { inject } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { NotificationClient } from '@app/personal-space/data/notification.client';
 import { INotification } from '@app/personal-space/data/notification.model';
@@ -24,6 +24,20 @@ export const NotificationStore = signalStore(
     defaultValue: []
     })
   ),
+
+  withProps((store) => {
+    const createdNotesThisMonth = computed(() => {
+      const now = new Date();
+      return (store.value() ?? []).filter(note => {
+        const createdAt = new Date(note.createdAt);
+        return createdAt.getMonth() === now.getMonth() && createdAt.getFullYear() === now.getFullYear();
+      });
+    });
+
+    return {
+      createdNotesThisMonthCount: computed(() => createdNotesThisMonth().length)
+    };
+  }),
 
   withMethods((store) => ({
     deleteNotification(id: string): void {

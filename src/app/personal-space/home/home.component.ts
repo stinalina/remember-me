@@ -14,6 +14,7 @@ import { RangePipe } from '@app/shared/pipe/range.pipe';
 import { finalize } from 'rxjs';
 import { StatsComponent } from "./stats/stats.component";
 import { AvatarImagePipe } from '@app/personal-space/utils/avatar-image.pipe';
+import { NotificationStore } from '@app/personal-space/data/notification.store';
 
 @Component({
   selector: 'reme-personal-home',
@@ -35,15 +36,15 @@ export class HomeComponent extends OutletContainer {
   private readonly router = inject(Router);
   private readonly userService = inject(UserService);
   private readonly memberService = inject(MemberService);
+  private readonly notificationStore = inject(NotificationStore);
   protected readonly authenticationService = inject(AuthService);
 
   protected readonly SelectedTab = SelectedTabComponentEnum;
   protected readonly selectedTabComponent = signal<SelectedTabComponentEnum>(SelectedTabComponentEnum.Notes);
 
   protected readonly username = computed<string>(() => this.userService.username() ?? 'Nutzer');
-  protected readonly freeNotificationsLimit = computed<number>(() => this.userService.freeNotificationsLimit());
-  protected readonly notificationsCount = computed<number>(() => this.userService.createdNotesThisMonthCount());
-  protected readonly usedNotesTooltip = computed<string>(() => `${this.notificationsCount()} von ${this.freeNotificationsLimit()} Erinnerungen erstellt diesen Monat.`);
+  protected readonly freeNotificationsLimit = this.userService.freeNotificationsLimit;
+  protected readonly notificationsCount = this.notificationStore.createdNotesThisMonthCount;
 
   protected readonly member = this.memberService.member;
   protected readonly preferences = computed<Preferences>(() => this.member()?.preferences ?? InitialPreferences);
