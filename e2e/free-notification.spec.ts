@@ -58,7 +58,7 @@ test.describe('FreeNotificationComponent', () => {
     const validatorHint = page.locator('.reme-validator-hint');
     await expect(validatorHint).toBeVisible();
     const hintText = await validatorHint.textContent();
-    expect(hintText?.toLowerCase()).toContain('limit für kostenlose benachrichtigungen erreicht');
+    expect(hintText?.toLowerCase()).toContain('limit für benachrichtigungen diesen monat erreicht');
   });
 
   test('should send notification when limit is reached but new mail entered', async ({ page }) => {

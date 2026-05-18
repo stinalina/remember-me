@@ -2,7 +2,11 @@
 <div class="card xl:w-xs bg-base-100 shadow-sm">
   <div class="card-body p-4 pb-1">
     <span class="badge badge-sm badge-warning font-bold">
-      Fällig: {{ notification.dueDate | date:'dd.MM.yyyy' }}
+      @if (isDuePast()) {
+        <del>Fällig: {{ notification.dueDate | date:'dd.MM.yyyy' }}</del>
+      } @else {
+        Fällig: {{ notification.dueDate | date:'dd.MM.yyyy' }}
+      }
     </span>
 
     <div class="flex flex-col gap-1 h-full">
@@ -27,6 +31,7 @@
       <div class="card-actions flex flex-row gap-2 justify-end">
         <button type="button" class="btn btn-xs btn-square"
           aria-label="Notiz bearbeiten"
+          [disabled]="isDuePast()"
           (click)="editClicked.emit()">
           <span class="material-symbols-outlined">edit_square</span>
         </button>

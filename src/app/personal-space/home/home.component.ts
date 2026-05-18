@@ -6,6 +6,7 @@ import { AvatarDialog } from '@app/personal-space/components/avatar-dialog/avata
 import { InitialPreferences, Preferences } from '@app/personal-space/data/preferences.model';
 import { NotesComponent } from '@app/personal-space/home/notes/notes.component';
 import { SettingsComponent } from '@app/personal-space/home/settings/settings.component';
+import { AvatarImagePipe } from '@app/personal-space/utils/avatar-image.pipe';
 import { MemberService } from '@app/personal-space/utils/member.service';
 import { UserService } from '@app/services/user.service';
 import { AuthService } from '@app/shared/authentication/auth.service';
@@ -13,8 +14,7 @@ import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/outlet-co
 import { RangePipe } from '@app/shared/pipe/range.pipe';
 import { finalize } from 'rxjs';
 import { StatsComponent } from "./stats/stats.component";
-import { AvatarImagePipe } from '@app/personal-space/utils/avatar-image.pipe';
-import { NotificationStore } from '@app/personal-space/data/notification.store';
+import { Dialog } from '@angular/cdk/dialog';
 
 @Component({
   selector: 'reme-personal-home',
@@ -35,8 +35,8 @@ export class HomeComponent extends OutletContainer {
 
   private readonly router = inject(Router);
   private readonly userService = inject(UserService);
+  private readonly dialog = inject(Dialog);
   private readonly memberService = inject(MemberService);
-  private readonly notificationStore = inject(NotificationStore);
   protected readonly authenticationService = inject(AuthService);
 
   protected readonly SelectedTab = SelectedTabComponentEnum;
@@ -44,7 +44,7 @@ export class HomeComponent extends OutletContainer {
 
   protected readonly username = computed<string>(() => this.userService.username() ?? 'Nutzer');
   protected readonly freeNotificationsLimit = this.userService.freeNotificationsLimit;
-  protected readonly notificationsCount = this.notificationStore.createdNotesThisMonthCount;
+  protected readonly notificationsCount = this.userService.createdNotesThisMonthCount;
 
   protected readonly member = this.memberService.member;
   protected readonly preferences = computed<Preferences>(() => this.member()?.preferences ?? InitialPreferences);
@@ -67,7 +67,7 @@ export class HomeComponent extends OutletContainer {
       finalize(() => {
         this.router.navigate([ROUTER_TOKENS.LOGIN]); //ignore logout failure and navigate to login page anyway
       })
-    ).subscribe();
+    ).subscribe(() => this.dialog.closeAll());
   }
 
   protected changeAvatar(value: string): void {
