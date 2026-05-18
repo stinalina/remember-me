@@ -32,10 +32,10 @@
 
       <ng-container *ngTemplateOutlet="menu"></ng-container>
 
-      <p class="mt-3">Bisher erstellt:</p>
+      <p class="mt-3">Erstellt diesen Monat:</p>
       <div class="w-full max-w-xs tooltip tooltip-bottom"
         data-testid="home-notifications-tooltip"
-        [attr.data-tip]="this.usedNotesTooltip()">
+        data-tip="Mit der monatlichen Begrenzung wird sichergestellt den Datenbank-Traffic im Rahmen zu halten.">
         <input type="range" class="range" step="1"
           data-testid="home-notifications-range"
           min="0" [max]="this.freeNotificationsLimit()"
