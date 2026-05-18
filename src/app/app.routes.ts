@@ -3,6 +3,8 @@ import { LandingPageComponent } from '@app/anonym-space/pages/landing-page/landi
 import { HomeComponent } from '@app/personal-space/home/home.component';
 import { memberResolver } from '@app/personal-space/utils/member.resolver';
 import { authGuard } from '@app/shared/authentication/auth.guard';
+import { desktopOnlyGuard } from '@app/shared/guards/desktop-only.guard';
+import { MobileNotSupportedComponent } from '@app/anonym-space/pages/mobile-not-supported/mobile-not-supported.component';
 import { SelectedTabComponentEnum } from '@app/shared/outlet-container';
 
 export enum ROUTER_TOKENS {
@@ -10,9 +12,10 @@ export enum ROUTER_TOKENS {
   HOME = 'home',
   IMPRESSUM = 'impressum',
   LOGIN = 'login',
+  MOBILE_UNSUPPORTED = 'mobile-not-supported',
 }
 
-export const routes: Routes = [
+const desktopRoutes: Routes = [
   {
     path: ROUTER_TOKENS.HOME,
     component: HomeComponent,
@@ -42,5 +45,21 @@ export const routes: Routes = [
   {
     path: '**',
     redirectTo: ROUTER_TOKENS.LANDING_PAGE,
+  },
+];
+
+export const routes: Routes = [
+  {
+    path: ROUTER_TOKENS.MOBILE_UNSUPPORTED,
+    component: MobileNotSupportedComponent,
+  },
+  {
+    path: '',
+    canMatch: [desktopOnlyGuard],
+    children: desktopRoutes,
+  },
+  {
+    path: '**',
+    redirectTo: ROUTER_TOKENS.MOBILE_UNSUPPORTED,
   },
 ];
