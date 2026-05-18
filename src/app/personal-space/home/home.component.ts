@@ -14,6 +14,7 @@ import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/outlet-co
 import { RangePipe } from '@app/shared/pipe/range.pipe';
 import { finalize } from 'rxjs';
 import { StatsComponent } from "./stats/stats.component";
+import { Dialog } from '@angular/cdk/dialog';
 
 @Component({
   selector: 'reme-personal-home',
@@ -34,6 +35,7 @@ export class HomeComponent extends OutletContainer {
 
   private readonly router = inject(Router);
   private readonly userService = inject(UserService);
+  private readonly dialog = inject(Dialog);
   private readonly memberService = inject(MemberService);
   protected readonly authenticationService = inject(AuthService);
 
@@ -65,7 +67,7 @@ export class HomeComponent extends OutletContainer {
       finalize(() => {
         this.router.navigate([ROUTER_TOKENS.LOGIN]); //ignore logout failure and navigate to login page anyway
       })
-    ).subscribe();
+    ).subscribe(() => this.dialog.closeAll());
   }
 
   protected changeAvatar(value: string): void {
