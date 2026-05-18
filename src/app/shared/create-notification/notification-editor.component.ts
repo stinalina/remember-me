@@ -43,7 +43,6 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   
   private readonly freeNotificationsLimit = this.userService.freeNotificationsLimit;
   private readonly limitReached = signal<boolean>(false);
-  protected readonly mailNotChangebel = signal<boolean>(this.userService.currUser()?.mail != null);
 
   public readonly editor: Editor = new Editor();
   public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);
@@ -52,7 +51,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     subject: ['', Validators.maxLength(100)],
     additionalInfo: [''],
     content: ['', htmlContentValidator()],
-    mail: [ {value: this.localStorageService.getUserMail ?? '', disabled: this.mailNotChangebel()},
+    mail: [ this.localStorageService.getUserMail ?? '',
         [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService, this.freeNotificationsLimit())]],
     dateTime: [this.nextDay, Validators.required],
   });
@@ -61,7 +60,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     initialValue: this.myForm.status,
   });
   public readonly canSubmitForm = computed(() =>  {
-    return this.formStatus() === 'VALID' || this.editorMode() === 'edit';
+    return this.formStatus() === 'VALID';
   });
 
   protected readonly now = this.nextDay;
@@ -80,30 +79,29 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
 
   constructor() {
     effect(() => {
-      let dueDate = this.notification()?.dueDate;
+      const notification = this.notification();
+      if (!notification) {
+        return;
+      }
+      let dueDate = notification.dueDate;
       if (dueDate) {
         dueDate = new DatePipe('en-US').transform(dueDate, 'yyyy-MM-dd')!;
       }
 
       this.myForm.reset({
-        subject: this.notification()?.subject ?? '',
+        subject: notification.subject ?? '',
         additionalInfo: '',
-        content: this.notification()?.content ?? '',
-        mail: this.localStorageService.getUserMail ?? '',
+        content: notification.content ?? '',
+        mail: notification.mail ?? '',
         dateTime: dueDate ?? this.nextDay,
       });
 
-      const mailControl = this.myForm.controls.mail;
-      if (this.mailNotChangebel()) {
-        mailControl.disable();
-      } else {
-        mailControl.enable();
-      }
+      this.myForm.get('mail')?.setValidators([Validators.required, Validators.email]);
       this.myForm.updateValueAndValidity();
     });
 
     effect(() => {
-      if (this.limitReached()) {
+      if (this.limitReached() && this.editorMode() === 'create') {
         this.resetForm();
         this.typewriterEffectService.setActions([
           { type: TypewriterActionType.PAUSE, duration: 1000 },
@@ -168,11 +166,12 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   }
 
   private updateNotification(): void {
-    const formValue = this.myForm.getRawValue(); //also get disabled fields
+    const formValue = this.myForm.getRawValue();
     const notification = {
       Subject: formValue.subject || this.placeholderSubject,
       Content: formValue.content!,
       DueDate: formValue.dateTime!.toString(),
+      Mail: formValue.mail! 
     } satisfies Notification_Set_Input;
 
     this.notificationService.updateNotification(notification, this.notification()!.id).pipe(
@@ -199,6 +198,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
       Content: formValue.content!,
       DueDate: formValue.dateTime!.toString(),
       UserId: this.userService.currUser()?.userId,
+      Mail: mail
     } satisfies Notification_Insert_Input;
 
     this.sendingNotification.set(true)

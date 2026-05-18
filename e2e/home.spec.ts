@@ -20,7 +20,6 @@ test.describe('HomeComponent', () => {
 
   test('should display correct notifications count and limit', async ({ page }) => {
     const range = page.getByTestId('home-notifications-range');
-    const tooltip = page.getByTestId('home-notifications-tooltip');
 
     await expect(range).toHaveValue('0');
     await expect(range).toHaveAttribute('max', '5');

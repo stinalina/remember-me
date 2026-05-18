@@ -42,6 +42,7 @@ export type Notification = {
   CreatedAt: Scalars['timestamptz']['output'];
   DueDate: Scalars['timestamptz']['output'];
   Id: Scalars['uuid']['output'];
+  Mail: Scalars['String']['output'];
   RememberCount: Scalars['smallint']['output'];
   Subject: Scalars['String']['output'];
   /** An object relationship */
@@ -129,6 +130,7 @@ export type Notification_Bool_Exp = {
   CreatedAt?: InputMaybe<Timestamptz_Comparison_Exp>;
   DueDate?: InputMaybe<Timestamptz_Comparison_Exp>;
   Id?: InputMaybe<Uuid_Comparison_Exp>;
+  Mail?: InputMaybe<String_Comparison_Exp>;
   RememberCount?: InputMaybe<Smallint_Comparison_Exp>;
   Subject?: InputMaybe<String_Comparison_Exp>;
   User?: InputMaybe<User_Bool_Exp>;
@@ -155,6 +157,7 @@ export type Notification_Insert_Input = {
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
+  Mail?: InputMaybe<Scalars['String']['input']>;
   RememberCount?: InputMaybe<Scalars['smallint']['input']>;
   Subject?: InputMaybe<Scalars['String']['input']>;
   User?: InputMaybe<User_Obj_Rel_Insert_Input>;
@@ -168,6 +171,7 @@ export type Notification_Max_Fields = {
   CreatedAt?: Maybe<Scalars['timestamptz']['output']>;
   DueDate?: Maybe<Scalars['timestamptz']['output']>;
   Id?: Maybe<Scalars['uuid']['output']>;
+  Mail?: Maybe<Scalars['String']['output']>;
   RememberCount?: Maybe<Scalars['smallint']['output']>;
   Subject?: Maybe<Scalars['String']['output']>;
   UserId?: Maybe<Scalars['uuid']['output']>;
@@ -179,6 +183,7 @@ export type Notification_Max_Order_By = {
   CreatedAt?: InputMaybe<Order_By>;
   DueDate?: InputMaybe<Order_By>;
   Id?: InputMaybe<Order_By>;
+  Mail?: InputMaybe<Order_By>;
   RememberCount?: InputMaybe<Order_By>;
   Subject?: InputMaybe<Order_By>;
   UserId?: InputMaybe<Order_By>;
@@ -191,6 +196,7 @@ export type Notification_Min_Fields = {
   CreatedAt?: Maybe<Scalars['timestamptz']['output']>;
   DueDate?: Maybe<Scalars['timestamptz']['output']>;
   Id?: Maybe<Scalars['uuid']['output']>;
+  Mail?: Maybe<Scalars['String']['output']>;
   RememberCount?: Maybe<Scalars['smallint']['output']>;
   Subject?: Maybe<Scalars['String']['output']>;
   UserId?: Maybe<Scalars['uuid']['output']>;
@@ -202,6 +208,7 @@ export type Notification_Min_Order_By = {
   CreatedAt?: InputMaybe<Order_By>;
   DueDate?: InputMaybe<Order_By>;
   Id?: InputMaybe<Order_By>;
+  Mail?: InputMaybe<Order_By>;
   RememberCount?: InputMaybe<Order_By>;
   Subject?: InputMaybe<Order_By>;
   UserId?: InputMaybe<Order_By>;
@@ -229,6 +236,7 @@ export type Notification_Order_By = {
   CreatedAt?: InputMaybe<Order_By>;
   DueDate?: InputMaybe<Order_By>;
   Id?: InputMaybe<Order_By>;
+  Mail?: InputMaybe<Order_By>;
   RememberCount?: InputMaybe<Order_By>;
   Subject?: InputMaybe<Order_By>;
   User?: InputMaybe<User_Order_By>;
@@ -251,6 +259,8 @@ export enum Notification_Select_Column {
   /** column name */
   Id = 'Id',
   /** column name */
+  Mail = 'Mail',
+  /** column name */
   RememberCount = 'RememberCount',
   /** column name */
   Subject = 'Subject',
@@ -264,6 +274,7 @@ export type Notification_Set_Input = {
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
+  Mail?: InputMaybe<Scalars['String']['input']>;
   RememberCount?: InputMaybe<Scalars['smallint']['input']>;
   Subject?: InputMaybe<Scalars['String']['input']>;
   UserId?: InputMaybe<Scalars['uuid']['input']>;
@@ -316,6 +327,7 @@ export type Notification_Stream_Cursor_Value_Input = {
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
+  Mail?: InputMaybe<Scalars['String']['input']>;
   RememberCount?: InputMaybe<Scalars['smallint']['input']>;
   Subject?: InputMaybe<Scalars['String']['input']>;
   UserId?: InputMaybe<Scalars['uuid']['input']>;
@@ -342,6 +354,8 @@ export enum Notification_Update_Column {
   DueDate = 'DueDate',
   /** column name */
   Id = 'Id',
+  /** column name */
+  Mail = 'Mail',
   /** column name */
   RememberCount = 'RememberCount',
   /** column name */
@@ -1072,7 +1086,7 @@ export type InsertNotificationMutationVariables = Exact<{
 }>;
 
 
-export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', returning: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, UserId: any, Subject: string, RememberCount: any }> } | null };
+export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', returning: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, UserId: any, Subject: string, RememberCount: any, Mail: string }> } | null };
 
 export type UpdateNotificationByIdMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -1080,7 +1094,7 @@ export type UpdateNotificationByIdMutationVariables = Exact<{
 }>;
 
 
-export type UpdateNotificationByIdMutation = { __typename?: 'mutation_root', update_Notification_by_pk?: { __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, UserId: any, Subject: string, RememberCount: any } | null };
+export type UpdateNotificationByIdMutation = { __typename?: 'mutation_root', update_Notification_by_pk?: { __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, UserId: any, Subject: string, RememberCount: any, Mail: string } | null };
 
 export type DeleteNotificationByIdMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -1094,7 +1108,7 @@ export type GetNotificationByUserIdQueryVariables = Exact<{
 }>;
 
 
-export type GetNotificationByUserIdQuery = { __typename?: 'query_root', Notification: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, Subject: string, RememberCount: any, Id: any, DueDate: any }> };
+export type GetNotificationByUserIdQuery = { __typename?: 'query_root', Notification: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, Subject: string, RememberCount: any, Id: any, DueDate: any, Mail: string }> };
 
 export type InsertUserMutationVariables = Exact<{
   mail: Scalars['String']['input'];
@@ -1162,6 +1176,7 @@ export const InsertNotificationDocument = gql`
       UserId
       Subject
       RememberCount
+      Mail
     }
   }
 }
@@ -1187,6 +1202,7 @@ export const UpdateNotificationByIdDocument = gql`
     UserId
     Subject
     RememberCount
+    Mail
   }
 }
     `;
@@ -1228,6 +1244,7 @@ export const GetNotificationByUserIdDocument = gql`
     RememberCount
     Id
     DueDate
+    Mail
   }
 }
     `;
