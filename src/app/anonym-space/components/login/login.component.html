@@ -12,7 +12,11 @@
         (click)="this.login(mail.mailControl.value!, pw.passwordControl.value!, this.rememberMeFlag)">
         Einloggen
       </button>
-      <button class="btn-ghost reme-link" (click)="forgetPassword(mail.mailControl.value)">Passwort vergessen?</button>
+      <button class="btn-ghost reme-link" 
+        [disabled]="mail.mailControl.invalid" 
+        (click)="forgetPassword(mail.mailControl.value)">
+        Passwort vergessen?
+      </button>
       @if (errorMessage) {
         <div class="reme-validator-hint">{{ errorMessage }}</div>
       }

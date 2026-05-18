@@ -58,7 +58,7 @@ export class AuthService {
     );
   }
 
-  public sendPasswordResetEmail(email: string): Observable<void> {
+  public resetPassword(email: string): Observable<void> {
     return from(sendPasswordResetEmail(this.fireAuth, email)).pipe(
       catchError(error => {
         this.handleError(error);
