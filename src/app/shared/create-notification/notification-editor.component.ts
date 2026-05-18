@@ -60,7 +60,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     initialValue: this.myForm.status,
   });
   public readonly canSubmitForm = computed(() =>  {
-    return this.formStatus() === 'VALID' || this.editorMode() === 'edit';
+    return this.formStatus() === 'VALID';
   });
 
   protected readonly now = this.nextDay;
@@ -96,6 +96,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
         dateTime: dueDate ?? this.nextDay,
       });
 
+      this.myForm.get('mail')?.setValidators([Validators.required, Validators.email]);
       this.myForm.updateValueAndValidity();
     });
 
