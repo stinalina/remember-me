@@ -125,26 +125,26 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     if (!this.checkIfMaxSendedNotificationCountIsReached()) {
       this.restoreDraftIfExists();
     
-    if (this.showPlaceholderAnimation()) {
-      this.typewriterEffectService.setActions([
-        { type: TypewriterActionType.PAUSE, duration: 1000 },
-        { type: TypewriterActionType.TYPE, text: 'Im März diesmal wirklich dran denken Tickets für das Sommerfes' },
-        { type: TypewriterActionType.PAUSE, duration: 3000 },
-        { type: TypewriterActionType.DELETE, count: 13 },
-        { type: TypewriterActionType.TYPE, text: 'Rock am Ring zu kaufen.' },
-        { type: TypewriterActionType.LINEBREAK },
-        { type: TypewriterActionType.PAUSE, duration: 500 },
-        { type: TypewriterActionType.TYPE, text: ' Manu auc' },
-        { type: TypewriterActionType.DELETE, count: 3 },
-        { type: TypewriterActionType.TYPE, text: 'und <u>Felix</u> auch einladen.' },
-        { type: TypewriterActionType.LINEBREAK },
-        { type: TypewriterActionType.PAUSE, duration: 2000 },
-        { type: TypewriterActionType.TYPE, text: ' Für Lisa die <strong>Mütze</strong> mitbringen, die sie beim Weihnachtsmarktbesuch vergessen hat.' },
-        { type: TypewriterActionType.PAUSE, duration: 3000 },
-        { type: TypewriterActionType.LINEBREAK },
-        { type: TypewriterActionType.TYPE, text: ' Deadline ist der <strong>14.03</strong>!' },
-      ]);
-      this.typewriterEffectService.animatePlaceholder(this.updatePlaceholder.bind(this));
+      if (this.showPlaceholderAnimation()) {
+        this.typewriterEffectService.setActions([
+          { type: TypewriterActionType.PAUSE, duration: 1000 },
+          { type: TypewriterActionType.TYPE, text: 'Im März diesmal wirklich dran denken Tickets für das Sommerfes' },
+          { type: TypewriterActionType.PAUSE, duration: 3000 },
+          { type: TypewriterActionType.DELETE, count: 13 },
+          { type: TypewriterActionType.TYPE, text: 'Rock am Ring zu kaufen.' },
+          { type: TypewriterActionType.LINEBREAK },
+          { type: TypewriterActionType.PAUSE, duration: 500 },
+          { type: TypewriterActionType.TYPE, text: ' Manu auc' },
+          { type: TypewriterActionType.DELETE, count: 3 },
+          { type: TypewriterActionType.TYPE, text: 'und <u>Felix</u> auch einladen.' },
+          { type: TypewriterActionType.LINEBREAK },
+          { type: TypewriterActionType.PAUSE, duration: 2000 },
+          { type: TypewriterActionType.TYPE, text: ' Für Lisa die <strong>Mütze</strong> mitbringen, die sie beim Weihnachtsmarktbesuch vergessen hat.' },
+          { type: TypewriterActionType.PAUSE, duration: 3000 },
+          { type: TypewriterActionType.LINEBREAK },
+          { type: TypewriterActionType.TYPE, text: ' Deadline ist der <strong>14.03</strong>!' },
+        ]);
+        this.typewriterEffectService.animatePlaceholder(this.updatePlaceholder.bind(this));
       }
     }
   }
