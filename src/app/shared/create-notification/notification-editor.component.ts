@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
+import { AbstractControl, FormsModule } from '@angular/forms';
 import { email, form, FormField, maxLength, required, validate } from '@angular/forms/signals';
 import { INotification } from '@app/personal-space/data/notification.model';
 import { TypewriterActionType, TypewriterEffectService } from '@app/services/typewriter-effect.service';
@@ -15,6 +15,7 @@ import { IUser } from '@shared/models';
 import { SESSION_STORAGE } from '@shared/storage.token';
 import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
+import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,18 +52,25 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     additionalInfo: '',
     content: '',
     mail: this.localStorageService.getUserMail ?? '',
-    dateTime: this.nextDay,
+    dateTime: this.tomorrow,
   });
   
   protected readonly notificationForm = form(this.notificationModel, (path) => {
     maxLength(path.subject, 100);
     required(path.content);
     validate(path.content, ({ value }) => {
-      const plainText = this.getPlainText(value());
-      if (!plainText.length) {
+      const errors = htmlContentValidator()({ value: value() } as AbstractControl);
+      if (errors?.['required']) {
         return {
           kind: 'required',
           message: 'Inhalt darf nicht leer sein',
+        };
+      }
+
+      if (errors?.['minlength']) {
+        return {
+          kind: 'minlength',
+          message: 'Inhalt ist zu kurz',
         };
       }
 
@@ -89,7 +97,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
 
     required(path.dateTime);
     validate(path.dateTime, ({ value }) => {
-      if (value() < this.now) {
+      if (value() < this.tomorrow) {
         return {
           kind: 'minDate',
           message: 'Datum muss in der Zukunft liegen',
@@ -100,7 +108,6 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     });
   });
 
-  protected readonly now = this.nextDay;
   protected readonly retry = signal<boolean>(false);
   protected readonly sendingNotification = signal<boolean>(false);
   protected readonly placeholderSubject = 'Grüße von Notify!';
@@ -108,7 +115,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   public readonly typedPlaceholder = signal('');
   public readonly showPlaceholderAnimation = linkedSignal(() => this.editorMode() === 'create');
 
-  private get nextDay(): string {
+  private get tomorrow(): string {
     const date = new Date();
     const dateTime = new Date(date.getTime() + 24 * 60 * 60 * 1000); // add one day
     return new DatePipe('en-US').transform(dateTime, 'yyyy-MM-dd')!;
@@ -130,7 +137,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
         additionalInfo: '',
         content: notification.content ?? '',
         mail: notification.mail ?? '',
-        dateTime: dueDate ?? this.nextDay,
+        dateTime: dueDate ?? this.tomorrow,
       });
     });
 
@@ -310,23 +317,13 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     return this.notificationForm.mail().errors().some((error) => error.kind === kind);
   }
 
-  private getPlainText(value: string): string {
-    return value
-      .replace(/<[^>]*>/g, '')
-      .replace(/&nbsp;/g, ' ')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&amp;/g, '&')
-      .trim();
-  }
-
   public resetForm(): void {
     this.notificationModel.set({
       subject: '',
       additionalInfo: '',
       content: '',
       mail: this.localStorageService.getUserMail ?? '',
-      dateTime: this.nextDay
+      dateTime: this.tomorrow
     });
   }
 }
