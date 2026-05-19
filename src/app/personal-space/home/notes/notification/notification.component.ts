@@ -18,6 +18,7 @@ export class NotificationComponent {
   public readonly notification = input.required<INotification>();
   public readonly deleteNotification = output<void>();
   public readonly editClicked = output<void>();
+  public readonly preId = input<string>();
 
   protected readonly isDuePast = computed(() => {
     const today = new Date();
