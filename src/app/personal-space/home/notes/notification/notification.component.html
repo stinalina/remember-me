@@ -31,12 +31,14 @@
       <div class="card-actions flex flex-row gap-2 justify-end">
         <button type="button" class="btn btn-xs btn-square"
           aria-label="Notiz bearbeiten"
+          [attr.data-testid]="this.preId() + '-edit'"
           [disabled]="isDuePast()"
           (click)="editClicked.emit()">
           <span class="material-symbols-outlined">edit_square</span>
         </button>
         <button type="button" class="btn btn-xs btn-square"
           aria-label="Notiz löschen"
+          [attr.data-testid]="this.preId() + '-delete'"
           (click)="deleteDialog.show()">
           <span class="material-symbols-outlined">delete</span>
         </button>

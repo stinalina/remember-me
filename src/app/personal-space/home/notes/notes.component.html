@@ -14,6 +14,7 @@
             <div class="col-span-3"><div class="divider my-0"></div></div>
           }
           <reme-notification [notification]="notification"
+            [preId]="'note-' + i"
             (deleteNotification)="this.notificationStore.deleteNotification(notification.id)"
             (editClicked)="this.openEditNoteModal(notification)">
           </reme-notification>
