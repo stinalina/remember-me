@@ -82,7 +82,7 @@
     </div>
 
     <div class="flex justify-center">
-      @let disabled = (!this.canSubmitForm() || this.sendingNotification()) && !this.retry();
+      @let disabled = (this.notificationForm().invalid() || this.sendingNotification()) && !this.retry();
       <button type="submit" class="btn btn-sm md:btn-sm xl:btn-md" id="create-notification-apply"
         [class.btn-disabled]="disabled">
         @if (this.sendingNotification()) {

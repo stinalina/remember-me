@@ -1,8 +1,8 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { email, FormField, form, maxLength, required, validate } from '@angular/forms/signals';
+import { email, form, FormField, maxLength, required, validate } from '@angular/forms/signals';
 import { INotification } from '@app/personal-space/data/notification.model';
 import { TypewriterActionType, TypewriterEffectService } from '@app/services/typewriter-effect.service';
 import { Notification_Insert_Input, Notification_Set_Input } from '@hasura/generated';
@@ -98,10 +98,6 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
 
       return null;
     });
-  });
-
-  public readonly canSubmitForm = computed(() =>  {
-    return this.notificationForm().valid();
   });
 
   protected readonly now = this.nextDay;
@@ -283,7 +279,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this.canSubmitForm()) {
+    if (this.notificationForm().invalid()) {
       return;
     }
 
