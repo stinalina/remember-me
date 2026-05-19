@@ -1,4 +1,4 @@
-<form [formGroup]="this.myForm" (ngSubmit)="this.processSubmit()"
+<form (submit)="this.processSubmit($event)"
   class="
     shadow-lg 
     md:p-2.5 xl:p-3 p-2
@@ -10,7 +10,7 @@
     <label class="input input-sm md:input-sm xl:input-md w-full">
       Betreff
       <input type="text" id="create-notifcation-subject" 
-        formControlName="subject"
+        [formField]="this.notificationForm.subject"
         class="pl-1" placeholder="{{ this.placeholderSubject }}" />
     </label>
 
@@ -18,7 +18,9 @@
       <ngx-editor id="create-notification-editor"
         class="h-[25vh] xl:h-100 text-sm md:text-sm xl:text-base"
         [editor]="editor"
-        formControlName="content"
+        [ngModel]="this.notificationForm.content().value()"
+        (ngModelChange)="this.onContentChange($event)"
+        [ngModelOptions]="{ standalone: true }"
         outputFormat="html"
         placeholder=""
         (focusIn)="this.showPlaceholderAnimation.set(false)" >
@@ -36,12 +38,16 @@
         Wann möchtest du erinnert werden?
       </label>
       <input id="create-notification-date-time" class="input input-sm md:input-sm xl:input-md w-full"
-        formControlName="dateTime"
-        type="date"
-        [min]="this.now"/>
+        [formField]="this.notificationForm.dateTime"
+        type="date"/>
     </div>
 
-    <input type="text" formControlName="additionalInfo" style="display:none" autocomplete="off">
+    <input
+      type="text"
+      [formField]="this.notificationForm.additionalInfo"
+      class="hidden"
+      autocomplete="off"
+    >
 
     <div class="flex flex-col text-sm md:text-sm xl:text-base">
       <label for="create-notifcation-mail" class="text-left md:ml-0.5 xl:ml-1 mb-1">
@@ -61,16 +67,15 @@
           </g>
         </svg>
         <input id="create-notifcation-mail"
-          formControlName="mail" class="pl-1"
+          [formField]="this.notificationForm.mail" class="pl-1"
           type="email" placeholder="mail@site.com" />
       </label>
-      @let mailErrors = this.myForm.get('mail')?.errors;
-      @let mailTouched = this.myForm.get('mail')?.touched;
-      @if (mailTouched && mailErrors) {
-        @if (mailErrors['email']) {
+      @let mailTouched = this.notificationForm.mail().touched();
+      @if (mailTouched && this.notificationForm.mail().invalid()) {
+        @if (this.hasMailError('email')) {
           <div class="reme-validator-hint">Gebe eine gültige E-Mail-Adresse ein</div>
         }
-        @if (mailErrors['freeLimitReached']) {
+        @if (this.hasMailError('freeLimitReached')) {
           <div class="reme-validator-hint">Limit für Benachrichtigungen diesen Monat erreicht</div>
         }
       }
