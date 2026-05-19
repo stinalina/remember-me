@@ -1,11 +1,10 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AbstractControl, FormsModule } from '@angular/forms';
+import { email, form, FormField, maxLength, required, validate } from '@angular/forms/signals';
 import { INotification } from '@app/personal-space/data/notification.model';
 import { TypewriterActionType, TypewriterEffectService } from '@app/services/typewriter-effect.service';
-import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
-import { restrictFreeLimitValidator } from '@app/shared/validators/restrict-free-limit.validator';
 import { Notification_Insert_Input, Notification_Set_Input } from '@hasura/generated';
 import { LocalStorageService } from '@services/local-storage.service';
 import { NotificationService } from '@services/notification.service';
@@ -16,6 +15,7 @@ import { IUser } from '@shared/models';
 import { SESSION_STORAGE } from '@shared/storage.token';
 import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
+import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,7 +24,8 @@ import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
   styleUrl: 'notification-editor.component.scss',
   imports: [  
     NgxEditorModule,
-    ReactiveFormsModule
+    FormField,
+    FormsModule
   ] 
 })
 export class NotificationEditorComponent implements OnInit, OnDestroy {
@@ -34,7 +35,6 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
 
   private readonly notificationService = inject(NotificationService);
   private readonly userService = inject(UserService);
-  private readonly fb = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
   private readonly sessionStorage = inject(SESSION_STORAGE);
   private readonly localStorageService = inject(LocalStorageService);
@@ -46,24 +46,68 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
 
   public readonly editor: Editor = new Editor();
   public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);
+
+  private readonly notificationModel = signal({
+    subject: '',
+    additionalInfo: '',
+    content: '',
+    mail: this.localStorageService.getUserMail ?? '',
+    dateTime: this.tomorrow,
+  });
   
-  protected readonly myForm = this.fb.group({
-    subject: ['', Validators.maxLength(100)],
-    additionalInfo: [''],
-    content: ['', htmlContentValidator()],
-    mail: [ this.localStorageService.getUserMail ?? '',
-        [Validators.required, Validators.email, restrictFreeLimitValidator(this.localStorageService, this.freeNotificationsLimit())]],
-    dateTime: [this.nextDay, Validators.required],
+  protected readonly notificationForm = form(this.notificationModel, (path) => {
+    maxLength(path.subject, 100);
+    required(path.content);
+    validate(path.content, ({ value }) => {
+      const errors = htmlContentValidator()({ value: value() } as AbstractControl);
+      if (errors?.['required']) {
+        return {
+          kind: 'required',
+          message: 'Inhalt darf nicht leer sein',
+        };
+      }
+
+      if (errors?.['minlength']) {
+        return {
+          kind: 'minlength',
+          message: 'Inhalt ist zu kurz',
+        };
+      }
+
+      return null;
+    });
+
+    required(path.mail);
+    email(path.mail);
+    validate(path.mail, ({ value }) => {
+      if (this.editorMode() !== 'create') {
+        return null;
+      }
+
+      const limitReached = this.localStorageService.getSendedNotificationCount(value()) >= this.freeNotificationsLimit();
+      if (limitReached) {
+        return {
+          kind: 'freeLimitReached',
+          message: 'Limit für Benachrichtigungen diesen Monat erreicht',
+        };
+      }
+
+      return null;
+    });
+
+    required(path.dateTime);
+    validate(path.dateTime, ({ value }) => {
+      if (value() < this.tomorrow) {
+        return {
+          kind: 'minDate',
+          message: 'Datum muss in der Zukunft liegen',
+        };
+      }
+
+      return null;
+    });
   });
 
-  protected readonly formStatus = toSignal(this.myForm.statusChanges, {
-    initialValue: this.myForm.status,
-  });
-  public readonly canSubmitForm = computed(() =>  {
-    return this.formStatus() === 'VALID';
-  });
-
-  protected readonly now = this.nextDay;
   protected readonly retry = signal<boolean>(false);
   protected readonly sendingNotification = signal<boolean>(false);
   protected readonly placeholderSubject = 'Grüße von Notify!';
@@ -71,7 +115,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   public readonly typedPlaceholder = signal('');
   public readonly showPlaceholderAnimation = linkedSignal(() => this.editorMode() === 'create');
 
-  private get nextDay(): string {
+  private get tomorrow(): string {
     const date = new Date();
     const dateTime = new Date(date.getTime() + 24 * 60 * 60 * 1000); // add one day
     return new DatePipe('en-US').transform(dateTime, 'yyyy-MM-dd')!;
@@ -88,16 +132,13 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
         dueDate = new DatePipe('en-US').transform(dueDate, 'yyyy-MM-dd')!;
       }
 
-      this.myForm.reset({
+      this.notificationModel.set({
         subject: notification.subject ?? '',
         additionalInfo: '',
         content: notification.content ?? '',
         mail: notification.mail ?? '',
-        dateTime: dueDate ?? this.nextDay,
+        dateTime: dueDate ?? this.tomorrow,
       });
-
-      this.myForm.get('mail')?.setValidators([Validators.required, Validators.email]);
-      this.myForm.updateValueAndValidity();
     });
 
     effect(() => {
@@ -150,9 +191,9 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    const form = this.myForm.value;
+    const form = this.notificationModel();
     if (this.editorMode() == 'create' && form.content && form.content.length > 0) {
-      this.sessionStorage.setItem('notificationDraft', JSON.stringify(this.myForm.value));
+      this.sessionStorage.setItem('notificationDraft', JSON.stringify(form));
     }
     this.editor.destroy();
   }
@@ -160,18 +201,22 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   private restoreDraftIfExists(): void {
     const draft = this.sessionStorage.getItem('notificationDraft');
     if (draft) {
-      this.myForm.setValue(JSON.parse(draft));
+      const parsedDraft = JSON.parse(draft) as Partial<ReturnType<typeof this.notificationModel>>;
+      this.notificationModel.update((current) => ({
+        ...current,
+        ...parsedDraft,
+      }));
       this.showPlaceholderAnimation.set(false);
     }
   }
 
   private updateNotification(): void {
-    const formValue = this.myForm.getRawValue();
+    const formValue = this.notificationModel();
     const notification = {
       Subject: formValue.subject || this.placeholderSubject,
-      Content: formValue.content!,
-      DueDate: formValue.dateTime!.toString(),
-      Mail: formValue.mail! 
+      Content: formValue.content,
+      DueDate: formValue.dateTime.toString(),
+      Mail: formValue.mail 
     } satisfies Notification_Set_Input;
 
     this.notificationService.updateNotification(notification, this.notification()!.id).pipe(
@@ -191,12 +236,12 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   }
 
   private createNotification(): void {
-    const formValue = this.myForm.getRawValue(); //also get disabled fields
-    const mail = formValue.mail!;
+    const formValue = this.notificationModel();
+    const mail = formValue.mail;
     const notification = {
       Subject: formValue.subject || this.placeholderSubject,
-      Content: formValue.content!,
-      DueDate: formValue.dateTime!.toString(),
+      Content: formValue.content,
+      DueDate: formValue.dateTime.toString(),
       UserId: this.userService.currUser()?.userId,
       Mail: mail
     } satisfies Notification_Insert_Input;
@@ -232,14 +277,17 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  public processSubmit(): void {
-    if (this.myForm.value.additionalInfo && this.myForm.value.additionalInfo.length > 0) {
+  public processSubmit(event: Event): void {
+    event.preventDefault();
+
+    if (this.notificationModel().additionalInfo.length > 0) {
       this.toastService.showToast('Bot detected. If you are not a bot, please try again.', ToastType.Error);
-      this.myForm.value.additionalInfo = '';
-      return undefined;
+      this.notificationForm.additionalInfo().value.set('');
+      return;
     }
-    if (!this.canSubmitForm()) {
-      return undefined;
+
+    if (this.notificationForm().invalid()) {
+      return;
     }
 
     if (this.editorMode() === 'edit') {
@@ -261,12 +309,21 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     this.typedPlaceholder.set(text);
   }
 
+  protected onContentChange(content: string): void {
+    this.notificationForm.content().value.set(content ?? '');
+  }
+
+  protected hasMailError(kind: string): boolean {
+    return this.notificationForm.mail().errors().some((error) => error.kind === kind);
+  }
+
   public resetForm(): void {
-    this.myForm.reset({
+    this.notificationModel.set({
       subject: '',
+      additionalInfo: '',
       content: '',
       mail: this.localStorageService.getUserMail ?? '',
-      dateTime: this.nextDay
+      dateTime: this.tomorrow
     });
   }
 }
