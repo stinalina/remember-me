@@ -11,7 +11,7 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-const baseURL = process.env.BASE_URL || 'http://localhost:4200';
+const baseURL = process.env.BASE_URL || 'http://localhost:4201';
 
 export default defineConfig({
   testDir: './e2e',
@@ -82,9 +82,10 @@ export default defineConfig({
       timeout: 120000,
     },
     {
-      command: 'npm run e2e:serve',
-      url: 'http://localhost:4200',
-      reuseExistingServer: !process.env.CI,
+      // Use a dedicated port for e2e to avoid reusing a non-e2e local dev server.
+      command: 'npm run e2e:serve -- --port 4201',
+      url: 'http://localhost:4201',
+      reuseExistingServer: false,
       timeout: 120000,
     }
   ],
