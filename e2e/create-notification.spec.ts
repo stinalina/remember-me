@@ -2,7 +2,10 @@ import { test, expect } from '@playwright/test';
 
 test.describe('CreateNotificationComponent', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/free-notification');
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'Ausprobieren' }).click();
+
     // Clear localStorage after page loads
     await page.evaluate(() => localStorage.clear());
     await page.waitForTimeout(500);
@@ -101,17 +104,38 @@ test.describe('CreateNotificationComponent', () => {
 
   test('should not allow selecting past or today date', async ({ page }) => {
     const dateInput = page.locator('#create-notification-date-time');
-    
-    // Get the min attribute (should be today or tomorrow)
-    const minDate = await dateInput.getAttribute('min');
-    expect(minDate).toBeTruthy();
-    
-    // Parse tomorrow's date
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const expectedMinDate = tomorrow.toISOString().split('T')[0];
-    
-    expect(minDate).toBe(expectedMinDate);
+    const mailInput = page.getByRole('textbox', { name: 'Sende Erinnerung an:' });
+    const editor = page.locator('.ProseMirror');
+    const submitButton = page.getByRole('button', { name: /Notiz erstellen|Senden/ });
+
+    // Make form valid first.
+    await mailInput.fill('test@example.com');
+    await editor.click();
+    await editor.fill('Test notification content');
+    await page.waitForTimeout(300);
+
+    let buttonClass = await submitButton.getAttribute('class');
+    expect(buttonClass).not.toContain('btn-disabled');
+
+    // Set date to today -> must become invalid.
+    const today = new Date().toISOString().split('T')[0];
+    await dateInput.fill(today);
+    await dateInput.blur();
+    await page.waitForTimeout(300);
+
+    buttonClass = await submitButton.getAttribute('class');
+    expect(buttonClass).toContain('btn-disabled');
+
+    // Set date to yesterday -> still invalid.
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayDate = yesterday.toISOString().split('T')[0];
+    await dateInput.fill(yesterdayDate);
+    await dateInput.blur();
+    await page.waitForTimeout(300);
+
+    buttonClass = await submitButton.getAttribute('class');
+    expect(buttonClass).toContain('btn-disabled');
   });
 
   test('should restore email from localStorage on page reload', async ({ page }) => {
@@ -125,6 +149,8 @@ test.describe('CreateNotificationComponent', () => {
     
     // Reload page
     await page.reload();
+    await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: 'Ausprobieren' }).click();
     await page.waitForTimeout(500);
     
     // Mail should be prefilled

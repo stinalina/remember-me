@@ -15,6 +15,7 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  jsonb: { input: any; output: any; }
   pricing_enum: { input: any; output: any; }
   smallint: { input: any; output: any; }
   timestamptz: { input: any; output: any; }
@@ -41,6 +42,7 @@ export type Notification = {
   CreatedAt: Scalars['timestamptz']['output'];
   DueDate: Scalars['timestamptz']['output'];
   Id: Scalars['uuid']['output'];
+  Mail: Scalars['String']['output'];
   RememberCount: Scalars['smallint']['output'];
   Subject: Scalars['String']['output'];
   /** An object relationship */
@@ -128,6 +130,7 @@ export type Notification_Bool_Exp = {
   CreatedAt?: InputMaybe<Timestamptz_Comparison_Exp>;
   DueDate?: InputMaybe<Timestamptz_Comparison_Exp>;
   Id?: InputMaybe<Uuid_Comparison_Exp>;
+  Mail?: InputMaybe<String_Comparison_Exp>;
   RememberCount?: InputMaybe<Smallint_Comparison_Exp>;
   Subject?: InputMaybe<String_Comparison_Exp>;
   User?: InputMaybe<User_Bool_Exp>;
@@ -154,6 +157,7 @@ export type Notification_Insert_Input = {
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
+  Mail?: InputMaybe<Scalars['String']['input']>;
   RememberCount?: InputMaybe<Scalars['smallint']['input']>;
   Subject?: InputMaybe<Scalars['String']['input']>;
   User?: InputMaybe<User_Obj_Rel_Insert_Input>;
@@ -167,6 +171,7 @@ export type Notification_Max_Fields = {
   CreatedAt?: Maybe<Scalars['timestamptz']['output']>;
   DueDate?: Maybe<Scalars['timestamptz']['output']>;
   Id?: Maybe<Scalars['uuid']['output']>;
+  Mail?: Maybe<Scalars['String']['output']>;
   RememberCount?: Maybe<Scalars['smallint']['output']>;
   Subject?: Maybe<Scalars['String']['output']>;
   UserId?: Maybe<Scalars['uuid']['output']>;
@@ -178,6 +183,7 @@ export type Notification_Max_Order_By = {
   CreatedAt?: InputMaybe<Order_By>;
   DueDate?: InputMaybe<Order_By>;
   Id?: InputMaybe<Order_By>;
+  Mail?: InputMaybe<Order_By>;
   RememberCount?: InputMaybe<Order_By>;
   Subject?: InputMaybe<Order_By>;
   UserId?: InputMaybe<Order_By>;
@@ -190,6 +196,7 @@ export type Notification_Min_Fields = {
   CreatedAt?: Maybe<Scalars['timestamptz']['output']>;
   DueDate?: Maybe<Scalars['timestamptz']['output']>;
   Id?: Maybe<Scalars['uuid']['output']>;
+  Mail?: Maybe<Scalars['String']['output']>;
   RememberCount?: Maybe<Scalars['smallint']['output']>;
   Subject?: Maybe<Scalars['String']['output']>;
   UserId?: Maybe<Scalars['uuid']['output']>;
@@ -201,6 +208,7 @@ export type Notification_Min_Order_By = {
   CreatedAt?: InputMaybe<Order_By>;
   DueDate?: InputMaybe<Order_By>;
   Id?: InputMaybe<Order_By>;
+  Mail?: InputMaybe<Order_By>;
   RememberCount?: InputMaybe<Order_By>;
   Subject?: InputMaybe<Order_By>;
   UserId?: InputMaybe<Order_By>;
@@ -228,6 +236,7 @@ export type Notification_Order_By = {
   CreatedAt?: InputMaybe<Order_By>;
   DueDate?: InputMaybe<Order_By>;
   Id?: InputMaybe<Order_By>;
+  Mail?: InputMaybe<Order_By>;
   RememberCount?: InputMaybe<Order_By>;
   Subject?: InputMaybe<Order_By>;
   User?: InputMaybe<User_Order_By>;
@@ -250,6 +259,8 @@ export enum Notification_Select_Column {
   /** column name */
   Id = 'Id',
   /** column name */
+  Mail = 'Mail',
+  /** column name */
   RememberCount = 'RememberCount',
   /** column name */
   Subject = 'Subject',
@@ -263,6 +274,7 @@ export type Notification_Set_Input = {
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
+  Mail?: InputMaybe<Scalars['String']['input']>;
   RememberCount?: InputMaybe<Scalars['smallint']['input']>;
   Subject?: InputMaybe<Scalars['String']['input']>;
   UserId?: InputMaybe<Scalars['uuid']['input']>;
@@ -315,6 +327,7 @@ export type Notification_Stream_Cursor_Value_Input = {
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
+  Mail?: InputMaybe<Scalars['String']['input']>;
   RememberCount?: InputMaybe<Scalars['smallint']['input']>;
   Subject?: InputMaybe<Scalars['String']['input']>;
   UserId?: InputMaybe<Scalars['uuid']['input']>;
@@ -341,6 +354,8 @@ export enum Notification_Update_Column {
   DueDate = 'DueDate',
   /** column name */
   Id = 'Id',
+  /** column name */
+  Mail = 'Mail',
   /** column name */
   RememberCount = 'RememberCount',
   /** column name */
@@ -434,6 +449,7 @@ export type User = {
   Notifications: Array<Notification>;
   /** An aggregate relationship */
   Notifications_aggregate: Notification_Aggregate;
+  Preferences: Scalars['jsonb']['output'];
   Pricing?: Maybe<Scalars['pricing_enum']['output']>;
 };
 
@@ -455,6 +471,12 @@ export type UserNotifications_AggregateArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   order_by?: InputMaybe<Array<Notification_Order_By>>;
   where?: InputMaybe<Notification_Bool_Exp>;
+};
+
+
+/** columns and relationships of "dev.User" */
+export type UserPreferencesArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregated selection of "dev.User" */
@@ -479,6 +501,11 @@ export type User_Aggregate_FieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type User_Append_Input = {
+  Preferences?: InputMaybe<Scalars['jsonb']['input']>;
+};
+
 /** Boolean expression to filter rows from the table "dev.User". All fields are combined with a logical 'AND'. */
 export type User_Bool_Exp = {
   Id?: InputMaybe<Uuid_Comparison_Exp>;
@@ -486,6 +513,7 @@ export type User_Bool_Exp = {
   Name?: InputMaybe<String_Comparison_Exp>;
   Notifications?: InputMaybe<Notification_Bool_Exp>;
   Notifications_aggregate?: InputMaybe<Notification_Aggregate_Bool_Exp>;
+  Preferences?: InputMaybe<Jsonb_Comparison_Exp>;
   Pricing?: InputMaybe<Pricing_Enum_Comparison_Exp>;
   _and?: InputMaybe<Array<User_Bool_Exp>>;
   _not?: InputMaybe<User_Bool_Exp>;
@@ -498,12 +526,28 @@ export enum User_Constraint {
   UserPkey = 'User_pkey'
 }
 
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type User_Delete_At_Path_Input = {
+  Preferences?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type User_Delete_Elem_Input = {
+  Preferences?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type User_Delete_Key_Input = {
+  Preferences?: InputMaybe<Scalars['String']['input']>;
+};
+
 /** input type for inserting data into table "dev.User" */
 export type User_Insert_Input = {
   Id?: InputMaybe<Scalars['uuid']['input']>;
   Mail?: InputMaybe<Scalars['String']['input']>;
   Name?: InputMaybe<Scalars['String']['input']>;
   Notifications?: InputMaybe<Notification_Arr_Rel_Insert_Input>;
+  Preferences?: InputMaybe<Scalars['jsonb']['input']>;
   Pricing?: InputMaybe<Scalars['pricing_enum']['input']>;
 };
 
@@ -554,12 +598,18 @@ export type User_Order_By = {
   Mail?: InputMaybe<Order_By>;
   Name?: InputMaybe<Order_By>;
   Notifications_aggregate?: InputMaybe<Notification_Aggregate_Order_By>;
+  Preferences?: InputMaybe<Order_By>;
   Pricing?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: dev.User */
 export type User_Pk_Columns_Input = {
   Id: Scalars['uuid']['input'];
+};
+
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type User_Prepend_Input = {
+  Preferences?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** select columns of table "dev.User" */
@@ -571,6 +621,8 @@ export enum User_Select_Column {
   /** column name */
   Name = 'Name',
   /** column name */
+  Preferences = 'Preferences',
+  /** column name */
   Pricing = 'Pricing'
 }
 
@@ -579,6 +631,7 @@ export type User_Set_Input = {
   Id?: InputMaybe<Scalars['uuid']['input']>;
   Mail?: InputMaybe<Scalars['String']['input']>;
   Name?: InputMaybe<Scalars['String']['input']>;
+  Preferences?: InputMaybe<Scalars['jsonb']['input']>;
   Pricing?: InputMaybe<Scalars['pricing_enum']['input']>;
 };
 
@@ -595,6 +648,7 @@ export type User_Stream_Cursor_Value_Input = {
   Id?: InputMaybe<Scalars['uuid']['input']>;
   Mail?: InputMaybe<Scalars['String']['input']>;
   Name?: InputMaybe<Scalars['String']['input']>;
+  Preferences?: InputMaybe<Scalars['jsonb']['input']>;
   Pricing?: InputMaybe<Scalars['pricing_enum']['input']>;
 };
 
@@ -607,10 +661,22 @@ export enum User_Update_Column {
   /** column name */
   Name = 'Name',
   /** column name */
+  Preferences = 'Preferences',
+  /** column name */
   Pricing = 'Pricing'
 }
 
 export type User_Updates = {
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  _append?: InputMaybe<User_Append_Input>;
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  _delete_at_path?: InputMaybe<User_Delete_At_Path_Input>;
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  _delete_elem?: InputMaybe<User_Delete_Elem_Input>;
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  _delete_key?: InputMaybe<User_Delete_Key_Input>;
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  _prepend?: InputMaybe<User_Prepend_Input>;
   /** sets the columns of the filtered rows to the given values */
   _set?: InputMaybe<User_Set_Input>;
   /** filter the rows which have to be updated */
@@ -624,6 +690,34 @@ export enum Cursor_Ordering {
   /** descending ordering of the cursor */
   Desc = 'DESC'
 }
+
+export type Jsonb_Cast_Exp = {
+  String?: InputMaybe<String_Comparison_Exp>;
+};
+
+/** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
+export type Jsonb_Comparison_Exp = {
+  _cast?: InputMaybe<Jsonb_Cast_Exp>;
+  /** is the column contained in the given json value */
+  _contained_in?: InputMaybe<Scalars['jsonb']['input']>;
+  /** does the column contain the given json value at the top level */
+  _contains?: InputMaybe<Scalars['jsonb']['input']>;
+  _eq?: InputMaybe<Scalars['jsonb']['input']>;
+  _gt?: InputMaybe<Scalars['jsonb']['input']>;
+  _gte?: InputMaybe<Scalars['jsonb']['input']>;
+  /** does the string exist as a top-level key in the column */
+  _has_key?: InputMaybe<Scalars['String']['input']>;
+  /** do all of these strings exist as top-level keys in the column */
+  _has_keys_all?: InputMaybe<Array<Scalars['String']['input']>>;
+  /** do any of these strings exist as top-level keys in the column */
+  _has_keys_any?: InputMaybe<Array<Scalars['String']['input']>>;
+  _in?: InputMaybe<Array<Scalars['jsonb']['input']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['jsonb']['input']>;
+  _lte?: InputMaybe<Scalars['jsonb']['input']>;
+  _neq?: InputMaybe<Scalars['jsonb']['input']>;
+  _nin?: InputMaybe<Array<Scalars['jsonb']['input']>>;
+};
 
 /** mutation root */
 export type Mutation_Root = {
@@ -735,6 +829,11 @@ export type Mutation_RootUpdate_Notification_ManyArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_UserArgs = {
+  _append?: InputMaybe<User_Append_Input>;
+  _delete_at_path?: InputMaybe<User_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<User_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<User_Delete_Key_Input>;
+  _prepend?: InputMaybe<User_Prepend_Input>;
   _set?: InputMaybe<User_Set_Input>;
   where: User_Bool_Exp;
 };
@@ -742,6 +841,11 @@ export type Mutation_RootUpdate_UserArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_User_By_PkArgs = {
+  _append?: InputMaybe<User_Append_Input>;
+  _delete_at_path?: InputMaybe<User_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<User_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<User_Delete_Key_Input>;
+  _prepend?: InputMaybe<User_Prepend_Input>;
   _set?: InputMaybe<User_Set_Input>;
   pk_columns: User_Pk_Columns_Input;
 };
@@ -962,16 +1066,54 @@ export type Uuid_Comparison_Exp = {
   _nin?: InputMaybe<Array<Scalars['uuid']['input']>>;
 };
 
+export type GetMemberByIdQueryVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
+
+
+export type GetMemberByIdQuery = { __typename?: 'query_root', User: Array<{ __typename?: 'User', Name: string, Preferences: any }> };
+
+export type UpdatePreferencesMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+  preferences: Scalars['jsonb']['input'];
+}>;
+
+
+export type UpdatePreferencesMutation = { __typename?: 'mutation_root', update_User?: { __typename?: 'User_mutation_response', returning: Array<{ __typename?: 'User', Preferences: any }> } | null };
+
 export type InsertNotificationMutationVariables = Exact<{
   objects: Array<Notification_Insert_Input> | Notification_Insert_Input;
 }>;
 
 
-export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', returning: Array<{ __typename?: 'Notification', Subject: string }> } | null };
+export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', returning: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, UserId: any, Subject: string, RememberCount: any, Mail: string }> } | null };
+
+export type UpdateNotificationByIdMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+  object: Notification_Set_Input;
+}>;
+
+
+export type UpdateNotificationByIdMutation = { __typename?: 'mutation_root', update_Notification_by_pk?: { __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, UserId: any, Subject: string, RememberCount: any, Mail: string } | null };
+
+export type DeleteNotificationByIdMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
+
+
+export type DeleteNotificationByIdMutation = { __typename?: 'mutation_root', delete_Notification_by_pk?: { __typename?: 'Notification', Id: any } | null };
+
+export type GetNotificationByUserIdQueryVariables = Exact<{
+  userId?: InputMaybe<Scalars['uuid']['input']>;
+}>;
+
+
+export type GetNotificationByUserIdQuery = { __typename?: 'query_root', Notification: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, Subject: string, RememberCount: any, Id: any, DueDate: any, Mail: string }> };
 
 export type InsertUserMutationVariables = Exact<{
   mail: Scalars['String']['input'];
   name: Scalars['String']['input'];
+  preferences: Scalars['jsonb']['input'];
 }>;
 
 
@@ -984,11 +1126,57 @@ export type GetUserByMailQueryVariables = Exact<{
 
 export type GetUserByMailQuery = { __typename?: 'query_root', User: Array<{ __typename?: 'User', Id: any, Name: string }> };
 
+export const GetMemberByIdDocument = gql`
+    query GetMemberById($id: uuid!) {
+  User(where: {Id: {_eq: $id}}) {
+    Name
+    Preferences
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetMemberByIdGQL extends Apollo.Query<GetMemberByIdQuery, GetMemberByIdQueryVariables> {
+    document = GetMemberByIdDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const UpdatePreferencesDocument = gql`
+    mutation UpdatePreferences($id: uuid!, $preferences: jsonb!) {
+  update_User(where: {Id: {_eq: $id}}, _set: {Preferences: $preferences}) {
+    returning {
+      Preferences
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UpdatePreferencesGQL extends Apollo.Mutation<UpdatePreferencesMutation, UpdatePreferencesMutationVariables> {
+    document = UpdatePreferencesDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
 export const InsertNotificationDocument = gql`
     mutation InsertNotification($objects: [Notification_insert_input!]!) {
   insert_Notification(objects: $objects) {
     returning {
+      Content
+      CreatedAt
+      DueDate
+      Id
+      UserId
       Subject
+      RememberCount
+      Mail
     }
   }
 }
@@ -1004,9 +1192,76 @@ export const InsertNotificationDocument = gql`
       super(apollo);
     }
   }
+export const UpdateNotificationByIdDocument = gql`
+    mutation UpdateNotificationById($id: uuid!, $object: Notification_set_input!) {
+  update_Notification_by_pk(pk_columns: {Id: $id}, _set: $object) {
+    Content
+    CreatedAt
+    DueDate
+    Id
+    UserId
+    Subject
+    RememberCount
+    Mail
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UpdateNotificationByIdGQL extends Apollo.Mutation<UpdateNotificationByIdMutation, UpdateNotificationByIdMutationVariables> {
+    document = UpdateNotificationByIdDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const DeleteNotificationByIdDocument = gql`
+    mutation DeleteNotificationById($id: uuid!) {
+  delete_Notification_by_pk(Id: $id) {
+    Id
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DeleteNotificationByIdGQL extends Apollo.Mutation<DeleteNotificationByIdMutation, DeleteNotificationByIdMutationVariables> {
+    document = DeleteNotificationByIdDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const GetNotificationByUserIdDocument = gql`
+    query GetNotificationByUserId($userId: uuid) {
+  Notification(order_by: {CreatedAt: desc}, where: {UserId: {_eq: $userId}}) {
+    Content
+    CreatedAt
+    Subject
+    RememberCount
+    Id
+    DueDate
+    Mail
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetNotificationByUserIdGQL extends Apollo.Query<GetNotificationByUserIdQuery, GetNotificationByUserIdQueryVariables> {
+    document = GetNotificationByUserIdDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
 export const InsertUserDocument = gql`
-    mutation InsertUser($mail: String!, $name: String!) {
-  insert_User(objects: {Mail: $mail, Name: $name}) {
+    mutation InsertUser($mail: String!, $name: String!, $preferences: jsonb!) {
+  insert_User(objects: {Mail: $mail, Name: $name, Preferences: $preferences}) {
     returning {
       Id
       Name

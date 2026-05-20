@@ -32,3 +32,16 @@
   font-size: var(--text-sm); /* 0.875rem = 14px */;
   line-height: var(--tw-leading, var(--text-sm--line-height));
 }
+
+.submenu a:hover {
+  text-decoration: underline
+}
+
+input.range:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+.reme-mouse-pointer {
+   cursor: pointer;
+}

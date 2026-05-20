@@ -11,12 +11,13 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-const baseURL = process.env.BASE_URL || 'http://localhost:4200';
+const baseURL = process.env.BASE_URL || 'http://localhost:4201';
 
 export default defineConfig({
   testDir: './e2e',
+  globalSetup: './e2e/global-setup.ts',
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -29,6 +30,9 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL: baseURL,
+
+    /* Use a larger viewport to reduce overlapping UI in e2e tests. */
+    viewport: { width: 1920, height: 1080 },
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -73,9 +77,19 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'npm run start',
-    url: 'http://localhost:4200',
-    reuseExistingServer: !process.env.CI,
-  },
+  webServer: [
+    {
+      command: 'npm run emulator',
+      url: 'http://127.0.0.1:9099/emulator/v1/projects/rememberme-d356c/config',
+      reuseExistingServer: !process.env.CI,
+      timeout: 120000,
+    },
+    {
+      // Use a dedicated port for e2e to avoid reusing a non-e2e local dev server.
+      command: 'npm run e2e:serve -- --port 4201',
+      url: 'http://localhost:4201',
+      reuseExistingServer: false,
+      timeout: 120000,
+    }
+  ],
 });

@@ -1,77 +1,83 @@
 import { HttpClient } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
-import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
-import { GetUserByMailGQL, InsertNotificationGQL, InsertNotificationMutationVariables, InsertUserGQL } from "@hasura/generated";
-import { INotification, IUser } from "@shared/models";
-import { ToastService, ToastType } from "./toast.service";
+import { DestroyRef, inject, Injectable } from "@angular/core";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { environment } from "@environments/environment";
+import { InsertNotificationGQL, Notification_Insert_Input, Notification_Set_Input, UpdateNotificationByIdGQL } from "@hasura/generated";
+import { IUser } from "@shared/models";
+import { catchError, map, Observable, of, tap } from 'rxjs';
+import { ToastService, ToastType } from "./toast.service";
+import { INotification } from "@app/personal-space/data/notification.model";
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
+  private readonly destroyRef = inject(DestroyRef);
   private readonly httpClient = inject(HttpClient);
   private readonly toastService = inject(ToastService);
   
-  private readonly insertUserGQL = inject(InsertUserGQL);
-  private readonly getUserByMailGQL = inject(GetUserByMailGQL);
   private readonly insertNotificationGQL = inject(InsertNotificationGQL);
-
-  private readonly unkownUserName = 'Unknown';
+  private readonly updateNotificationGQL = inject(UpdateNotificationByIdGQL);
   
-  public getUserByMailOrCreateUserIfNotExists(mail: string): Observable<IUser> {
-    return this.getUserByMailGQL.fetch({ variables: { mail } }).pipe(
-      switchMap((result) => {
-        const userExists = result.data?.User.length !== 0;
-        if (userExists) {
-          return of({
-            mail,
-            name: result.data?.User[0].Name ?? '',
-            userId: result.data?.User[0].Id,
-            newCreated: false
-          } satisfies IUser);
-        } else {
-          return this.insertUserGQL.mutate({ variables: { mail, name: this.unkownUserName } }).pipe(
-            map((res) => ({
-              mail,
-              name: res.data?.insert_User?.returning[0].Name ?? '',
-              userId: res.data?.insert_User?.returning[0].Id,
-              newCreated: true
-            } satisfies IUser)
-          ));
-        }
-      })
-    );
-  }
-
   /**
    * Inserts notification and send email.
-   * @param notification 
+   * @param insertNotification 
    * @returns a bollean indicating whether the operation was successful.
    */
-  public createNotification(notification: INotification, user: IUser): Observable<boolean> {
-    const variables: InsertNotificationMutationVariables = {
-      objects: [
-        {
-          Content: notification.content,
-          DueDate: notification.dueDate,
-          UserId: user.userId,
-          Subject: notification.subject
-        }
-      ]
-    };
-    return this.insertNotificationGQL.mutate({variables}).pipe(
-      map(() => {
+  public createNotification(insertNotification: Notification_Insert_Input, user: IUser): Observable<INotification | undefined> {
+    return this.insertNotificationGQL.mutate({ variables: { objects: [insertNotification] }}).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      tap(() => {
         if (user.newCreated === true) {
           this.sendWelcomeMail(user);
         }
         this.toastService.showToast('Notification created successfully!', ToastType.Success);
-        return true;
+      }),
+      map((result) => {
+        const notification = result.data?.insert_Notification?.returning[0];
+        if (!notification) {
+          this.toastService.showToast('Error creating notification. Please try again.', ToastType.Error);
+          return undefined;
+        }
+        return ({
+          id: notification?.Id ?? '',
+          subject: notification?.Subject ?? '',
+          content: notification?.Content ?? '',
+          dueDate: notification?.DueDate ?? '',
+          createdAt: notification?.CreatedAt ?? '',
+          mail: notification?.Mail ?? '',
+        }) satisfies INotification;
       }),
       catchError((error) => {
         console.error(`Error inserting notification: ${JSON.stringify(error)}`);
         this.toastService.showToast('Oh nein! Das hat leider nicht geklappt!', ToastType.Error);
-        return of(false);
+        return of(undefined);
       })
     )
+  }
+
+  public updateNotification(updatedNotification: Notification_Set_Input, id: string): Observable<INotification | undefined> {
+    return this.updateNotificationGQL.mutate({ variables: { id, object: updatedNotification }}).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      map((result) => {
+        const notification = result.data?.update_Notification_by_pk;
+        if (!notification) {
+          this.toastService.showToast('Error updating notification. Please try again.', ToastType.Error);
+          return undefined;
+        }
+        return ({
+          id: notification?.Id ?? '',
+          subject: notification?.Subject ?? '',
+          content: notification?.Content ?? '',
+          dueDate: notification?.DueDate ?? '',
+          createdAt: notification?.CreatedAt ?? '',
+          mail: notification?.Mail ?? '',
+        }) satisfies INotification;
+      }),
+      catchError((error) => {
+        console.error(`Error updating notification: ${JSON.stringify(error)}`);
+        this.toastService.showToast('Oh nein! Das hat leider nicht geklappt!', ToastType.Error);
+        return of(undefined);
+      })
+    );
   }
 
   /**
@@ -81,12 +87,13 @@ export class NotificationService {
   private sendWelcomeMail(user: IUser): void {
     const payload = {
       Mail: user.mail,
-      Name: user.name === this.unkownUserName ? '' : user.name
+      Name: user.mail.split('@')[0]
     };
 
     const url = environment.BACKEND_URL + environment.SEND_WELCOME_MAIL_URL;
-    this.httpClient.post(url, payload)
-    .subscribe({
+    this.httpClient.post(url, payload).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
       error: (error) => console.error(`Error sending welcome email: ${JSON.stringify(error)}`)
     });
   }

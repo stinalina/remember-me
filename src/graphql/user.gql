@@ -1,5 +1,5 @@
-mutation InsertUser($mail: String!, $name: String!) {
-  insert_User(objects: { Mail: $mail, Name: $name }) {
+mutation InsertUser($mail: String!, $name: String!, $preferences: jsonb!) {
+  insert_User(objects: { Mail: $mail, Name: $name, Preferences: $preferences }) {
     returning {
       Id,
       Name
@@ -8,7 +8,7 @@ mutation InsertUser($mail: String!, $name: String!) {
 }
 
 query GetUserByMail($mail: String!) {
-  User(where: {Mail: {_eq:$ mail}}) {
+  User(where: {Mail: {_eq: $mail}}) {
     Id,
     Name
   }

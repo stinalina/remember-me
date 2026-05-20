@@ -1,9 +1,39 @@
 .footer-pen-pencil {
-    position: fixed;
-    right: 0;
-    bottom: 0;
-    z-index: 50;
-    padding: 1rem;
-    background: transparent;
-    pointer-events: none;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  padding: 1rem;
+  background: transparent;
+  pointer-events: none;
+}
+
+.envelope-icon {
+  position: relative;
+  margin-bottom: -0.1rem;
+  display: inline-block;
+
+  .envelope-closed,
+  .envelope-open {
+    transition: opacity 0.3s ease;
   }
+
+  .envelope-closed {
+    opacity: 1;
+  }
+
+  .envelope-open {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  &:hover .envelope-closed {
+    opacity: 0;
+  }
+
+  &:hover .envelope-open {
+    opacity: 1;
+  }
+}

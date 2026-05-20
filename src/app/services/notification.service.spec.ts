@@ -1,25 +1,34 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
-import { GetUserByMailGQL, InsertNotificationGQL, InsertUserGQL } from '@hasura/generated';
-import { INotification, IUser } from '@shared/models';
+import { InsertNotificationGQL, Notification_Insert_Input, Notification_Set_Input, UpdateNotificationByIdGQL } from '@hasura/generated';
+import { IUser } from '@shared/models';
+import { firstValueFrom, of, throwError } from 'rxjs';
 import { NotificationService } from './notification.service';
 
-describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
+const mockNotificationReturning = {
+  Id: 'abc-123',
+  Subject: 'Test Subject',
+  Content: 'Test Notification',
+  DueDate: new Date().toDateString(),
+  CreatedAt: new Date().toDateString(),
+  UserId: 'def-456',
+  RememberCount: 0,
+};
+
+describe('NotificationService createNotification', () => {
   let service: NotificationService;
 
-  let mockGetUserByMailGQL: jasmine.SpyObj<GetUserByMailGQL>;
-  let mockInsertUserGQL: jasmine.SpyObj<InsertUserGQL>;
-  let mockInsertNotificationGQL: jasmine.SpyObj<InsertNotificationGQL>;
-  let httpMock: jasmine.SpyObj<HttpClient>;
+  let mockInsertNotificationGQL: { mutate: ReturnType<typeof vi.fn> };
+  let mockUpdateNotificationGQL: { mutate: ReturnType<typeof vi.fn> };
+  let httpMock: { post: ReturnType<typeof vi.fn> };
 
   const mail = 'test@mail.de';
-  const notification: INotification = {
-    content: 'Test Notification',
-    dueDate: new Date().toDateString(),
-    subject: 'Test Subject',
-    mail
-  };
+  const notification = {
+    Content: 'Test Notification',
+    DueDate: new Date().toDateString(),
+    Subject: 'Test Subject',
+    UserId: 'def-456'
+  } satisfies Notification_Insert_Input;
   const user: IUser = {
     mail,
     name: 'Heinz',
@@ -28,76 +37,101 @@ describe('NotificationService getUserByMailOrCreateUserIfNotExists', () => {
   };
 
   beforeEach(() => {
-    mockGetUserByMailGQL = jasmine.createSpyObj(['fetch']);
-    mockGetUserByMailGQL.fetch.and.returnValue(
-      of({data: {User: []}})
-    );
-
-    mockInsertUserGQL = jasmine.createSpyObj(['mutate']);
-    mockInsertUserGQL.mutate.and.returnValue(
-      of({data: {insert_User: {returning: [{Name: 'Heinz', Id: 'def-456'}]}}})
-    );
-
-    mockInsertNotificationGQL = jasmine.createSpyObj(['mutate']);
-    mockInsertNotificationGQL.mutate.and.returnValue(of({data: {}}));
-
-    httpMock = jasmine.createSpyObj(['post']);
-    httpMock.post.and.returnValue(of({}));
+    mockInsertNotificationGQL = {
+      mutate: vi.fn().mockReturnValue(of({ data: { insert_Notification: { returning: [mockNotificationReturning] } } }))
+    };
+    mockUpdateNotificationGQL = { mutate: vi.fn() };
+    httpMock = { post: vi.fn().mockReturnValue(of({})) };
 
     TestBed.configureTestingModule({
       providers: [
         NotificationService,
         { provide: HttpClient, useValue: httpMock },
-        { provide: GetUserByMailGQL, useValue: mockGetUserByMailGQL },
-        { provide: InsertUserGQL, useValue: mockInsertUserGQL },
-        { provide: InsertNotificationGQL, useValue: mockInsertNotificationGQL }
+        { provide: InsertNotificationGQL, useValue: mockInsertNotificationGQL },
+        { provide: UpdateNotificationByIdGQL, useValue: mockUpdateNotificationGQL }
       ]
     });
 
     service = TestBed.inject(NotificationService);
   });
 
-  it('should create a new user if user does not exist', (done) => {
-    service.getUserByMailOrCreateUserIfNotExists(mail).subscribe(
-      (user) => {
-        expect(mockInsertUserGQL.mutate).toHaveBeenCalled();
-        expect(user.newCreated).toBeTrue();
-        done();
-      }
-    );
+  it('should create notification and send welcome email for new user', async () => {
+    const result = await firstValueFrom(service.createNotification(notification, user));
+    expect(mockInsertNotificationGQL.mutate).toHaveBeenCalled();
+    expect(httpMock.post).toHaveBeenCalled();
+    expect(result).toBeDefined();
+    expect(result?.id).toBe(mockNotificationReturning.Id);
   });
 
-  it('should return existing user if user exists', (done) => {
-    mockGetUserByMailGQL.fetch.and.returnValue(
-      of({data: {User: [{Name: 'Horst', Id: 'abc-123'}]}})
-    );
-    service.getUserByMailOrCreateUserIfNotExists(mail).subscribe(
-      (user) => {
-        expect(mockInsertUserGQL.mutate).not.toHaveBeenCalled();
-        expect(user.newCreated).toBeFalse();
-        done();
-      }
-    );
+  it('should not send welcome email for existing user', async () => {
+    const existingUser: IUser = { ...user, newCreated: false };
+    await firstValueFrom(service.createNotification(notification, existingUser));
+    expect(httpMock.post).not.toHaveBeenCalled();
   });
 
-  it('should create notification and send email', (done) => {
-    service.createNotification(notification, user).subscribe(
-      (result) => {
-        expect(mockInsertNotificationGQL.mutate).toHaveBeenCalled();
-        expect(httpMock.post).toHaveBeenCalled();
-        expect(result).toBeTrue();
-        done();
-      }
-    );
+  it('should return undefined when insert notification returns no data', async () => {
+    mockInsertNotificationGQL.mutate.mockReturnValue(of({ data: { insert_Notification: { returning: [] } } }));
+    const result = await firstValueFrom(service.createNotification(notification, user));
+    expect(result).toBeUndefined();
   });
 
-  it('should return false when insert notification failed', (done) => {
-    mockInsertNotificationGQL.mutate.and.returnValue(throwError(() => new Error('Insert failed')));
-    service.createNotification(notification, user).subscribe(
-      (result) => {
-        expect(result).toBeFalse();
-        done();
-      }
-    );
+  it('should return undefined when insert notification failed', async () => {
+    mockInsertNotificationGQL.mutate.mockReturnValue(throwError(() => new Error('Insert failed')));
+    const result = await firstValueFrom(service.createNotification(notification, user));
+    expect(result).toBeUndefined();
+  });
+});
+
+describe('NotificationService updateNotification', () => {
+  let service: NotificationService;
+
+  let mockInsertNotificationGQL: { mutate: ReturnType<typeof vi.fn> };
+  let mockUpdateNotificationGQL: { mutate: ReturnType<typeof vi.fn> };
+  let httpMock: { post: ReturnType<typeof vi.fn> };
+
+  const notificationUpdate = {
+    Content: 'Updated Content',
+    Subject: 'Updated Subject',
+    DueDate: new Date().toDateString(),
+  } satisfies Notification_Set_Input;
+
+  beforeEach(() => {
+    mockInsertNotificationGQL = { mutate: vi.fn() };
+    mockUpdateNotificationGQL = {
+      mutate: vi.fn().mockReturnValue(of({ data: { update_Notification_by_pk: mockNotificationReturning } }))
+    };
+    httpMock = { post: vi.fn().mockReturnValue(of({})) };
+
+    TestBed.configureTestingModule({
+      providers: [
+        NotificationService,
+        { provide: HttpClient, useValue: httpMock },
+        { provide: InsertNotificationGQL, useValue: mockInsertNotificationGQL },
+        { provide: UpdateNotificationByIdGQL, useValue: mockUpdateNotificationGQL }
+      ]
+    });
+
+    service = TestBed.inject(NotificationService);
+  });
+
+  it('should update notification and return mapped result', async () => {
+    const result = await firstValueFrom(service.updateNotification(notificationUpdate, 'abc-123'));
+    expect(mockUpdateNotificationGQL.mutate).toHaveBeenCalledWith({ variables: { id: 'abc-123', object: notificationUpdate } });
+    expect(result).toBeDefined();
+    expect(result?.id).toBe(mockNotificationReturning.Id);
+    expect(result?.subject).toBe(mockNotificationReturning.Subject);
+    expect(result?.content).toBe(mockNotificationReturning.Content);
+  });
+
+  it('should return undefined when update returns no data', async () => {
+    mockUpdateNotificationGQL.mutate.mockReturnValue(of({ data: { update_Notification_by_pk: null } }));
+    const result = await firstValueFrom(service.updateNotification(notificationUpdate, 'abc-123'));
+    expect(result).toBeUndefined();
+  });
+
+  it('should return undefined when update mutation fails', async () => {
+    mockUpdateNotificationGQL.mutate.mockReturnValue(throwError(() => new Error('Update failed')));
+    const result = await firstValueFrom(service.updateNotification(notificationUpdate, 'abc-123'));
+    expect(result).toBeUndefined();
   });
 });

@@ -1,9 +1,25 @@
 export const environment = {
   production: false,
-  MVP_Mode: true,
-
+  
+  DICEBEAR_URL: 'https://api.dicebear.com/9.x/adventurer/svg',
   HASURA_URL: 'http://localhost:8081/v1/graphql',
+  HASURA_ADMIN_SECRET: undefined,
   BACKEND_URL: 'http://localhost:7072',
   SEND_WELCOME_MAIL_URL: '/api/sendWelcomeMail',
   CONTACT_MAIL: 'stina.boehmig@gmx.de',
+  firebaseAuthEmulator: {
+    enabled: false,
+    host: '127.0.0.1',
+    port: 9099,
+  },
+
+  firebaseConfig: {
+    apiKey: "AIzaSyBIdSguHqftt5mM3q9o7ZF7SRG4V9rwLHE",
+    authDomain: "rememberme-d356c.firebaseapp.com",
+    projectId: "rememberme-d356c",
+    storageBucket: "rememberme-d356c.firebasestorage.app",
+    messagingSenderId: "417866784133",
+    appId: "1:417866784133:web:753ab2f24e7f7f5dd338ec",
+    measurementId: "G-17WST8M354"
+  }
 };
