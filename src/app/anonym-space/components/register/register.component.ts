@@ -7,7 +7,7 @@ import { UserService } from '@app/services/user.service';
 import { AuthService } from '@app/shared/authentication/auth.service';
 import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.component';
 import { CheckboxComponent } from '@app/shared/input/checkbox/checkbox.component';
-import { MailComponent } from '@app/shared/mail/mail.component';
+import { MailComponent } from '@app/anonym-space/components/shared/mail/mail.component';
 import { ModalComponent } from '@app/shared/modal/modal.component';
 import { PasswordComponent } from '@app/anonym-space/components/shared/password/password.component';
 import { TextFrameComponent } from '@app/shared/text-frame/text-frame.component';
