@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ToastService, ToastType } from './toast-service';
+import { describe, beforeEach, afterEach, it, expect, vi } from 'vitest';
 
 describe('ToastService', () => {
   let service: ToastService;

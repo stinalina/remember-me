@@ -1,7 +1,7 @@
 {
-  "name": "@stinalina/remember-me-toast-service",
+  "name": "@stinalina/angular-toast-service",
   "version": "0.0.1",
-  "description": "Angular ToastService extracted from remember-me",
+  "description": "Angular ToastService",
   "keywords": [
     "angular",
     "toast",
@@ -13,6 +13,9 @@
   },
   "dependencies": {
     "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "vitest": "^4.0.8"
   },
   "sideEffects": false,
   "publishConfig": {
