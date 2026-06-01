@@ -7,7 +7,7 @@ import { AuthService } from '@app/shared/authentication/auth.service';
 import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.component';
 import { CheckboxComponent } from '@app/shared/input/checkbox/checkbox.component';
 import { MailComponent } from '@app/shared/mail/mail.component';
-import { PasswordComponent } from '@app/shared/password/password.component';
+import { PasswordComponent } from '@app/anonym-space/components/shared/password/password.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

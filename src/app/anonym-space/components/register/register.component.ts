@@ -9,7 +9,7 @@ import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.c
 import { CheckboxComponent } from '@app/shared/input/checkbox/checkbox.component';
 import { MailComponent } from '@app/shared/mail/mail.component';
 import { ModalComponent } from '@app/shared/modal/modal.component';
-import { PasswordComponent } from '@app/shared/password/password.component';
+import { PasswordComponent } from '@app/anonym-space/components/shared/password/password.component';
 import { TextFrameComponent } from '@app/shared/text-frame/text-frame.component';
 import * as dsgvo from '@assets/text/dsgvo.txt';
 import { catchError, EMPTY, finalize, switchMap } from 'rxjs';
