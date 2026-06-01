@@ -2,7 +2,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
-import { AvatarDialog } from '@app/personal-space/components/avatar-dialog/avatar.dialog';
+import { AvatarDialog } from '@app/personal-space/ui/avatar-dialog/avatar.dialog';
 import { InitialPreferences, Preferences } from '@app/personal-space/data/preferences.model';
 import { NotesComponent } from '@app/personal-space/home/notes/notes.component';
 import { SettingsComponent } from '@app/personal-space/home/settings/settings.component';

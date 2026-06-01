@@ -6,8 +6,8 @@ import { ToastService, ToastType } from '@services/toast.service';
 import { AuthService } from '@app/shared/utils/authentication/auth.service';
 import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
 import { CheckboxComponent } from '@app/shared/utils/checkbox/checkbox.component';
-import { MailComponent } from '@app/anonym-space/components/shared/mail/mail.component';
-import { PasswordComponent } from '@app/anonym-space/components/shared/password/password.component';
+import { MailComponent } from '@app/anonym-space/ui/shared/mail/mail.component';
+import { PasswordComponent } from '@app/anonym-space/ui/shared/password/password.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
