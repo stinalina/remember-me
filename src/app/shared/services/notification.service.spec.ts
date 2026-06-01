@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { InsertNotificationGQL, Notification_Insert_Input, Notification_Set_Input, UpdateNotificationByIdGQL } from '@hasura/generated';
-import { IUser } from '@shared/models';
+
 import { firstValueFrom, of, throwError } from 'rxjs';
 import { NotificationService } from './notification.service';
+import { IUser } from '@app/shared/utils/models/user.model';
 
 const mockNotificationReturning = {
   Id: 'abc-123',

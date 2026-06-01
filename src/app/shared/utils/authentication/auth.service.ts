@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Auth, browserLocalPersistence, browserSessionPersistence, createUserWithEmailAndPassword, sendPasswordResetEmail, setPersistence, signInAnonymously, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
-import { LocalStorageService } from '@app/services/local-storage.service';
-import { ToastService, ToastType } from '@app/services/toast.service';
+import { LocalStorageService } from '@services/local-storage.service';
+import { ToastService, ToastType } from '@services/toast.service';
 import { User, UserCredential } from 'firebase/auth';
 import { catchError, EMPTY, from, map, Observable, of, switchMap, tap } from "rxjs";
 

@@ -3,8 +3,8 @@ import { Auth } from '@angular/fire/auth';
 import { ResolveFn, Router } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
 import { MemberService } from '@app/personal-space/utils/member.service';
-import { ToastService, ToastType } from '@app/services/toast.service';
-import { UserService } from '@app/services/user.service';
+import { ToastService, ToastType } from '@services/toast.service';
+import { UserService } from '@services/user.service';
 import { EMPTY } from 'rxjs';
 import { catchError, switchMap, tap, timeout } from 'rxjs/operators';
 

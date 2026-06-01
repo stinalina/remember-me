@@ -62,20 +62,23 @@ export class TypewriterEffectService {
           }
           break;
         case TypewriterActionType.TYPE:
-          let j = 0;
-          const typeInterval = setInterval(() => {
-            if (j < action.text.length) {
-              text += action.text[j];
-              updatePlaceholder(text + this.cursorHtml);
-              j++;
-            } else {
-              clearInterval(typeInterval);
-              i++;
-              nextAction();
-            }
-          }, typingSpeed);
+          {
+            let j = 0;
+            const typeInterval = setInterval(() => {
+              if (j < action.text.length) {
+                text += action.text[j];
+                updatePlaceholder(text + this.cursorHtml);
+                j++;
+              } else {
+                clearInterval(typeInterval);
+                i++;
+                nextAction();
+              }
+            }, typingSpeed);
+          }
           break;
-        case TypewriterActionType.DELETE:
+        case TypewriterActionType.DELETE: 
+        {
           let k = 0;
           const deleteInterval = setInterval(() => {
             if (k < action.count && text.length > 0) {
@@ -88,6 +91,7 @@ export class TypewriterEffectService {
               nextAction();
             }
           }, typingSpeed);
+        }
           break;
         case TypewriterActionType.LINEBREAK:
           text += TypewriterActionType.LINEBREAK;

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, output } from '@angular/core';
-import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.component';
-import { NotificationEditorComponent } from '@app/shared/create-notification/notification-editor.component';
+import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
+import { NotificationEditorComponent } from '@app/shared/feature/create-notification/notification-editor.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

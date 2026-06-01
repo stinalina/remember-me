@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, output } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
-import { ToastService, ToastType } from '@app/services/toast.service';
-import { AuthService } from '@app/shared/authentication/auth.service';
-import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.component';
-import { CheckboxComponent } from '@app/shared/input/checkbox/checkbox.component';
-import { MailComponent } from '@app/shared/mail/mail.component';
-import { PasswordComponent } from '@app/shared/password/password.component';
+import { ToastService, ToastType } from '@services/toast.service';
+import { AuthService } from '@app/shared/utils/authentication/auth.service';
+import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
+import { CheckboxComponent } from '@app/shared/utils/checkbox/checkbox.component';
+import { MailComponent } from '@app/anonym-space/ui/shared/mail/mail.component';
+import { PasswordComponent } from '@app/anonym-space/ui/shared/password/password.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
