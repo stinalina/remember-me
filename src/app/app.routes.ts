@@ -3,9 +3,9 @@ import { LandingPageComponent } from '@app/anonym-space/pages/landing-page/landi
 import { HomeComponent } from '@app/personal-space/home/home.component';
 import { memberResolver } from '@app/personal-space/utils/member.resolver';
 import { authGuard } from '@app/shared/authentication/auth.guard';
-import { desktopOnlyGuard } from '@app/shared/guards/desktop-only.guard';
 import { MobileNotSupportedComponent } from '@app/anonym-space/pages/mobile-not-supported/mobile-not-supported.component';
 import { SelectedTabComponentEnum } from '@app/shared/outlet-container';
+import { desktopOnlyGuard } from '@app/shared/utils/guards/desktop-only.guard';
 
 export enum ROUTER_TOKENS {
   LANDING_PAGE = '',

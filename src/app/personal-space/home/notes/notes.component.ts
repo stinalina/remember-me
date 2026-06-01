@@ -4,7 +4,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { NotificationStore } from '@app/personal-space/data/notification.store';
 import { Navbar } from '@app/personal-space/home/notes/navbar/navbar';
 import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.component';
-import { RangePipe } from '@app/shared/pipe/range.pipe';
+import { RangePipe } from '@app/shared/utils/pipe/range.pipe';
 import { NotificationComponent } from "./notification/notification.component";
 import { NotificationEditorDialog as NotificationDialog } from '@app/personal-space/home/notes/notification-editor/notification-editor.dialog';
 import { INotification } from '@app/personal-space/data/notification.model';

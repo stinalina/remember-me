@@ -14,7 +14,7 @@ import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '@shared/editor-config.token';
 import { SESSION_STORAGE } from '@shared/storage.token';
 import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
-import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
+import { htmlContentValidator } from '@app/shared/utils/validators/html-content.validator';
 import { IUser } from '@app/shared/models/user.model';
 
 @Component({

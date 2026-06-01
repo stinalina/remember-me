@@ -11,7 +11,7 @@ import { MemberService } from '@app/personal-space/utils/member.service';
 import { UserService } from '@app/services/user.service';
 import { AuthService } from '@app/shared/authentication/auth.service';
 import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/outlet-container';
-import { RangePipe } from '@app/shared/pipe/range.pipe';
+import { RangePipe } from '@app/shared/utils/pipe/range.pipe';
 import { finalize } from 'rxjs';
 import { StatsComponent } from "./stats/stats.component";
 import { Dialog } from '@angular/cdk/dialog';
