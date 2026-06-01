@@ -63,12 +63,6 @@
     },
     {
       "path": "./tsconfig.spec.json"
-    },
-    {
-      "path": "./projects/toast-service/tsconfig.lib.json"
-    },
-    {
-      "path": "./projects/toast-service/tsconfig.spec.json"
     }
   ]
 }

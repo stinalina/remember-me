@@ -168,6 +168,12 @@
           "builder": "@angular/build:unit-test",
           "options": {
             "tsConfig": "projects/toast-service/tsconfig.spec.json"
+          },
+          "configurations": {
+            "ci": {
+              "watch": false,
+              "browsers": ["ChromiumHeadless"]
+            }
           }
         },
         "lint": {
