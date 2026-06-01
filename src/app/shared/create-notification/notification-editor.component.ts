@@ -11,11 +11,11 @@ import { NotificationService } from '@services/notification.service';
 import { ToastService, ToastType } from '@services/toast.service';
 import { UserService } from '@services/user.service';
 import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '@shared/editor-config.token';
-import { IUser } from '@shared/models';
 import { SESSION_STORAGE } from '@shared/storage.token';
 import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
 import { htmlContentValidator } from '@app/shared/validators/html-content.validator';
+import { IUser } from '@app/shared/models/user.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

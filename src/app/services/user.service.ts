@@ -2,7 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { InitialPreferences } from '@app/personal-space/data/preferences.model';
 import { LocalStorageService } from '@app/services/local-storage.service';
 import { GetUserByMailGQL, InsertUserGQL } from '@hasura/generated';
-import { IUser } from '@shared/models';
+import { IUser } from '@app/shared/models/user.model';
 import { map, Observable, of, switchMap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
