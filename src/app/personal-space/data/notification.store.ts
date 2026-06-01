@@ -2,7 +2,7 @@ import { withResource } from '@angular-architects/ngrx-toolkit';
 import { computed, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { NotificationClient } from '@app/personal-space/data/notification.client';
-import { INotification } from '@app/personal-space/data/notification.model';
+import { INotification } from '@app/shared/models/notification.model';
 import { ToastService, ToastType } from '@services/toast.service';
 import {
   patchState,

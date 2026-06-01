@@ -7,7 +7,7 @@ import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.c
 import { RangePipe } from '@app/shared/utils/pipe/range.pipe';
 import { NotificationComponent } from "./notification/notification.component";
 import { NotificationEditorDialog as NotificationDialog } from '@app/personal-space/home/notes/notification-editor/notification-editor.dialog';
-import { INotification } from '@app/personal-space/data/notification.model';
+import { INotification } from '@app/shared/models/notification.model';
 
 @Component({
   selector: 'reme-personal-notes',

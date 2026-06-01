@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output, computed } from '@angular/core';
 import { ConfirmDialog } from '@app/personal-space/components/confirmation-dialog/confirmation.dialog';
-import { INotification } from '@app/personal-space/data/notification.model';
+import { INotification } from '@app/shared/models/notification.model';
 import { SafeHtmlPipe } from '@app/shared/utils/pipe/safe-html.pipe';
 
 @Component({

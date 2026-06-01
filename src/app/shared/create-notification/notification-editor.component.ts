@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormsModule } from '@angular/forms';
 import { email, form, FormField, maxLength, required, validate } from '@angular/forms/signals';
-import { INotification } from '@app/personal-space/data/notification.model';
+import { INotification } from '@app/shared/models/notification.model';
 import { TypewriterActionType, TypewriterEffectService } from '@app/shared/services/typewriter-effect.service';
 import { Notification_Insert_Input, Notification_Set_Input } from '@hasura/generated';
 import { LocalStorageService } from '@services/local-storage.service';
