@@ -129,7 +129,9 @@
           "configurations": {
             "ci": {
               "watch": false,
-              "browsers": ["ChromiumHeadless"]
+              "browsers": [
+                "ChromiumHeadless"
+              ]
             }
           }
         },
@@ -140,6 +142,42 @@
               "src/**/*.ts",
               "src/**/*.html"
             ]
+          }
+        }
+      }
+    },
+    "toast-service": {
+      "projectType": "library",
+      "root": "projects/toast-service",
+      "sourceRoot": "projects/toast-service/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/toast-service/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/toast-service/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/toast-service/tsconfig.spec.json"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/toast-service/**/*.ts",
+              "projects/toast-service/**/*.html"
+            ],
+            "eslintConfig": "projects/toast-service/eslint.config.js"
           }
         }
       }

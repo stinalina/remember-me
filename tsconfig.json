@@ -43,6 +43,9 @@
       ],
       "@pages/*": [
         "./src/app/anonym-space/pages/*"
+      ],
+      "toast-service": [
+        "./dist/toast-service"
       ]
     }
   },
@@ -60,6 +63,12 @@
     },
     {
       "path": "./tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/toast-service/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/toast-service/tsconfig.spec.json"
     }
   ]
 }

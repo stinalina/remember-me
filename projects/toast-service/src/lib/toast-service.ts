@@ -1,7 +1,10 @@
 import { Injectable, signal } from '@angular/core';
 
 export enum ToastType {
-  Error, Success, Info, Warning
+  Error,
+  Success,
+  Info,
+  Warning,
 }
 
 interface Toast {
@@ -13,14 +16,14 @@ interface Toast {
 @Injectable({ providedIn: 'root' })
 export class ToastService {
   public readonly toastIds = signal<Toast[]>([]);
-  private idCounter: number = 0;
+  private idCounter = 0;
 
   public showToast(message: string, type: ToastType, life: number = 5000): void {
     const id = ++this.idCounter;
     const toast = {
       id,
       type,
-      message
+      message,
     } satisfies Toast;
     this.toastIds.update(old => [...old, toast]);
     setTimeout((): void => this.remove(id), life);

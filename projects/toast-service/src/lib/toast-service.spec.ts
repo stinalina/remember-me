@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { ToastService, ToastType } from './toast.service';
+import { ToastService, ToastType } from './toast-service';
 
 describe('ToastService', () => {
   let service: ToastService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ToastService]
+      providers: [ToastService],
     });
     service = TestBed.inject(ToastService);
     vi.useFakeTimers();

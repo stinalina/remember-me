@@ -8,7 +8,7 @@ import { TypewriterActionType, TypewriterEffectService } from '@app/services/typ
 import { Notification_Insert_Input, Notification_Set_Input } from '@hasura/generated';
 import { LocalStorageService } from '@services/local-storage.service';
 import { NotificationService } from '@services/notification.service';
-import { ToastService, ToastType } from '@services/toast.service';
+import { ToastService, ToastType } from 'toast-service';
 import { UserService } from '@services/user.service';
 import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '@shared/editor-config.token';
 import { IUser } from '@shared/models';

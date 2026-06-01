@@ -5,7 +5,7 @@ import { environment } from "@environments/environment";
 import { InsertNotificationGQL, Notification_Insert_Input, Notification_Set_Input, UpdateNotificationByIdGQL } from "@hasura/generated";
 import { IUser } from "@shared/models";
 import { catchError, map, Observable, of, tap } from 'rxjs';
-import { ToastService, ToastType } from "./toast.service";
+import { ToastService, ToastType } from "toast-service";
 import { INotification } from "@app/personal-space/data/notification.model";
 
 @Injectable({ providedIn: 'root' })

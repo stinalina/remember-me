@@ -1,6 +1,6 @@
 
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { ToastService, ToastType } from "@services/toast.service";
+import { ToastService, ToastType } from "toast-service";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
