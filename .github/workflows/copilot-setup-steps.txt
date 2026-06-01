@@ -1,0 +1,149 @@
+# name: "Copilot Setup Steps"
+# on:
+#   workflow_dispatch:
+# jobs:
+#   # The job MUST be called `copilot-setup-steps` or it  
+#   # will not be picked up by Copilot.
+#   copilot-setup-steps:
+#     runs-on: ubuntu-latest
+#     env:
+#       POSTGRES_USER: admin
+#       POSTGRES_PASSWORD: admin
+#       POSTGRES_DB: remember_me_db
+#       POSTGRES_HOST: localhost
+#       POSTGRES_PORT: 5432
+#       HASURA_HOST: localhost
+#       HASURA_PORT: 8081
+#     services:
+#       postgres:
+#         image: postgres:15.14-alpine
+#         env:
+#           POSTGRES_USER: admin
+#           POSTGRES_PASSWORD: admin
+#           POSTGRES_DB: remember_me_db
+#         ports:
+#           - 5432:5432
+#         options: >-
+#           --health-cmd "pg_isready -U admin -d remember_me_db"
+#           --health-interval 10s
+#           --health-timeout 5s
+#           --health-retries 10
+#       hasura:
+#         image: hasura/graphql-engine:v2.44.0
+#         env:
+#           HASURA_GRAPHQL_DATABASE_URL: postgres://admin:admin@postgres:5432/remember_me_db
+#           HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
+#           HASURA_GRAPHQL_ADMIN_SECRET: ${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET || 'dev-hasura-secret' }}
+#         ports:
+#           - 8081:8080
+#         options: >-
+#           --health-cmd "wget -qO- http://localhost:8080/healthz || exit 1"
+#           --health-interval 10s
+#           --health-timeout 5s
+#           --health-retries 20
+#     # Set the permissions to the lowest permissions  
+#     # possible needed for your steps. Copilot will be  
+#     # given its own token for its operations.
+#     permissions:
+#       # If you want to clone the repository as part of  
+#       # your setup steps, for example to install  
+#       # dependencies, you'll need the `contents: read`  
+#       # permission. If you don't clone the repository  
+#       # in your setup steps, Copilot will do this for  
+#       # you automatically after the steps complete.
+#       contents: read
+#     # You can define any steps you want, and they will  
+#     # run before the agent starts. If you do not check  
+#     # out your code, Copilot will do this for you.
+#     steps:
+#     - uses: actions/checkout@v4
+#       with:
+#         submodules: true
+#         lfs: false
+
+#     - name: Use Node.js 22.x
+#       uses: actions/setup-node@v4
+#       with:
+#         node-version: 22
+#         cache: 'npm'
+
+#     - name: Install dependencies
+#       run: npm ci
+
+#     - name: Explain runner networking
+#       run: |
+#         echo "Service containers are exposed to the GitHub runner on localhost."
+#         echo "That is why agent commands use localhost:5432 and localhost:8081."
+#         echo "Inside the Hasura service container, Postgres is reached via the service hostname 'postgres'."
+
+#     - name: Wait for Postgres
+#       run: |
+#         for i in {1..30}; do
+#           if pg_isready -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB"; then
+#             echo "Postgres is ready"
+#             exit 0
+#           fi
+#           sleep 2
+#         done
+#         echo "Postgres did not become ready in time"
+#         exit 1
+
+#     - name: Wait for Hasura
+#       run: |
+#         for i in {1..30}; do
+#           if curl -fsS "http://$HASURA_HOST:$HASURA_PORT/healthz" >/dev/null; then
+#             echo "Hasura is ready"
+#             exit 0
+#           fi
+#           sleep 2
+#         done
+#         echo "Hasura did not become ready in time"
+#         exit 1
+
+#     - name: Bootstrap database schema if present
+#       run: |
+#         if [ -f ./infra/dev-bootstrap.sql ]; then
+#           echo "Applying infra/dev-bootstrap.sql"
+#           PGPASSWORD="$POSTGRES_PASSWORD" psql "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB" -v ON_ERROR_STOP=1 -f ./infra/dev-bootstrap.sql
+#         else
+#           echo "No infra/dev-bootstrap.sql found."
+#           echo "Only infrastructure is started; User/Notification queries will fail until schema and data sources are applied."
+#         fi
+
+#     - name: Apply Hasura metadata and migrations if present
+#       run: |
+#         if [ -d ./hasura ]; then
+#           curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
+#           export PATH="$HOME/bin:$PATH"
+#           hasura --endpoint "http://$HASURA_HOST:$HASURA_PORT" --admin-secret "${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET || 'dev-hasura-secret' }}" metadata apply
+#           hasura --endpoint "http://$HASURA_HOST:$HASURA_PORT" --admin-secret "${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET || 'dev-hasura-secret' }}" migrate apply --database-name default
+#         else
+#           echo "No hasura project directory found. Skipping metadata and migrations."
+#         fi
+
+#     - name: Start Firebase Auth Emulator
+#       run: |
+#         nohup npx -y firebase-tools@latest emulators:start --only auth --project rememberme-d356c > firebase-emulator.log 2>&1 &
+
+#     - name: Wait for Firebase Auth Emulator
+#       run: |
+#         for i in {1..30}; do
+#           if curl -fsS http://localhost:9099/ >/dev/null; then
+#             echo "Firebase Auth emulator is ready"
+#             exit 0
+#           fi
+#           sleep 2
+#         done
+#         echo "Firebase Auth emulator did not become ready in time"
+#         tail -n 200 firebase-emulator.log || true
+#         exit 1
+
+#     - name: Export Integration Environment
+#       run: |
+#         echo "HASURA_GRAPHQL_ENDPOINT=http://$HASURA_HOST:$HASURA_PORT/v1/graphql" >> "$GITHUB_ENV"
+#         echo "HASURA_GRAPHQL_ADMIN_SECRET=${{ secrets.HASURA_GRAPHQL_ADMIN_SECRET || 'dev-hasura-secret' }}" >> "$GITHUB_ENV"
+#         echo "FIREBASE_AUTH_EMULATOR_HOST=localhost:9099" >> "$GITHUB_ENV"
+#         echo "DATABASE_URL=postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB" >> "$GITHUB_ENV"
+
+#     - name: Build Angular application
+#       run: npm run build -- --configuration production
