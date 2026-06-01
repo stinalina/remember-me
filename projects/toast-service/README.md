@@ -21,7 +21,7 @@ ng generate --help
 To build the library, run:
 
 ```bash
-ng build toast-service
+npm run build:toast-service
 ```
 
 This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
@@ -43,10 +43,10 @@ Once the project is built, you can publish your library by following these steps
 
 ## Running unit tests
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+To execute unit tests with the configured Vitest runner, use the following command:
 
 ```bash
-ng test
+ng test toast-service
 ```
 
 ## Running end-to-end tests
