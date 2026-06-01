@@ -1,6 +1,6 @@
 <reme-content-frame [fullHeight]="true">
   <section class="h-full">
-    <reme-navbar></reme-navbar>
+    <reme-navbar (searchChanged)="this.onSearchChanged($event)"></reme-navbar>
     <div class="py-6 grid grid-cols-3 gap-3 h-[85vh] px-1 overflow-auto">
       @if (this.notificationStore.isLoading()) {
         <p>Loading...</p>
@@ -9,7 +9,7 @@
         <p>Error: {{ this.notificationStore.error() }}</p>
       } @else {
         <ng-container *ngTemplateOutlet="placeholderForCreateNew"></ng-container>
-        @for (notification of this.notificationStore.value(); track notification.id; let i = $index) {
+        @for (notification of this.displayedNotifications(); track notification.id; let i = $index) {
           @if (i % 3 === 2) {
             <div class="col-span-3"><div class="divider my-0"></div></div>
           }
@@ -24,7 +24,7 @@
           <ng-container *ngTemplateOutlet="ghostCard"></ng-container>
         }
 
-        @let notesCount = this.notificationStore.value()?.length ?? 0;
+        @let notesCount = this.displayedNotifications().length;
         @if (notesCount <= 6) {
           <div class="col-span-3"><div class="divider my-0"></div></div>
           @for (elem of 2 | range; track $index) {

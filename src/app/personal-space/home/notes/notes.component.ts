@@ -1,6 +1,6 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NotificationStore } from '@app/personal-space/data/notification.store';
 import { Navbar } from '@app/personal-space/home/notes/navbar/navbar';
 import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.component';
@@ -26,12 +26,30 @@ export class NotesComponent {
   protected readonly todayDate = new Date();
   protected readonly dialog = inject(Dialog);
   protected readonly notificationStore = inject(NotificationStore);
+  protected readonly searchTerm = signal('');
+
+  protected readonly displayedNotifications = computed(() => {
+    const notifications = this.notificationStore.value() ?? [];
+    const term = this.searchTerm().trim().toLowerCase();
+
+    if (!term) {
+      return notifications;
+    }
+
+    return notifications
+      .filter((notification) => notification.subject.toLowerCase().includes(term))
+      .sort((a, b) => a.subject.localeCompare(b.subject, undefined, { sensitivity: 'base' }));
+  });
 
   /** Ghost cards needed to fill the last partial grid row */
   protected readonly trailingGhostCount = computed(() => {
-    const n = (this.notificationStore.value()?.length ?? 0) + 1; // +1 for create placeholder
+    const n = this.displayedNotifications().length + 1; // +1 for create placeholder
     return (3 - (n % 3)) % 3;
   });
+
+  protected onSearchChanged(searchTerm: string): void {
+    this.searchTerm.set(searchTerm);
+  }
 
   protected openCreateNoteModal(): void {
     NotificationDialog.open(this.dialog, 'create').subscribe((result: INotification | undefined) => {
