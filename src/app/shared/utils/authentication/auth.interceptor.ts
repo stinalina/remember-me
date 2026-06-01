@@ -1,6 +1,6 @@
 import { HttpEvent, HttpHandlerFn, HttpRequest } from "@angular/common/http";
 import { inject } from "@angular/core";
-import { AuthService } from "@app/shared/authentication/auth.service";
+import { AuthService } from "@app/shared/utils/authentication/auth.service";
 import { environment } from "@environments/environment";
 import { Observable, switchMap } from "rxjs";
 

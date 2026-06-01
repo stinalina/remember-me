@@ -9,8 +9,8 @@ import { SettingsComponent } from '@app/personal-space/home/settings/settings.co
 import { AvatarImagePipe } from '@app/personal-space/utils/avatar-image.pipe';
 import { MemberService } from '@app/personal-space/utils/member.service';
 import { UserService } from '@services/user.service';
-import { AuthService } from '@app/shared/authentication/auth.service';
-import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/outlet-container';
+import { AuthService } from '@app/shared/utils/authentication/auth.service';
+import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/ui/outlet-container';
 import { RangePipe } from '@app/shared/utils/pipe/range.pipe';
 import { finalize } from 'rxjs';
 import { StatsComponent } from "./stats/stats.component";

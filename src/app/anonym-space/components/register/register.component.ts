@@ -3,13 +3,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
 import { ToastService, ToastType } from '@services/toast.service';
-import { AuthService } from '@app/shared/authentication/auth.service';
-import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.component';
+import { AuthService } from '@app/shared/utils/authentication/auth.service';
+import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
 import { CheckboxComponent } from '@app/shared/utils/checkbox/checkbox.component';
 import { MailComponent } from '@app/anonym-space/components/shared/mail/mail.component';
-import { ModalComponent } from '@app/shared/modal/modal.component';
+import { ModalComponent } from '@app/shared/ui/modal/modal.component';
 import { PasswordComponent } from '@app/anonym-space/components/shared/password/password.component';
-import { TextFrameComponent } from '@app/shared/text-frame/text-frame.component';
+import { TextFrameComponent } from '@app/shared/ui/text-frame/text-frame.component';
 import * as dsgvo from '@assets/text/dsgvo.txt';
 import { catchError, EMPTY, finalize } from 'rxjs';
 

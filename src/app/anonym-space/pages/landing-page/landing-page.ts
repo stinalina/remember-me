@@ -7,9 +7,9 @@ import { RegisterComponent } from '@app/anonym-space/components/register/registe
 import { HomePage } from '@app/anonym-space/pages/home/home-page.component';
 import { ImpressumComponent } from '@app/anonym-space/pages/impressum/impressum.component';
 import { ROUTER_TOKENS } from '@app/app.routes';
-import { AuthService } from '@app/shared/authentication/auth.service';
-import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/outlet-container';
-import { ThemeToggleComponent } from '@app/shared/theme-toggle/theme-toggle.component';
+import { AuthService } from '@app/shared/utils/authentication/auth.service';
+import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/ui/outlet-container';
+import { ThemeToggleComponent } from '@app/shared/ui/theme-toggle/theme-toggle.component';
 import { environment } from '@environments/environment';
 
 @Component({

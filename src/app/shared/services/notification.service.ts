@@ -3,10 +3,10 @@ import { DestroyRef, inject, Injectable } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { environment } from "@environments/environment";
 import { InsertNotificationGQL, Notification_Insert_Input, Notification_Set_Input, UpdateNotificationByIdGQL } from "@hasura/generated";
-import { IUser } from "@app/shared/models/user.model";
+import { IUser } from "@app/shared/utils/models/user.model";
 import { catchError, map, Observable, of, tap } from 'rxjs';
 import { ToastService, ToastType } from "./toast.service";
-import { INotification } from "@app/shared/models/notification.model";
+import { INotification } from "@app/shared/utils/models/notification.model";
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
