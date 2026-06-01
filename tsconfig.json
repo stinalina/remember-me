@@ -43,6 +43,9 @@
       ],
       "@pages/*": [
         "./src/app/anonym-space/pages/*"
+      ],
+      "toast-service": [
+        "./dist/toast-service"
       ]
     }
   },

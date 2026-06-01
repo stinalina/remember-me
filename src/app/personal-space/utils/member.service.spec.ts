@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { GetMemberByIdGQL, UpdatePreferencesGQL } from '@hasura/generated';
-import { ToastService, ToastType } from '@app/services/toast.service';
+import { ToastService, ToastType } from 'toast-service';
 import { MemberService } from './member.service';
 
 const mockToastService = {

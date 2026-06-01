@@ -2,7 +2,7 @@ import { DestroyRef, inject, Injectable, signal } from "@angular/core";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Member } from '@app/personal-space/data/member.model';
 import { Preferences } from "@app/personal-space/data/preferences.model";
-import { ToastService, ToastType } from '@app/services/toast.service';
+import { ToastService, ToastType } from 'toast-service';
 import { GetMemberByIdGQL, UpdatePreferencesGQL } from "@hasura/generated";
 import { catchError, EMPTY, map, Observable, tap } from "rxjs";
 

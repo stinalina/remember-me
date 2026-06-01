@@ -3,7 +3,7 @@ import { Auth } from '@angular/fire/auth';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
 import { UserService } from '@app/services/user.service';
-import { ToastService, ToastType } from '@app/services/toast.service';
+import { ToastService, ToastType } from 'toast-service';
 import { defaultIfEmpty, firstValueFrom, from, isObservable, Observable, of, throwError } from 'rxjs';
 import { MemberService } from './member.service';
 import { memberResolver } from './member.resolver';
