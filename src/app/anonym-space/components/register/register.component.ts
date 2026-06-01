@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
-import { ToastService, ToastType } from '@app/services/toast.service';
-import { UserService } from '@app/services/user.service';
+import { ToastService, ToastType } from '@services/toast.service';
+import { UserService } from '@services/user.service';
 import { AuthService } from '@app/shared/authentication/auth.service';
 import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.component';
 import { CheckboxComponent } from '@app/shared/utils/checkbox/checkbox.component';

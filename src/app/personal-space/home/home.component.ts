@@ -8,7 +8,7 @@ import { NotesComponent } from '@app/personal-space/home/notes/notes.component';
 import { SettingsComponent } from '@app/personal-space/home/settings/settings.component';
 import { AvatarImagePipe } from '@app/personal-space/utils/avatar-image.pipe';
 import { MemberService } from '@app/personal-space/utils/member.service';
-import { UserService } from '@app/services/user.service';
+import { UserService } from '@services/user.service';
 import { AuthService } from '@app/shared/authentication/auth.service';
 import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/outlet-container';
 import { RangePipe } from '@app/shared/utils/pipe/range.pipe';

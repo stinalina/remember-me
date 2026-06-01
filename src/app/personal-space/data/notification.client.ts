@@ -1,7 +1,7 @@
 import { DestroyRef, inject, Injectable } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { INotification } from "@app/personal-space/data/notification.model";
-import { UserService } from "@app/services/user.service";
+import { UserService } from "@services/user.service";
 import { DeleteNotificationByIdGQL, GetNotificationByUserIdGQL } from "@hasura/generated";
 import { catchError, map, Observable, of } from "rxjs";
 

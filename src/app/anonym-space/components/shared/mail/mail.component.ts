@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LocalStorageService } from '@app/services/local-storage.service';
+import { LocalStorageService } from '@services/local-storage.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
