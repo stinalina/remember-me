@@ -3,7 +3,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
 import { ToastService, ToastType } from '@services/toast.service';
-import { UserService } from '@services/user.service';
 import { AuthService } from '@app/shared/authentication/auth.service';
 import { ContentFrameComponent } from '@app/shared/content-frame/content-frame.component';
 import { CheckboxComponent } from '@app/shared/utils/checkbox/checkbox.component';
@@ -12,7 +11,7 @@ import { ModalComponent } from '@app/shared/modal/modal.component';
 import { PasswordComponent } from '@app/anonym-space/components/shared/password/password.component';
 import { TextFrameComponent } from '@app/shared/text-frame/text-frame.component';
 import * as dsgvo from '@assets/text/dsgvo.txt';
-import { catchError, EMPTY, finalize, switchMap } from 'rxjs';
+import { catchError, EMPTY, finalize } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,7 +30,6 @@ export class RegisterComponent {
   private readonly authenticationService = inject(AuthService);
   private readonly toastService = inject(ToastService)
   private readonly destroyRef = inject(DestroyRef);
-  private readonly userService = inject(UserService);
   private readonly router = inject(Router);
 
   protected readonly DsgvoText = dsgvo.default;
@@ -66,7 +64,6 @@ export class RegisterComponent {
         this.toastService.showToast('Registrierung fehlgeschlagen: ' + error.message, ToastType.Error);
         return EMPTY;
       }),
-      switchMap(() => this.userService.addUserToDb(mail)),
       finalize(() => this.isLoading.set(false))
     ).subscribe(() => {
       this.toastService.showToast('Registrierung erfolgreich! Sie werden nun zum Login weitergeleitet.', ToastType.Success);
