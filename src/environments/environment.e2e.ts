@@ -7,6 +7,7 @@ export const environment = {
   BACKEND_URL: 'http://localhost:7072',
   SEND_WELCOME_MAIL_URL: '/api/sendWelcomeMail',
   CONTACT_MAIL: 'stina.boehmig@gmx.de',
+  DATE_SINCE: 2026,
   firebaseAuthEmulator: {
     enabled: true,
     host: '127.0.0.1',

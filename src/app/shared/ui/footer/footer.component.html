@@ -9,12 +9,19 @@
     </div>
     <ng-container *ngTemplateOutlet="contact"></ng-container>
   </nav>
-  <div class="footer-pen-pencil hidden xl:block">
-    <img
-      class="logo w-20 h-20 xl:w-[125px] xl:h-[125px]"
+  <div class="footer-pen-pencil">
+    <div class="flex flex-col items-center">
+      <img
+      class="logo w-20 h-20 xl:w-[125px] xl:h-[125px] hidden xl:block"
       alt="Pen and Pencil"
       src="assets/images/pen_pencil.svg"
-    />
+      />
+      @if (this.dateSince < this.currentYear) {
+        <p class="text-sm text-center">© {{ this.dateSince }} - {{ this.currentYear }}</p>
+      } @else {
+        <p class="text-sm text-center">© Seit {{ this.currentYear }}</p>
+      }
+    </div>
   </div>
 </footer>
 

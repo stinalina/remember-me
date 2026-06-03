@@ -7,6 +7,7 @@ export const environment = {
   BACKEND_URL: 'https://fa-rememberme-backend-cchucab0bsdpepb5.germanywestcentral-01.azurewebsites.net',
   SEND_WELCOME_MAIL_URL: '/api/sendWelcomeMail',
   CONTACT_MAIL: 'stina.boehmig@gmx.de',
+  DATE_SINCE: 2026,
   firebaseAuthEmulator: {
     enabled: false,
     host: '127.0.0.1',
