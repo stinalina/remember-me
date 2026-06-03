@@ -55,7 +55,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     content: '',
     mail: this.localStorageService.getUserMail ?? '',
     dateTime: this.tomorrow,
-    isDraft: false, // TODO copilot
+    isDraft: false,
   });
   
   protected readonly notificationForm = form(this.notificationModel, (path) => {
@@ -141,6 +141,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
         content: notification.content ?? '',
         mail: notification.mail ?? '',
         dateTime: dueDate ?? this.tomorrow,
+        isDraft: notification.isDraft ?? false,
       });
     });
 
@@ -219,6 +220,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
       Subject: formValue.subject || this.placeholderSubject,
       Content: formValue.content,
       DueDate: formValue.dateTime.toString(),
+      IsDraft: formValue.isDraft,
       Mail: formValue.mail 
     } satisfies Notification_Set_Input;
 
@@ -245,6 +247,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
       Subject: formValue.subject || this.placeholderSubject,
       Content: formValue.content,
       DueDate: formValue.dateTime.toString(),
+      IsDraft: formValue.isDraft,
       UserId: this.userService.currUser()?.userId,
       Mail: mail
     } satisfies Notification_Insert_Input;
@@ -326,7 +329,8 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
       additionalInfo: '',
       content: '',
       mail: this.localStorageService.getUserMail ?? '',
-      dateTime: this.tomorrow
+      dateTime: this.tomorrow,
+      isDraft: false,
     });
   }
 }
