@@ -16,13 +16,15 @@ import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
 import { htmlContentValidator } from '@app/shared/utils/validators/html-content.validator';
 import { IUser } from '@app/shared/utils/models/user.model';
 import { UserService } from '@app/shared/services/user.service';
+import { CheckboxComponent } from '@app/shared/utils/checkbox/checkbox.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'reme-notification-editor',
   templateUrl: 'notification-editor.component.html',
   styleUrl: 'notification-editor.component.scss',
-  imports: [  
+  imports: [
+    CheckboxComponent,
     NgxEditorModule,
     FormField,
     FormsModule
@@ -53,6 +55,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     content: '',
     mail: this.localStorageService.getUserMail ?? '',
     dateTime: this.tomorrow,
+    isDraft: false, // TODO copilot
   });
   
   protected readonly notificationForm = form(this.notificationModel, (path) => {
