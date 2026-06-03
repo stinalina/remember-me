@@ -19,4 +19,6 @@ export class FooterComponent {
   public readonly version = '1.0.0';
   public readonly env = environment.production ? 'Prod Mode' : 'Dev Mode';
   public readonly contactMail = environment.CONTACT_MAIL; 
+  public readonly dateSince = environment.DATE_SINCE;
+  public readonly currentYear = new Date().getFullYear();
 }
