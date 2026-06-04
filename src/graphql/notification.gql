@@ -5,6 +5,7 @@ mutation InsertNotification($objects: [Notification_insert_input!]!) {
       CreatedAt
       DueDate
       Id
+      IsDraft
       UserId
       Subject
       RememberCount
@@ -20,6 +21,7 @@ mutation UpdateNotificationById($id: uuid!, $object: Notification_set_input!) {
     CreatedAt
     DueDate
     Id
+    IsDraft
     UserId
     Subject
     RememberCount

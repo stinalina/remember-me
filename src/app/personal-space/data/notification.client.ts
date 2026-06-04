@@ -28,6 +28,7 @@ export class NotificationClient {
         dueDate: n.DueDate,
         createdAt: n.CreatedAt,
         mail: n.Mail,
+        isDraft: n.IsDraft ?? false,
       } satisfies INotification)) ?? []),
       catchError(error => {
         console.error('Error loading notifications:', error);

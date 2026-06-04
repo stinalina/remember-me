@@ -82,8 +82,9 @@
     </div>
 
     <div class="flex justify-center">
-      //TODO copilot
-      <reme-checkbox preId="notification-editor-draft" [(value)]="this.notificationForm.isDraft">
+      <reme-checkbox preId="notification-editor-draft"
+        [value]="this.notificationForm.isDraft().value()"
+        (valueChange)="this.notificationForm.isDraft().value.set($event)">
         Als Entwurf speichern
       </reme-checkbox>
 
