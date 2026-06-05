@@ -81,7 +81,14 @@
       }
     </div>
 
-    <div class="flex justify-center">
+    <div class="flex justify-between items-center gap-1">
+      <reme-checkbox preId="notification-editor-draft"
+        [value]="this.notificationForm.isDraft().value()"
+        (valueChange)="this.notificationForm.isDraft().value.set($event)">
+        Als Entwurf speichern
+      </reme-checkbox>
+
+
       @let disabled = (this.notificationForm().invalid() || this.sendingNotification()) && !this.retry();
       <button type="submit" class="btn btn-sm md:btn-sm xl:btn-md" id="create-notification-apply"
         [class.btn-disabled]="disabled">

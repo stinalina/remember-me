@@ -22,6 +22,19 @@ export type Scalars = {
   uuid: { input: any; output: any; }
 };
 
+/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
+export type Boolean_Comparison_Exp = {
+  _eq?: InputMaybe<Scalars['Boolean']['input']>;
+  _gt?: InputMaybe<Scalars['Boolean']['input']>;
+  _gte?: InputMaybe<Scalars['Boolean']['input']>;
+  _in?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+  _is_null?: InputMaybe<Scalars['Boolean']['input']>;
+  _lt?: InputMaybe<Scalars['Boolean']['input']>;
+  _lte?: InputMaybe<Scalars['Boolean']['input']>;
+  _neq?: InputMaybe<Scalars['Boolean']['input']>;
+  _nin?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+};
+
 /** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq?: InputMaybe<Scalars['Int']['input']>;
@@ -42,6 +55,7 @@ export type Notification = {
   CreatedAt: Scalars['timestamptz']['output'];
   DueDate: Scalars['timestamptz']['output'];
   Id: Scalars['uuid']['output'];
+  IsDraft: Scalars['Boolean']['output'];
   Mail: Scalars['String']['output'];
   RememberCount: Scalars['smallint']['output'];
   Subject: Scalars['String']['output'];
@@ -58,7 +72,23 @@ export type Notification_Aggregate = {
 };
 
 export type Notification_Aggregate_Bool_Exp = {
+  bool_and?: InputMaybe<Notification_Aggregate_Bool_Exp_Bool_And>;
+  bool_or?: InputMaybe<Notification_Aggregate_Bool_Exp_Bool_Or>;
   count?: InputMaybe<Notification_Aggregate_Bool_Exp_Count>;
+};
+
+export type Notification_Aggregate_Bool_Exp_Bool_And = {
+  arguments: Notification_Select_Column_Notification_Aggregate_Bool_Exp_Bool_And_Arguments_Columns;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Notification_Bool_Exp>;
+  predicate: Boolean_Comparison_Exp;
+};
+
+export type Notification_Aggregate_Bool_Exp_Bool_Or = {
+  arguments: Notification_Select_Column_Notification_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<Notification_Bool_Exp>;
+  predicate: Boolean_Comparison_Exp;
 };
 
 export type Notification_Aggregate_Bool_Exp_Count = {
@@ -130,6 +160,7 @@ export type Notification_Bool_Exp = {
   CreatedAt?: InputMaybe<Timestamptz_Comparison_Exp>;
   DueDate?: InputMaybe<Timestamptz_Comparison_Exp>;
   Id?: InputMaybe<Uuid_Comparison_Exp>;
+  IsDraft?: InputMaybe<Boolean_Comparison_Exp>;
   Mail?: InputMaybe<String_Comparison_Exp>;
   RememberCount?: InputMaybe<Smallint_Comparison_Exp>;
   Subject?: InputMaybe<String_Comparison_Exp>;
@@ -157,6 +188,7 @@ export type Notification_Insert_Input = {
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
+  IsDraft?: InputMaybe<Scalars['Boolean']['input']>;
   Mail?: InputMaybe<Scalars['String']['input']>;
   RememberCount?: InputMaybe<Scalars['smallint']['input']>;
   Subject?: InputMaybe<Scalars['String']['input']>;
@@ -236,6 +268,7 @@ export type Notification_Order_By = {
   CreatedAt?: InputMaybe<Order_By>;
   DueDate?: InputMaybe<Order_By>;
   Id?: InputMaybe<Order_By>;
+  IsDraft?: InputMaybe<Order_By>;
   Mail?: InputMaybe<Order_By>;
   RememberCount?: InputMaybe<Order_By>;
   Subject?: InputMaybe<Order_By>;
@@ -259,6 +292,8 @@ export enum Notification_Select_Column {
   /** column name */
   Id = 'Id',
   /** column name */
+  IsDraft = 'IsDraft',
+  /** column name */
   Mail = 'Mail',
   /** column name */
   RememberCount = 'RememberCount',
@@ -268,12 +303,25 @@ export enum Notification_Select_Column {
   UserId = 'UserId'
 }
 
+/** select "Notification_aggregate_bool_exp_bool_and_arguments_columns" columns of table "dev.Notification" */
+export enum Notification_Select_Column_Notification_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
+  /** column name */
+  IsDraft = 'IsDraft'
+}
+
+/** select "Notification_aggregate_bool_exp_bool_or_arguments_columns" columns of table "dev.Notification" */
+export enum Notification_Select_Column_Notification_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
+  /** column name */
+  IsDraft = 'IsDraft'
+}
+
 /** input type for updating data in table "dev.Notification" */
 export type Notification_Set_Input = {
   Content?: InputMaybe<Scalars['String']['input']>;
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
+  IsDraft?: InputMaybe<Scalars['Boolean']['input']>;
   Mail?: InputMaybe<Scalars['String']['input']>;
   RememberCount?: InputMaybe<Scalars['smallint']['input']>;
   Subject?: InputMaybe<Scalars['String']['input']>;
@@ -327,6 +375,7 @@ export type Notification_Stream_Cursor_Value_Input = {
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
+  IsDraft?: InputMaybe<Scalars['Boolean']['input']>;
   Mail?: InputMaybe<Scalars['String']['input']>;
   RememberCount?: InputMaybe<Scalars['smallint']['input']>;
   Subject?: InputMaybe<Scalars['String']['input']>;
@@ -354,6 +403,8 @@ export enum Notification_Update_Column {
   DueDate = 'DueDate',
   /** column name */
   Id = 'Id',
+  /** column name */
+  IsDraft = 'IsDraft',
   /** column name */
   Mail = 'Mail',
   /** column name */
@@ -1086,7 +1137,7 @@ export type InsertNotificationMutationVariables = Exact<{
 }>;
 
 
-export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', returning: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, UserId: any, Subject: string, RememberCount: any, Mail: string }> } | null };
+export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', returning: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, IsDraft: boolean, UserId: any, Subject: string, RememberCount: any, Mail: string }> } | null };
 
 export type UpdateNotificationByIdMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -1094,7 +1145,7 @@ export type UpdateNotificationByIdMutationVariables = Exact<{
 }>;
 
 
-export type UpdateNotificationByIdMutation = { __typename?: 'mutation_root', update_Notification_by_pk?: { __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, UserId: any, Subject: string, RememberCount: any, Mail: string } | null };
+export type UpdateNotificationByIdMutation = { __typename?: 'mutation_root', update_Notification_by_pk?: { __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, IsDraft: boolean, UserId: any, Subject: string, RememberCount: any, Mail: string } | null };
 
 export type DeleteNotificationByIdMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -1108,7 +1159,7 @@ export type GetNotificationByUserIdQueryVariables = Exact<{
 }>;
 
 
-export type GetNotificationByUserIdQuery = { __typename?: 'query_root', Notification: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, Subject: string, RememberCount: any, Id: any, DueDate: any, Mail: string }> };
+export type GetNotificationByUserIdQuery = { __typename?: 'query_root', Notification: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, Subject: string, RememberCount: any, Id: any, DueDate: any, IsDraft: boolean, Mail: string }> };
 
 export type InsertUserMutationVariables = Exact<{
   mail: Scalars['String']['input'];
@@ -1173,6 +1224,7 @@ export const InsertNotificationDocument = gql`
       CreatedAt
       DueDate
       Id
+      IsDraft
       UserId
       Subject
       RememberCount
@@ -1199,6 +1251,7 @@ export const UpdateNotificationByIdDocument = gql`
     CreatedAt
     DueDate
     Id
+    IsDraft
     UserId
     Subject
     RememberCount
@@ -1244,6 +1297,7 @@ export const GetNotificationByUserIdDocument = gql`
     RememberCount
     Id
     DueDate
+    IsDraft
     Mail
   }
 }

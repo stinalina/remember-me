@@ -44,6 +44,7 @@ export class NotificationService {
           dueDate: notification?.DueDate ?? '',
           createdAt: notification?.CreatedAt ?? '',
           mail: notification?.Mail ?? '',
+          isDraft: notification?.IsDraft ?? false,
         }) satisfies INotification;
       }),
       catchError((error) => {
@@ -70,6 +71,7 @@ export class NotificationService {
           dueDate: notification?.DueDate ?? '',
           createdAt: notification?.CreatedAt ?? '',
           mail: notification?.Mail ?? '',
+          isDraft: notification?.IsDraft ?? false,
         }) satisfies INotification;
       }),
       catchError((error) => {
