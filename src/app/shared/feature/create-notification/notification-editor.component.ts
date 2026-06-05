@@ -235,7 +235,6 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
       }),
     ).subscribe(result => {
       this.resetForm();
-      this.localStorageService.increaseSendedNotificationCount();
       this.notificationChanged.emit(result);
     });
   }
