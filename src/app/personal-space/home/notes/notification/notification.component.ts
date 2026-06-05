@@ -21,7 +21,8 @@ export class NotificationComponent {
   public readonly preId = input<string>();
 
   protected readonly isDuePast = computed(() => {
+    const notification = this.notification();
     const today = new Date();
-    return new Date(this.notification().dueDate) < today;
+    return !notification.isDraft && new Date(notification.dueDate) < today;
   });
 }
