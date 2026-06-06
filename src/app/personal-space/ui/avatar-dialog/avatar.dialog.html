@@ -4,9 +4,9 @@
       <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
     </form>
     <h1 class="text-center text-2xl font-semibold mb-3">Wähle einen Avatar</h1>
-    <div class="grid grid-cols-5 gap-y-2 justify-items-center">
+    <div class="grid grid-cols-5 gap-2 justify-items-center">
       @for (name of AvatarNames; track $index) {
-        <button type="button" class="btn btn-xl btn-square tooltip"
+        <button type="button" class="btn btn-xl btn-square tooltip w-full h-full"
         [attr.data-tip]="name"
         (click)="selectAvatar.emit(name)">
         <img [src]="name | avatarImage" [alt]="name">

@@ -33,5 +33,10 @@ export class AvatarDialog {
     'Aidan',
     'Avery',
     'Andrea',
+    'Viviian',
+    'Mason',
+    'Easton',
+    'Brooklynn',
+    'Mackenzie'
   ];
 }
