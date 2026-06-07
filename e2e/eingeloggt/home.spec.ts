@@ -32,6 +32,6 @@ test.describe('HomeComponent', () => {
 
   test('should show correct avatar image based on preferences', async ({ page }) => {
     const avatarImage = page.getByAltText('profil-bild');
-    await expect(avatarImage).toHaveAttribute('src', 'https://api.dicebear.com/9.x/adventurer/svg?seed=Kingston');
+    await expect(avatarImage).toHaveAttribute('src', 'https://api.dicebear.com/9.x/adventurer/svg?size=96&scale=120&seed=Kingston');
   });
 });
