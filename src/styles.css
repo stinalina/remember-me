@@ -25,6 +25,11 @@
 }
 
 @import "tailwindcss";
+
+@theme {
+  --breakpoint-3xl: 120rem; /* 1920px */
+}
+
 @plugin "daisyui";
 @plugin "daisyui/theme" {
   name: "caramellatte";

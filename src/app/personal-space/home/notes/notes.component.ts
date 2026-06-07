@@ -3,6 +3,7 @@ import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NotificationStore } from '@app/personal-space/data/notification.store';
 import { Navbar } from '@app/personal-space/home/notes/navbar/navbar';
+import { AdjustGridColumnsDirective } from '@app/personal-space/utils/adjust-grid-columns.directive';
 import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
 import { RangePipe } from '@app/shared/utils/pipe/range.pipe';
 import { NotificationComponent } from "./notification/notification.component";
@@ -18,8 +19,9 @@ import { INotification } from '@app/shared/utils/models/notification.model';
     Navbar,
     NgTemplateOutlet,
     NotificationComponent,
-    RangePipe
-],
+    RangePipe,
+    AdjustGridColumnsDirective
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotesComponent {
@@ -39,12 +41,6 @@ export class NotesComponent {
     return notifications
       .filter((notification) => notification.subject.toLowerCase().includes(term))
       .sort((a, b) => a.subject.localeCompare(b.subject, undefined, { sensitivity: 'base' }));
-  });
-
-  /** Ghost cards needed to fill the last partial grid row */
-  protected readonly trailingGhostCount = computed(() => {
-    const n = this.displayedNotifications().length + 1; // +1 for create placeholder
-    return (3 - (n % 3)) % 3;
   });
 
   protected onSearchChanged(searchTerm: string): void {
