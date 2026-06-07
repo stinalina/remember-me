@@ -1,8 +1,11 @@
-@let gridColumns = this.gridColumns();
 <reme-content-frame [fullHeight]="true">
   <section class="h-full">
     <reme-navbar (searchChanged)="this.onSearchChanged($event)"></reme-navbar>
-    <div class="py-6 grid grid-cols-3 3xl:grid-cols-4 gap-3 h-[85vh] px-1 overflow-auto">
+    <div remeAdjustGridColumns [notesCount]="this.displayedNotifications().length"
+      #adjustGrid="remeAdjustGridColumns"
+      class="py-6 grid grid-cols-3 3xl:grid-cols-4 gap-3 h-[85vh] px-1 overflow-auto">
+      @let gridColumns = adjustGrid.gridColumns();
+
       @if (this.notificationStore.isLoading()) {
         <p>Loading...</p>
         <span class="loading loading-dots loading-xl"></span>
@@ -21,7 +24,7 @@
           </reme-notification>
         }
 
-        @for (elem of trailingGhostCount() -1 | range; track $index) {
+        @for (elem of adjustGrid.trailingGhostCount() -1 | range; track $index) {
           <ng-container *ngTemplateOutlet="ghostCard"></ng-container>
         }
 

@@ -1,8 +1,9 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, HostListener, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NotificationStore } from '@app/personal-space/data/notification.store';
 import { Navbar } from '@app/personal-space/home/notes/navbar/navbar';
+import { AdjustGridColumnsDirective } from '@app/personal-space/utils/adjust-grid-columns.directive';
 import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
 import { RangePipe } from '@app/shared/utils/pipe/range.pipe';
 import { NotificationComponent } from "./notification/notification.component";
@@ -18,18 +19,16 @@ import { INotification } from '@app/shared/utils/models/notification.model';
     Navbar,
     NgTemplateOutlet,
     NotificationComponent,
-    RangePipe
+    RangePipe,
+    AdjustGridColumnsDirective
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotesComponent {
-  private static readonly THREE_XL_BREAKPOINT_PX = 1920;
-
   protected readonly todayDate = new Date();
   protected readonly dialog = inject(Dialog);
   protected readonly notificationStore = inject(NotificationStore);
   protected readonly searchTerm = signal('');
-  protected readonly gridColumns = signal(3);
 
   protected readonly displayedNotifications = computed(() => {
     const notifications = this.notificationStore.value() ?? [];
@@ -43,31 +42,6 @@ export class NotesComponent {
       .filter((notification) => notification.subject.toLowerCase().includes(term))
       .sort((a, b) => a.subject.localeCompare(b.subject, undefined, { sensitivity: 'base' }));
   });
-
-  /** Ghost cards needed to fill the last partial grid row */
-  protected readonly trailingGhostCount = computed(() => {
-    const columns = this.gridColumns();
-    const n = this.displayedNotifications().length + 1; // +1 for create placeholder
-    return (columns - (n % columns)) % columns;
-  });
-
-  constructor() {
-    this.updateGridColumns();
-  }
-
-  @HostListener('window:resize')
-  protected onWindowResize(): void {
-    this.updateGridColumns();
-  }
-
-  private updateGridColumns(): void {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    const columns = window.innerWidth >= NotesComponent.THREE_XL_BREAKPOINT_PX ? 4 : 3;
-    this.gridColumns.set(columns);
-  }
 
   protected onSearchChanged(searchTerm: string): void {
     this.searchTerm.set(searchTerm);
