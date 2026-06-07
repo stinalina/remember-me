@@ -1,5 +1,5 @@
 import { DatePipe, NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormsModule } from '@angular/forms';
 import { email, form, FormField, maxLength, required, validate } from '@angular/forms/signals';
@@ -17,6 +17,7 @@ import { htmlContentValidator } from '@app/shared/utils/validators/html-content.
 import { IUser } from '@app/shared/utils/models/user.model';
 import { UserService } from '@app/shared/services/user.service';
 import { CheckboxComponent } from '@app/shared/utils/checkbox/checkbox.component';
+import { AuthService } from '@root/src/app/shared/utils/authentication/auth.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -37,6 +38,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   public readonly notificationChanged = output<INotification | undefined>();
 
   private readonly notificationService = inject(NotificationService);
+  private readonly authenticationService = inject(AuthService);
   private readonly userService = inject(UserService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly sessionStorage = inject(SESSION_STORAGE);
@@ -44,6 +46,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   private readonly toastService = inject(ToastService);
   private readonly typewriterEffectService = inject(TypewriterEffectService);
   
+  protected readonly isLoggedIn = this.authenticationService.isAuthenticated.asReadonly();
   private readonly freeNotificationsLimit = this.userService.freeNotificationsLimit;
   private readonly limitReached = signal<boolean>(false);
 
