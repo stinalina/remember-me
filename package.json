@@ -75,7 +75,7 @@
     "typescript-eslint": "8.56.1"
   },
   "release": {
-    "branches": ["master"],
+    "branches": ["develop"],
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
