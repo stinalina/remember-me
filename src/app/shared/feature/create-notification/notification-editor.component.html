@@ -1,0 +1,109 @@
+<form (submit)="this.processSubmit($event)"
+  class="
+    shadow-lg 
+    md:p-2.5 xl:p-3 p-2
+    rounded-lg bg-base-100 border
+    max-h-screen xl:max-h-none 
+    overflow-y-auto md:overflow-y-auto xl:overflow-y-visible"
+    >
+  <div class="flex flex-col md:gap-3 xl:gap-4 gap-2 justify-around">
+    <label class="input input-sm md:input-sm xl:input-md w-full">
+      Betreff
+      <input type="text" id="create-notifcation-subject" 
+        [formField]="this.notificationForm.subject"
+        class="pl-1" placeholder="{{ this.placeholderSubject }}" />
+    </label>
+
+    <div class="NgxEditor__Wrapper max-h-[30vh] xl:max-h-none overflow-hidden text-sm md:text-sm xl:text-base">
+      <ngx-editor id="create-notification-editor"
+        class="h-[25vh] xl:h-100 text-sm md:text-sm xl:text-base"
+        [editor]="editor"
+        [ngModel]="this.notificationForm.content().value()"
+        (ngModelChange)="this.onContentChange($event)"
+        [ngModelOptions]="{ standalone: true }"
+        outputFormat="html"
+        placeholder=""
+        (focusIn)="this.showPlaceholderAnimation.set(false)" >
+        @if(this.showPlaceholderAnimation()) {
+          <span class="typewriter-placeholder" [innerHTML]="typedPlaceholder()"></span>
+        }
+      </ngx-editor>
+      @if(this.toolbar) {
+        <ngx-editor-menu class="hidden md:block" [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+      }
+    </div>
+
+    <div class="flex flex-col w-full align-start text-sm md:text-sm xl:text-base">
+      <label for="create-notification-date-time" class="text-left md:ml-0.5 xl:ml-1 mb-1">
+        Wann möchtest du erinnert werden?
+      </label>
+      <input id="create-notification-date-time" class="input input-sm md:input-sm xl:input-md w-full"
+        [formField]="this.notificationForm.dateTime"
+        type="date"/>
+    </div>
+
+    <input
+      type="text"
+      [formField]="this.notificationForm.additionalInfo"
+      class="hidden"
+      autocomplete="off"
+    >
+
+    <div class="flex flex-col text-sm md:text-sm xl:text-base">
+      <label for="create-notifcation-mail" class="text-left md:ml-0.5 xl:ml-1 mb-1">
+        Sende Erinnerung an:
+      </label>
+      <label class="input input-sm md:input-sm xl:input-md validator w-full">
+        <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <g
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            stroke-width="2.5"
+            fill="none"
+            stroke="currentColor"
+          >
+            <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+          </g>
+        </svg>
+        <input id="create-notifcation-mail"
+          [formField]="this.notificationForm.mail" class="pl-1"
+          type="email" placeholder="mail@site.com" />
+      </label>
+      @let mailTouched = this.notificationForm.mail().touched();
+      @if (mailTouched && this.notificationForm.mail().invalid()) {
+        @if (this.hasMailError('email')) {
+          <div class="reme-validator-hint">Gebe eine gültige E-Mail-Adresse ein</div>
+        }
+        @if (this.hasMailError('freeLimitReached')) {
+          <div class="reme-validator-hint">Limit für Benachrichtigungen diesen Monat erreicht</div>
+        }
+      }
+    </div>
+
+    @if (this.isLoggedIn()) {
+      <div class="flex justify-between items-center gap-1">
+        <reme-checkbox preId="notification-editor-draft"
+          [value]="this.notificationForm.isDraft().value()"
+          (valueChange)="this.notificationForm.isDraft().value.set($event)">
+          Als Entwurf speichern
+        </reme-checkbox>
+        <ng-container *ngTemplateOutlet="submitBtn"></ng-container>
+      </div>
+    } @else {
+      <ng-container *ngTemplateOutlet="submitBtn"></ng-container>
+    }
+  </div>
+</form>
+
+<ng-template #submitBtn>
+  @let disabled = (this.notificationForm().invalid() || this.sendingNotification()) && !this.retry();
+  <button type="submit" class="btn btn-sm md:btn-sm xl:btn-md" id="create-notification-apply"
+    [class.btn-disabled]="disabled">
+    @if (this.sendingNotification()) {
+      <span class="loading loading-spinner"></span>
+    }
+    @let submitBtnText = this.editorMode() === 'edit' ? 'Änderungen speichern' : 'Notiz erstellen';
+    {{ this.sendingNotification() ? 'Senden...' : submitBtnText }}
+  </button>
+</ng-template>

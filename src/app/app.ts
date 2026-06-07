@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { FooterComponent } from '@shared/footer/footer.component';
-import { ToastComponent } from '@shared/toast/toast.component';
+import { FooterComponent } from '@shared/ui/footer/footer.component';
+import { ToastComponent } from '@shared/ui/toast/toast.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

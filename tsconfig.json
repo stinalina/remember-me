@@ -15,11 +15,15 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "importHelpers": true,
     "target": "ES2022",
     "module": "esnext",
     "moduleResolution": "bundler",
     "paths": {
+      "@root/*": [
+        "./*"
+      ],
       "@app/*": [
         "./src/app/*"
       ],
@@ -36,7 +40,7 @@
         "./src/app/shared/*"
       ],
       "@services/*": [
-        "./src/app/services/*"
+        "./src/app/shared/services/*"
       ],
       "@components/*": [
         "./src/app/anonym-space/components/*"

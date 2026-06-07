@@ -1,7 +1,11 @@
 <reme-content-frame [fullHeight]="true">
   <section class="h-full">
-    <reme-navbar></reme-navbar>
-    <div class="py-6 grid grid-cols-3 gap-3 h-[85vh] px-1 overflow-auto">
+    <reme-navbar (searchChanged)="this.onSearchChanged($event)"></reme-navbar>
+    <div remeAdjustGridColumns [notesCount]="this.displayedNotifications().length"
+      #adjustGrid="remeAdjustGridColumns"
+      class="py-6 grid grid-cols-3 3xl:grid-cols-4 gap-3 h-[85vh] px-1 overflow-auto">
+      @let gridColumns = adjustGrid.gridColumns();
+
       @if (this.notificationStore.isLoading()) {
         <p>Loading...</p>
         <span class="loading loading-dots loading-xl"></span>
@@ -9,9 +13,9 @@
         <p>Error: {{ this.notificationStore.error() }}</p>
       } @else {
         <ng-container *ngTemplateOutlet="placeholderForCreateNew"></ng-container>
-        @for (notification of this.notificationStore.value(); track notification.id; let i = $index) {
-          @if (i % 3 === 2) {
-            <div class="col-span-3"><div class="divider my-0"></div></div>
+        @for (notification of this.displayedNotifications(); track notification.id; let i = $index) {
+          @if (i % gridColumns === gridColumns - 1) {
+            <div class="col-span-3 3xl:col-span-4"><div class="divider my-0"></div></div>
           }
           <reme-notification [notification]="notification"
             [preId]="'note-' + i"
@@ -20,20 +24,20 @@
           </reme-notification>
         }
 
-        @for (elem of trailingGhostCount() -1 | range; track $index) {
+        @for (elem of adjustGrid.trailingGhostCount() -1 | range; track $index) {
           <ng-container *ngTemplateOutlet="ghostCard"></ng-container>
         }
 
-        @let notesCount = this.notificationStore.value()?.length ?? 0;
-        @if (notesCount <= 6) {
-          <div class="col-span-3"><div class="divider my-0"></div></div>
-          @for (elem of 2 | range; track $index) {
+        @let notesCount = this.displayedNotifications().length;
+        @if (notesCount <= gridColumns * 2) {
+          <div class="col-span-3 3xl:col-span-4"><div class="divider my-0"></div></div>
+          @for (elem of gridColumns - 1 | range; track $index) {
             <ng-container *ngTemplateOutlet="ghostCard"></ng-container>
           }
         }
-        @if (notesCount <= 3) {
-          <div class="col-span-3"><div class="divider my-0"></div></div>
-          @for (elem of 2 | range; track $index) {
+        @if (notesCount <= gridColumns) {
+          <div class="col-span-3 3xl:col-span-4"><div class="divider my-0"></div></div>
+          @for (elem of gridColumns - 1 | range; track $index) {
             <ng-container *ngTemplateOutlet="ghostCard"></ng-container>
           }
         }

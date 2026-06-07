@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output, computed } from '@angular/core';
-import { INotification } from '@app/personal-space/data/notification.model';
-import { ConfirmDialog } from '@app/shared/confirmation-dialog/confirmation.dialog';
-import { SafeHtmlPipe } from '@shared/pipe/safe-html.pipe';
+import { ConfirmDialog } from '@app/personal-space/ui/confirmation-dialog/confirmation.dialog';
+import { INotification } from '@app/shared/utils/models/notification.model';
+import { SafeHtmlPipe } from '@app/shared/utils/pipe/safe-html.pipe';
 
 @Component({
   selector: 'reme-notification',
@@ -21,7 +21,8 @@ export class NotificationComponent {
   public readonly preId = input<string>();
 
   protected readonly isDuePast = computed(() => {
+    const notification = this.notification();
     const today = new Date();
-    return new Date(this.notification().dueDate) < today;
+    return !notification.isDraft && new Date(notification.dueDate) < today;
   });
 }

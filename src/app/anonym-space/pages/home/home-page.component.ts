@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal } from "@angular/core";
-import { ContentFrameComponent } from "@app/shared/content-frame/content-frame.component";
+import { ContentFrameComponent } from "@app/shared/ui/content-frame/content-frame.component";
 
 type Slogan = {
   title: string;

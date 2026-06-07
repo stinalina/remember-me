@@ -1,8 +1,8 @@
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { INotification } from '@app/personal-space/data/notification.model';
-import { NotificationEditorComponent } from '@app/shared/create-notification/notification-editor.component';
+import { INotification } from '@app/shared/utils/models/notification.model';
+import { NotificationEditorComponent } from '@app/shared/feature/create-notification/notification-editor.component';
 import { Observable } from 'rxjs';
 
 @Component({

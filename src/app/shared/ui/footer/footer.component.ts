@@ -1,0 +1,25 @@
+import { NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { ROUTER_TOKENS } from '@app/app.routes';
+import { environment } from '@environments/environment';
+import packageJson from '@root/package.json';
+
+@Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'reme-footer',
+  templateUrl: 'footer.component.html',
+  styleUrls: ['footer.component.css'],
+  imports: [
+    NgTemplateOutlet,
+    RouterLink
+  ]
+})
+export class FooterComponent {
+  public readonly RouterTokens = ROUTER_TOKENS;
+  public readonly version = packageJson.version;
+  public readonly env = environment.production ? 'Prod Mode' : 'Dev Mode';
+  public readonly contactMail = environment.CONTACT_MAIL; 
+  public readonly dateSince = environment.DATE_SINCE;
+  public readonly currentYear = new Date().getFullYear();
+}
