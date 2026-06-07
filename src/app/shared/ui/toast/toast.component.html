@@ -1,5 +1,5 @@
 @if (this.toastService.toastIds().length > 0) {
-  <div class="toast toast-top  toast-center md:toast-end">
+  <div class="toast toast-top toast-center md:toast-end z-9999">
     @for (toast of this.toastService.toastIds(); track $index) {
       <div class="alert alert-soft alert-outline"
         [class.alert-success]="toast.type === ToastType.Success"
