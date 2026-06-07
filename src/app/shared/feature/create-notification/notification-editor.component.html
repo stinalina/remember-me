@@ -81,23 +81,29 @@
       }
     </div>
 
-    <div class="flex justify-between items-center gap-1">
-      <reme-checkbox preId="notification-editor-draft"
-        [value]="this.notificationForm.isDraft().value()"
-        (valueChange)="this.notificationForm.isDraft().value.set($event)">
-        Als Entwurf speichern
-      </reme-checkbox>
-
-
-      @let disabled = (this.notificationForm().invalid() || this.sendingNotification()) && !this.retry();
-      <button type="submit" class="btn btn-sm md:btn-sm xl:btn-md" id="create-notification-apply"
-        [class.btn-disabled]="disabled">
-        @if (this.sendingNotification()) {
-          <span class="loading loading-spinner"></span>
-        }
-        @let submitBtnText = this.editorMode() === 'edit' ? 'Änderungen speichern' : 'Notiz erstellen';
-        {{ this.sendingNotification() ? 'Senden...' : submitBtnText }}
-      </button>
-    </div>
+    @if (this.notification()) {
+      <div class="flex justify-between items-center gap-1">
+        <reme-checkbox preId="notification-editor-draft"
+          [value]="this.notificationForm.isDraft().value()"
+          (valueChange)="this.notificationForm.isDraft().value.set($event)">
+          Als Entwurf speichern
+        </reme-checkbox>
+        <ng-container *ngTemplateOutlet="submitBtn"></ng-container>
+      </div>
+    } @else {
+      <ng-container *ngTemplateOutlet="submitBtn"></ng-container>
+    }
   </div>
 </form>
+
+<ng-template #submitBtn>
+  @let disabled = (this.notificationForm().invalid() || this.sendingNotification()) && !this.retry();
+  <button type="submit" class="btn btn-sm md:btn-sm xl:btn-md" id="create-notification-apply"
+    [class.btn-disabled]="disabled">
+    @if (this.sendingNotification()) {
+      <span class="loading loading-spinner"></span>
+    }
+    @let submitBtnText = this.editorMode() === 'edit' ? 'Änderungen speichern' : 'Notiz erstellen';
+    {{ this.sendingNotification() ? 'Senden...' : submitBtnText }}
+  </button>
+</ng-template>

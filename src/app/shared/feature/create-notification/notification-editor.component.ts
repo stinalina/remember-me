@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AbstractControl, FormsModule } from '@angular/forms';
@@ -26,6 +26,7 @@ import { CheckboxComponent } from '@app/shared/utils/checkbox/checkbox.component
   imports: [
     CheckboxComponent,
     NgxEditorModule,
+    NgTemplateOutlet,
     FormField,
     FormsModule
   ] 
