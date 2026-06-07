@@ -1,10 +1,9 @@
 name: Create Release Notes
 
 on:
-  pull_request:
-    types: [opened, synchronize, closed]
+  push:
     branches:
-      - develop
+      - master
 
 permissions:
   contents: write
