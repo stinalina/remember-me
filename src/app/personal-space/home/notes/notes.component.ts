@@ -1,6 +1,6 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, HostListener, inject, signal } from '@angular/core';
 import { NotificationStore } from '@app/personal-space/data/notification.store';
 import { Navbar } from '@app/personal-space/home/notes/navbar/navbar';
 import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
@@ -19,14 +19,17 @@ import { INotification } from '@app/shared/utils/models/notification.model';
     NgTemplateOutlet,
     NotificationComponent,
     RangePipe
-],
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotesComponent {
+  private static readonly THREE_XL_BREAKPOINT_PX = 1920;
+
   protected readonly todayDate = new Date();
   protected readonly dialog = inject(Dialog);
   protected readonly notificationStore = inject(NotificationStore);
   protected readonly searchTerm = signal('');
+  protected readonly gridColumns = signal(3);
 
   protected readonly displayedNotifications = computed(() => {
     const notifications = this.notificationStore.value() ?? [];
@@ -43,9 +46,28 @@ export class NotesComponent {
 
   /** Ghost cards needed to fill the last partial grid row */
   protected readonly trailingGhostCount = computed(() => {
+    const columns = this.gridColumns();
     const n = this.displayedNotifications().length + 1; // +1 for create placeholder
-    return (3 - (n % 3)) % 3;
+    return (columns - (n % columns)) % columns;
   });
+
+  constructor() {
+    this.updateGridColumns();
+  }
+
+  @HostListener('window:resize')
+  protected onWindowResize(): void {
+    this.updateGridColumns();
+  }
+
+  private updateGridColumns(): void {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const columns = window.innerWidth >= NotesComponent.THREE_XL_BREAKPOINT_PX ? 4 : 3;
+    this.gridColumns.set(columns);
+  }
 
   protected onSearchChanged(searchTerm: string): void {
     this.searchTerm.set(searchTerm);
