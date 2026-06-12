@@ -147,7 +147,7 @@ test.describe('Notifications Page', () => {
     await expect(draftCard).toBeVisible();
     await expect(publishedCard).toBeVisible();
 
-    const draftFilterToggle = page.getByRole('checkbox', { name: 'Nur Entwuerfe anzeigen' });
+    const draftFilterToggle = page.getByRole('checkbox', { name: 'Nur Entwürfe anzeigen' });
     await draftFilterToggle.check();
 
     await expect(draftCard).toBeVisible();

@@ -12,14 +12,14 @@ export interface NotesFilterChangedEvent {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Navbar {
-  public readonly searchChanged = output<NotesFilterChangedEvent>();
+  public readonly filterChanged = output<NotesFilterChangedEvent>();
 
   private draftsOnly = false;
   private searchTerm = '';
 
   protected onSearchTermChanged(event: Event): void {
     this.searchTerm = (event.target as HTMLInputElement | null)?.value ?? '';
-    this.searchChanged.emit({
+    this.filterChanged.emit({
       searchTerm: this.searchTerm,
       draftsOnly: this.draftsOnly,
     });
@@ -27,7 +27,7 @@ export class Navbar {
 
   protected onDraftsOnlyChanged(event: Event): void {
     this.draftsOnly = (event.target as HTMLInputElement | null)?.checked ?? false;
-    this.searchChanged.emit({
+    this.filterChanged.emit({
       searchTerm: this.searchTerm,
       draftsOnly: this.draftsOnly,
     });
