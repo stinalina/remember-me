@@ -10,6 +10,14 @@
       <h1 class="font-bold text-xl self-end">Meine Erinnerungen</h1>
     </div>
     <div class="flex gap-2">
+      <label class="label gap-2">
+        Nur Entwürfe
+        <input
+          type="checkbox"
+          class="toggle"
+          aria-label="Nur Entwuerfe anzeigen"
+          (change)="this.onDraftsOnlyChanged($event)" />
+      </label>
       <input
         type="text"
         placeholder="Suche nach Titel"

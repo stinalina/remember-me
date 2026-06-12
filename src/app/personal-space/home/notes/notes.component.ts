@@ -9,6 +9,7 @@ import { RangePipe } from '@app/shared/utils/pipe/range.pipe';
 import { NotificationComponent } from "./notification/notification.component";
 import { NotificationEditorDialog as NotificationDialog } from '@app/personal-space/home/notes/notification-editor/notification-editor.dialog';
 import { INotification } from '@app/shared/utils/models/notification.model';
+import { NotesFilterChangedEvent } from '@app/personal-space/home/notes/navbar/navbar';
 
 @Component({
   selector: 'reme-personal-notes',
@@ -29,22 +30,29 @@ export class NotesComponent {
   protected readonly dialog = inject(Dialog);
   protected readonly notificationStore = inject(NotificationStore);
   protected readonly searchTerm = signal('');
+  protected readonly draftsOnly = signal(false);
 
   protected readonly displayedNotifications = computed(() => {
     const notifications = this.notificationStore.value() ?? [];
     const term = this.searchTerm().trim().toLowerCase();
+    const onlyDrafts = this.draftsOnly();
+
+    const filteredByDraftState = onlyDrafts
+      ? notifications.filter((notification) => notification.isDraft)
+      : notifications;
 
     if (!term) {
-      return notifications;
+      return filteredByDraftState;
     }
 
-    return notifications
+    return filteredByDraftState
       .filter((notification) => notification.subject.toLowerCase().includes(term))
       .sort((a, b) => a.subject.localeCompare(b.subject, undefined, { sensitivity: 'base' }));
   });
 
-  protected onSearchChanged(searchTerm: string): void {
-    this.searchTerm.set(searchTerm);
+  protected onSearchChanged(filter: NotesFilterChangedEvent): void {
+    this.searchTerm.set(filter.searchTerm);
+    this.draftsOnly.set(filter.draftsOnly);
   }
 
   protected openCreateNoteModal(): void {
