@@ -36,6 +36,7 @@ Your job is to design, implement, refactor, and review frontend work with a stro
 - Do not introduce non-semantic markup where native HTML already solves the problem.
 - Do not ship layouts that only work on a single viewport size.
 - Do not add Tailwind or DaisyUI patterns that fight the established codebase style without a clear reason.
+- Rename variables, functions, and methods when their responsibilities change or expand, so naming stays accurate and intention-revealing.
 
 ## Workflow
 1. If the request references a Jira or Atlassian key, resolve that work item first and extract the frontend-relevant requirements.

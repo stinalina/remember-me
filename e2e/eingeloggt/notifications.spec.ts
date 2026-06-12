@@ -1,8 +1,38 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 test.describe('Notifications Page', () => {
   const testuserEmail = 'testuser@mail.de';
   const testuserPassword = 'test123';
+
+  const createNotification = async (
+    page: Page,
+    options: { subject: string; content: string; isDraft?: boolean },
+  ) => {
+    await page.locator('div.py-6.grid > .card').first().click();
+    await expect(page.getByRole('heading', { name: 'Erinnerung erstellen' })).toBeVisible();
+
+    const editor = page.locator('.ProseMirror');
+    await editor.click();
+    await editor.fill(options.content);
+
+    await page.locator('#create-notifcation-subject').fill(options.subject);
+
+    const draftCheckbox = page.getByTestId('notification-editor-draft-checkbox');
+    if (options.isDraft) {
+      await draftCheckbox.check();
+    } else {
+      await draftCheckbox.uncheck();
+    }
+
+    await page.getByRole('button', { name: 'Notiz erstellen' }).click();
+
+    const createdCard = page.locator('.card').filter({
+      has: page.getByRole('heading', { name: options.subject, exact: true }),
+    }).first();
+
+    await expect(createdCard).toBeVisible();
+    return createdCard;
+  };
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/');
@@ -75,5 +105,53 @@ test.describe('Notifications Page', () => {
     await openDialog.locator('#confirm-deletion').click();
 
     await expect(notesDeleteButtons).toHaveCount(count - 1);
+  });
+
+  test('eine Note kann auf draft gesetzt werden und erhält dann das Entwurf Badge', async ({ page }) => {
+    const subject = `Draft Note ${Date.now()}`;
+    const content = 'Diese Note soll als Entwurf gespeichert werden';
+
+    const createdCard = await createNotification(page, {
+      subject,
+      content,
+      isDraft: true,
+    });
+
+    await expect(createdCard.getByText('Entwurf', { exact: true })).toBeVisible();
+  });
+
+  test('Notifications können mittels isDraft gefiltert werden', async ({ page }) => {
+    const suffix = Date.now();
+    const draftSubject = `Draft Filter Note ${suffix}`;
+    const publishedSubject = `Published Filter Note ${suffix}`;
+
+    await createNotification(page, {
+      subject: draftSubject,
+      content: 'Draft Content',
+      isDraft: true,
+    });
+
+    await createNotification(page, {
+      subject: publishedSubject,
+      content: 'Published Content',
+      isDraft: false,
+    });
+
+    const draftCard = page.locator('.card').filter({
+      has: page.getByRole('heading', { name: draftSubject, exact: true }),
+    }).first();
+    const publishedCard = page.locator('.card').filter({
+      has: page.getByRole('heading', { name: publishedSubject, exact: true }),
+    }).first();
+
+    await expect(draftCard).toBeVisible();
+    await expect(publishedCard).toBeVisible();
+
+    const draftFilterToggle = page.getByRole('checkbox', { name: 'Nur Entwürfe anzeigen' });
+    await draftFilterToggle.check();
+
+    await expect(draftCard).toBeVisible();
+    await expect(draftCard.getByText('Entwurf', { exact: true })).toBeVisible();
+    await expect(publishedCard).toHaveCount(0);
   });
 });
