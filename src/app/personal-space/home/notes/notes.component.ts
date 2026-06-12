@@ -46,7 +46,11 @@ export class NotesComponent {
     }
 
     return filteredByDraftState
-      .filter((notification) => notification.subject.toLowerCase().includes(term))
+      .filter((notification) => {
+        const subject = notification.subject.toLowerCase();
+        const content = notification.content.toLowerCase();
+        return subject.includes(term) || content.includes(term);
+      })
       .sort((a, b) => a.subject.localeCompare(b.subject, undefined, { sensitivity: 'base' }));
   });
 
