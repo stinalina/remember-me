@@ -1,11 +1,27 @@
 <dialog #dialogRef class="modal">
   <div class="modal-box">
-    <h3 class="font-bold text-lg">Achtung!</h3>
-    <p class="py-4">{{ this.warning() }}</p>
+    <h3 class="font-bold text-lg">{{this.title()}}</h3>
+    <p class="py-4"><ng-content></ng-content></p>
     <div class="modal-action">
-
-      <button type="button" class="btn" (click)="close()">Abbrechen</button>
-      <button type="button" class="btn btn-error" id="confirm-deletion" (click)="onConfirm()">Passt!</button>
+      @if (this.showCancel()) {
+        <button type="button" class="btn" (click)="close()">{{ this.cancelLabel() }}</button>
+      }
+      @if (this.secondaryConfirmLabel(); as secondaryLabel) {
+        <button type="button"
+          class="btn"
+          [class]="'btn ' + this.secondaryConfirmButtonClass()"
+          (click)="onSecondaryConfirm()">
+          {{ secondaryLabel }}
+        </button>
+      }
+      <button
+        type="button"
+        class="btn"
+        id="confirm-deletion"
+        [class]="'btn ' + this.confirmButtonClass()"
+        (click)="onConfirm()">
+        {{ this.confirmLabel() }}
+      </button>
     </div>
   </div>
 </dialog>

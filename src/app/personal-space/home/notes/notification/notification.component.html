@@ -54,6 +54,19 @@
 </div>
 
 <reme-confirm-dialog #deleteDialog
-  warning="Notiz dauerhaft löschen?"
+  title="Notiz löschen"
+  confirmLabel="Löschen"
   (confirm)="deleteNotification.emit()">
+  Notiz dauerhaft löschen?
+</reme-confirm-dialog>
+
+<reme-confirm-dialog #overdueDialog
+  title="Überfällige Notiz"
+  [showCancel]="false"
+  confirmLabel="Archivieren"
+  secondaryConfirmLabel="Löschen"
+  secondaryConfirmButtonClass="btn-error"
+  (confirm)="archiveNotificationRequested.emit()"
+  (secondaryConfirm)="overdueDeleteRequested.emit()">
+  Diese Notiz scheint erledigt. Möchtest du sie archivieren oder löschen?
 </reme-confirm-dialog>
