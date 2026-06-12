@@ -1,0 +1,13 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "type": "command",
+        "windows": "bash .github/hooks/scripts/stop-session-summary.sh",
+        "linux": ".github/hooks/scripts/stop-session-summary.sh",
+        "osx": ".github/hooks/scripts/stop-session-summary.sh",
+        "timeout": 20
+      }
+    ]
+  }
+}
