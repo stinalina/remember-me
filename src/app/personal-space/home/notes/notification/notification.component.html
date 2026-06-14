@@ -87,7 +87,7 @@
   confirmLabel="Archivieren"
   secondaryConfirmLabel="Löschen"
   secondaryConfirmButtonClass="btn-error"
-  (confirm)="this.confirmArchive()"
+  (confirm)="this.updateArchiveState()"
   (secondaryConfirm)="this.deleteNotification.emit()">
   Diese Notiz scheint erledigt. Möchtest du sie archivieren oder löschen?
 </reme-confirm-dialog>

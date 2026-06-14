@@ -18,7 +18,7 @@ export class NotificationComponent {
   public readonly notification = input.required<INotification>();
   public readonly deleteNotification = output<void>();
   public readonly editClicked = output<void>();
-  public readonly archiveNotificationRequested = output<void>();
+  public readonly updateNotificationRequested = output<void>();
   public readonly preId = input<string>();
 
   protected readonly isDuePast = computed(() => {
@@ -29,8 +29,8 @@ export class NotificationComponent {
   
   protected readonly showOverdueWarning = computed(() => this.isDuePast() && !this.notification().isArchived);
 
-  protected confirmArchive(): void {
+  protected updateArchiveState(): void {
     this.notification().isArchived = true;
-    this.archiveNotificationRequested.emit();
+    this.updateNotificationRequested.emit();
   }
 }
