@@ -129,7 +129,7 @@ test.describe('Notifications Page', () => {
   const openOverdueDialog = async (card: Locator) => {
     const warningButton = card.getByRole('button', { name: 'Überfällige Notiz verwalten' });
     await expect(warningButton).toBeVisible();
-    await warningButton.evaluate((element: HTMLButtonElement) => element.click());
+    await warningButton.click();
   };
 
   const getOverdueDueDate = () => {
