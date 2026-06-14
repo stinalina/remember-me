@@ -55,7 +55,8 @@ export type Notification = {
   CreatedAt: Scalars['timestamptz']['output'];
   DueDate: Scalars['timestamptz']['output'];
   Id: Scalars['uuid']['output'];
-  IsDraft: Scalars['Boolean']['output'];
+  IsArchived: Scalars['Boolean']['output'];
+  IsDraft?: Maybe<Scalars['Boolean']['output']>;
   Mail: Scalars['String']['output'];
   RememberCount: Scalars['smallint']['output'];
   Subject: Scalars['String']['output'];
@@ -160,6 +161,7 @@ export type Notification_Bool_Exp = {
   CreatedAt?: InputMaybe<Timestamptz_Comparison_Exp>;
   DueDate?: InputMaybe<Timestamptz_Comparison_Exp>;
   Id?: InputMaybe<Uuid_Comparison_Exp>;
+  IsArchived?: InputMaybe<Boolean_Comparison_Exp>;
   IsDraft?: InputMaybe<Boolean_Comparison_Exp>;
   Mail?: InputMaybe<String_Comparison_Exp>;
   RememberCount?: InputMaybe<Smallint_Comparison_Exp>;
@@ -188,6 +190,7 @@ export type Notification_Insert_Input = {
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
+  IsArchived?: InputMaybe<Scalars['Boolean']['input']>;
   IsDraft?: InputMaybe<Scalars['Boolean']['input']>;
   Mail?: InputMaybe<Scalars['String']['input']>;
   RememberCount?: InputMaybe<Scalars['smallint']['input']>;
@@ -268,6 +271,7 @@ export type Notification_Order_By = {
   CreatedAt?: InputMaybe<Order_By>;
   DueDate?: InputMaybe<Order_By>;
   Id?: InputMaybe<Order_By>;
+  IsArchived?: InputMaybe<Order_By>;
   IsDraft?: InputMaybe<Order_By>;
   Mail?: InputMaybe<Order_By>;
   RememberCount?: InputMaybe<Order_By>;
@@ -292,6 +296,8 @@ export enum Notification_Select_Column {
   /** column name */
   Id = 'Id',
   /** column name */
+  IsArchived = 'IsArchived',
+  /** column name */
   IsDraft = 'IsDraft',
   /** column name */
   Mail = 'Mail',
@@ -306,11 +312,15 @@ export enum Notification_Select_Column {
 /** select "Notification_aggregate_bool_exp_bool_and_arguments_columns" columns of table "dev.Notification" */
 export enum Notification_Select_Column_Notification_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
   /** column name */
+  IsArchived = 'IsArchived',
+  /** column name */
   IsDraft = 'IsDraft'
 }
 
 /** select "Notification_aggregate_bool_exp_bool_or_arguments_columns" columns of table "dev.Notification" */
 export enum Notification_Select_Column_Notification_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
+  /** column name */
+  IsArchived = 'IsArchived',
   /** column name */
   IsDraft = 'IsDraft'
 }
@@ -321,6 +331,7 @@ export type Notification_Set_Input = {
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
+  IsArchived?: InputMaybe<Scalars['Boolean']['input']>;
   IsDraft?: InputMaybe<Scalars['Boolean']['input']>;
   Mail?: InputMaybe<Scalars['String']['input']>;
   RememberCount?: InputMaybe<Scalars['smallint']['input']>;
@@ -375,6 +386,7 @@ export type Notification_Stream_Cursor_Value_Input = {
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
+  IsArchived?: InputMaybe<Scalars['Boolean']['input']>;
   IsDraft?: InputMaybe<Scalars['Boolean']['input']>;
   Mail?: InputMaybe<Scalars['String']['input']>;
   RememberCount?: InputMaybe<Scalars['smallint']['input']>;
@@ -403,6 +415,8 @@ export enum Notification_Update_Column {
   DueDate = 'DueDate',
   /** column name */
   Id = 'Id',
+  /** column name */
+  IsArchived = 'IsArchived',
   /** column name */
   IsDraft = 'IsDraft',
   /** column name */
@@ -1133,11 +1147,11 @@ export type UpdatePreferencesMutationVariables = Exact<{
 export type UpdatePreferencesMutation = { __typename?: 'mutation_root', update_User?: { __typename?: 'User_mutation_response', returning: Array<{ __typename?: 'User', Preferences: any }> } | null };
 
 export type InsertNotificationMutationVariables = Exact<{
-  objects: Array<Notification_Insert_Input> | Notification_Insert_Input;
+  object: Notification_Insert_Input;
 }>;
 
 
-export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', returning: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, IsDraft: boolean, UserId: any, Subject: string, RememberCount: any, Mail: string }> } | null };
+export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', returning: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, IsDraft?: boolean | null, UserId: any, Subject: string, RememberCount: any, Mail: string, IsArchived: boolean }> } | null };
 
 export type UpdateNotificationByIdMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -1145,7 +1159,7 @@ export type UpdateNotificationByIdMutationVariables = Exact<{
 }>;
 
 
-export type UpdateNotificationByIdMutation = { __typename?: 'mutation_root', update_Notification_by_pk?: { __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, IsDraft: boolean, UserId: any, Subject: string, RememberCount: any, Mail: string } | null };
+export type UpdateNotificationByIdMutation = { __typename?: 'mutation_root', update_Notification_by_pk?: { __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, IsDraft?: boolean | null, UserId: any, Subject: string, RememberCount: any, Mail: string, IsArchived: boolean } | null };
 
 export type DeleteNotificationByIdMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -1159,7 +1173,7 @@ export type GetNotificationByUserIdQueryVariables = Exact<{
 }>;
 
 
-export type GetNotificationByUserIdQuery = { __typename?: 'query_root', Notification: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, Subject: string, RememberCount: any, Id: any, DueDate: any, IsDraft: boolean, Mail: string }> };
+export type GetNotificationByUserIdQuery = { __typename?: 'query_root', Notification: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, Subject: string, RememberCount: any, Id: any, DueDate: any, Mail: string, IsDraft?: boolean | null, IsArchived: boolean }> };
 
 export type InsertUserMutationVariables = Exact<{
   mail: Scalars['String']['input'];
@@ -1217,8 +1231,8 @@ export const UpdatePreferencesDocument = gql`
     }
   }
 export const InsertNotificationDocument = gql`
-    mutation InsertNotification($objects: [Notification_insert_input!]!) {
-  insert_Notification(objects: $objects) {
+    mutation InsertNotification($object: Notification_insert_input!) {
+  insert_Notification(objects: [$object]) {
     returning {
       Content
       CreatedAt
@@ -1229,6 +1243,7 @@ export const InsertNotificationDocument = gql`
       Subject
       RememberCount
       Mail
+      IsArchived
     }
   }
 }
@@ -1256,6 +1271,7 @@ export const UpdateNotificationByIdDocument = gql`
     Subject
     RememberCount
     Mail
+    IsArchived
   }
 }
     `;
@@ -1297,8 +1313,9 @@ export const GetNotificationByUserIdDocument = gql`
     RememberCount
     Id
     DueDate
-    IsDraft
     Mail
+    IsDraft
+    IsArchived
   }
 }
     `;

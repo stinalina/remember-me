@@ -18,6 +18,14 @@
           aria-label="Nur Entwürfe anzeigen"
           (change)="this.onDraftsOnlyChanged($event)" />
       </label>
+      <label class="label gap-2">
+        Nur Archiviert
+        <input
+          type="checkbox"
+          class="toggle"
+          aria-label="Nur archivierte Notizen anzeigen"
+          (change)="this.onArchivedOnlyChanged($event)" />
+      </label>
       <input
         type="text"
         placeholder="Suche nach..."

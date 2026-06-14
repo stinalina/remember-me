@@ -20,6 +20,7 @@
           <reme-notification [notification]="notification"
             [preId]="'note-' + i"
             (deleteNotification)="this.notificationStore.deleteNotification(notification.id)"
+            (updateNotificationRequested)="this.notificationStore.updateNotification(notification)"
             (editClicked)="this.openEditNoteModal(notification)">
           </reme-notification>
         }

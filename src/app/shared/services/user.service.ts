@@ -1,7 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { InitialPreferences } from '@app/personal-space/data/preferences.model';
 import { GetUserByMailGQL, InsertUserGQL } from '@hasura/generated';
-import { IUser } from '@app/shared/utils/models/user.model';
+import { IUser } from '@shared/utils/models/user.model';
 import { map, Observable, of, switchMap } from 'rxjs';
 import { LocalStorageService } from '@app/shared/services/local-storage.service';
 

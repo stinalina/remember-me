@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, output } from '@angular/core';
 export interface NotesFilterChangedEvent {
   searchTerm: string;
   draftsOnly: boolean;
+  archivedOnly: boolean;
 }
 
 @Component({
@@ -15,6 +16,7 @@ export class Navbar {
   public readonly filterChanged = output<NotesFilterChangedEvent>();
 
   private draftsOnly = false;
+  private archivedOnly = false;
   private searchTerm = '';
 
   protected onSearchTermChanged(event: Event): void {
@@ -22,6 +24,7 @@ export class Navbar {
     this.filterChanged.emit({
       searchTerm: this.searchTerm,
       draftsOnly: this.draftsOnly,
+      archivedOnly: this.archivedOnly,
     });
   }
 
@@ -30,6 +33,16 @@ export class Navbar {
     this.filterChanged.emit({
       searchTerm: this.searchTerm,
       draftsOnly: this.draftsOnly,
+      archivedOnly: this.archivedOnly,
+    });
+  }
+
+  protected onArchivedOnlyChanged(event: Event): void {
+    this.archivedOnly = (event.target as HTMLInputElement | null)?.checked ?? false;
+    this.filterChanged.emit({
+      searchTerm: this.searchTerm,
+      draftsOnly: this.draftsOnly,
+      archivedOnly: this.archivedOnly,
     });
   }
 }
