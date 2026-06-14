@@ -4,6 +4,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import {
   patchState,
   signalStore,
+  withComputed,
   withMethods,
   withProps,
 } from '@ngrx/signals';
@@ -18,11 +19,15 @@ export const NotificationStore = signalStore(
   withProps(() => ({
     _notificationService: inject(NotificationService),
     _toastService: inject(ToastService),
-    _userId: inject(UserService).currUser()?.userId,
+    _userService: inject(UserService),
   })),
 
+  withComputed((store) => ({
+    _userId: computed(() => store._userService.currUser()?.userId)
+  })),
+  
   withResource((store) => rxResource({
-    stream: () => store._notificationService.loadNotifications(store._userId),
+    stream: () => store._notificationService.loadNotifications(store._userId()),
     defaultValue: []
     })
   ),
