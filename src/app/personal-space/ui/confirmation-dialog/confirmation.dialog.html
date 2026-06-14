@@ -8,7 +8,6 @@
       }
       @if (this.secondaryConfirmLabel(); as secondaryLabel) {
         <button type="button"
-          class="btn"
           [class]="'btn ' + this.secondaryConfirmButtonClass()"
           (click)="onSecondaryConfirm()">
           {{ secondaryLabel }}
@@ -16,7 +15,6 @@
       }
       <button
         type="button"
-        class="btn"
         id="confirm-deletion"
         [class]="'btn ' + this.confirmButtonClass()"
         (click)="onConfirm()">

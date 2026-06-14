@@ -47,7 +47,7 @@ export class NotificationService {
           createdAt: notification?.CreatedAt ?? '',
           mail: notification?.Mail ?? '',
           isDraft: notification?.IsDraft ?? false,
-          isArchived: (notification as { IsArchieved?: boolean } | undefined)?.IsArchieved ?? false,
+          isArchived: notification?.IsArchived ?? false,
         }) satisfies INotification;
       }),
       catchError((error) => {
