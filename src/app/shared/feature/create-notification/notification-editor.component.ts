@@ -225,6 +225,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
       this.toastService.showToast('Error updating notification. Please try again.', ToastType.Error);
       this.retry.set(true);
       this.notificationChanged.emit(undefined);
+      return;
     }
 
     const formValue = this.notificationModel();
