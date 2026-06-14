@@ -1,6 +1,58 @@
 <reme-content-frame>
-  <section>
-    <h2>Statistics</h2>
-    <p>Your statistics will appear here once available.</p>
+  <section class="space-y-6">
+    <header class="space-y-1">
+      <h1 class="text-3xl font-semibold">Statistiken</h1>
+      <p>Übersicht zu erstellten und zugestellten Notizen</p>
+    </header>
+
+    <section aria-label="Zeitraum-Statistiken" class="grid grid-cols-1 gap-3 xl:grid-cols-3">
+      @for (card of this.periodCards(); track card.key) {
+        <article class="stats shadow w-full bg-base-100">
+          <div class="stat">
+            <div class="stat-figure text-primary" aria-hidden="true">
+              <span class="material-symbols-outlined">query_stats</span>
+            </div>
+            <div class="stat-title">{{ card.title }}</div>
+            <div class="stat-value text-primary">{{ card.created }}</div>
+            <div class="stat-desc">Insgesamt erstellt</div>
+            <div class="stat-desc">Davon erledigt: {{ card.due }}</div>
+          </div>
+        </article>
+      }
+    </section>
+
+    <section aria-label="Aktueller Status" class="stats shadow w-full bg-base-100 stats-vertical md:stats-horizontal">
+      <article class="stat">
+        <div class="stat-title">Derzeit als Draft</div>
+        <div class="stat-value text-warning">{{ this.currentDraftCount() }}</div>
+      </article>
+      <article class="stat">
+        <div class="stat-title">Derzeit noch offen</div>
+        <div class="stat-value text-info">{{ this.currentTodoCount() }}</div>
+      </article>
+    </section>
+
+    <section aria-label="Mitgliedschaft und erste Ereignisse" class="space-y-2">
+      <h3 class="text-lg font-semibold">Timeline</h3>
+      <div class="timeline timeline-horizontal w-full overflow-x-auto pb-2" role="list">
+        @for (entry of this.timelineEntries(); track entry.id; let first = $first; let last = $last) {
+          <div role="listitem">
+            @if (!first) {
+              <hr />
+            }
+            <div class="timeline-middle text-primary" aria-hidden="true">
+              <span class="material-symbols-outlined">event</span>
+            </div>
+            <div class="timeline-end timeline-box space-y-1">
+              <p class="font-semibold">{{ entry.title }}</p>
+              <p class="text-xs text-base-content/70">{{ entry.formattedDate }}</p>
+              <p class="text-sm">{{ entry.description }}</p>
+            </div>
+            @if (!last) {
+              <hr />
+            }
+          </div>
+        }</div>
+    </section>
   </section>
 </reme-content-frame>
