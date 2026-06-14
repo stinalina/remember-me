@@ -26,26 +26,38 @@ import { NotesFilterChangedEvent } from '@app/personal-space/home/notes/navbar/n
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotesComponent {
-  protected readonly todayDate = new Date();
   protected readonly dialog = inject(Dialog);
   protected readonly notificationStore = inject(NotificationStore);
+
+  protected readonly todayDate = new Date();
+
   protected readonly searchTerm = signal('');
   protected readonly draftsOnly = signal(false);
+  protected readonly archivedOnly = signal(false);
 
   protected readonly displayedNotifications = computed(() => {
     const notifications = this.notificationStore.value() ?? [];
     const term = this.searchTerm().trim().toLowerCase();
     const onlyDrafts = this.draftsOnly();
+    const onlyArchived = this.archivedOnly();
 
-    const filteredByDraftState = onlyDrafts
-      ? notifications.filter((notification) => notification.isDraft)
-      : notifications;
+    const filteredByState = notifications.filter((notification) => {
+      if (onlyDrafts && !notification.isDraft) {
+        return false;
+      }
+
+      if (onlyArchived && !notification.isArchived) {
+        return false;
+      }
+
+      return true;
+    });
 
     if (!term) {
-      return filteredByDraftState;
+      return filteredByState;
     }
 
-    return filteredByDraftState
+    return filteredByState
       .filter((notification) => notification.subject.toLowerCase().includes(term))
       .sort((a, b) => a.subject.localeCompare(b.subject, undefined, { sensitivity: 'base' }));
   });
@@ -53,6 +65,7 @@ export class NotesComponent {
   protected onSearchChanged(filter: NotesFilterChangedEvent): void {
     this.searchTerm.set(filter.searchTerm);
     this.draftsOnly.set(filter.draftsOnly);
+    this.archivedOnly.set(filter.archivedOnly);
   }
 
   protected openCreateNoteModal(): void {

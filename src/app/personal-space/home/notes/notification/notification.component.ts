@@ -18,11 +18,19 @@ export class NotificationComponent {
   public readonly notification = input.required<INotification>();
   public readonly deleteNotification = output<void>();
   public readonly editClicked = output<void>();
+  public readonly archiveNotificationRequested = output<void>();
   public readonly preId = input<string>();
 
   protected readonly isDuePast = computed(() => {
     const notification = this.notification();
     const today = new Date();
-    return !notification.isDraft && new Date(notification.dueDate) < today;
+    return !notification.isDraft && !notification.isArchived && new Date(notification.dueDate) < today;
   });
+  
+  protected readonly showOverdueWarning = computed(() => this.isDuePast() && !this.notification().isArchived);
+
+  protected confirmArchive(): void {
+    this.notification().isArchived = true;
+    this.archiveNotificationRequested.emit();
+  }
 }
