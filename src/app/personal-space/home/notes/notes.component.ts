@@ -41,7 +41,7 @@ export class NotesComponent {
     const onlyDrafts = this.draftsOnly();
     const onlyArchived = this.archivedOnly();
 
-    const filteredByState = notifications.filter((notification) => {
+    const filteredNotes = notifications.filter((notification) => {
       if (onlyDrafts && !notification.isDraft) {
         return false;
       }
@@ -54,11 +54,15 @@ export class NotesComponent {
     });
 
     if (!term) {
-      return filteredByState;
+      return filteredNotes;
     }
 
-    return filteredByState
-      .filter((notification) => notification.subject.toLowerCase().includes(term))
+    return filteredNotes
+      .filter((notification) => {
+        const subject = notification.subject.toLowerCase();
+        const content = notification.content.toLowerCase();
+        return subject.includes(term) || content.includes(term);
+      })
       .sort((a, b) => a.subject.localeCompare(b.subject, undefined, { sensitivity: 'base' }));
   });
 
