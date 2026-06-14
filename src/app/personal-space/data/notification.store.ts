@@ -1,26 +1,28 @@
 import { withResource } from '@angular-architects/ngrx-toolkit';
 import { computed, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { NotificationClient } from '@app/personal-space/data/notification.client';
-import { INotification } from '@app/shared/utils/models/notification.model';
-import { ToastService, ToastType } from '@services/toast.service';
 import {
   patchState,
   signalStore,
   withMethods,
   withProps,
 } from '@ngrx/signals';
+import { UserService } from '@root/src/app/shared/services/user.service';
+import { NotificationService } from '@services/notification.service';
+import { ToastService, ToastType } from '@services/toast.service';
+import { INotification } from '@shared/utils/models/notification.model';
 
 export const NotificationStore = signalStore(
   { providedIn: 'root' },
 
   withProps(() => ({
-    _notificationClient: inject(NotificationClient),
+    _notificationService: inject(NotificationService),
     _toastService: inject(ToastService),
+    _userId: inject(UserService).currUser()?.userId,
   })),
 
   withResource((store) => rxResource({
-    stream: () => store._notificationClient.loadNotifications(),
+    stream: () => store._notificationService.loadNotifications(store._userId),
     defaultValue: []
     })
   ),
@@ -41,7 +43,7 @@ export const NotificationStore = signalStore(
 
   withMethods((store) => ({
     deleteNotification(id: string): void {
-      store._notificationClient.deleteNotification(id).subscribe(success => {
+      store._notificationService.deleteNotification(id).subscribe(success => {
         if (success) {
           patchState(store, { value: store.value()?.filter(n => n.id !== id) ?? [] });
         }
@@ -54,9 +56,15 @@ export const NotificationStore = signalStore(
       patchState(store, { value: [notification, ...(store.value() ?? [])] });
     },
     updateNotification(notification: INotification): void {
-      const currentNotifications = store.value() ?? [];
-      const updatedNotifications = currentNotifications.map(n => n.id === notification.id ? notification : n);
-      patchState(store, { value: updatedNotifications });
+      store._notificationService.updateNotification(notification).subscribe(result => {
+        if (result) {
+          const currentNotifications = store.value() ?? [];
+          const updatedNotifications = currentNotifications.map(n => n.id === notification.id ? result : n); // replace the old notification with the updated one
+          patchState(store, { value: updatedNotifications });
+        } else {
+          store._toastService.showToast('Ups.. Das Backend ist wohl nicht erreichbar.', ToastType.Error);
+        }
+      });
     }
   })),
 );
