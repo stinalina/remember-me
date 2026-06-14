@@ -87,7 +87,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     required(path.mail);
     email(path.mail);
     validate(path.mail, ({ value }) => {
-      if (this.editorMode() !== 'create') {
+      if (this.editorMode() === 'edit') {
         return null;
       }
 

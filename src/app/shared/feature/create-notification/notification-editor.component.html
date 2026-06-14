@@ -97,9 +97,9 @@
 </form>
 
 <ng-template #submitBtn>
-  @let disabled = (this.notificationForm().invalid() || this.sendingNotification()) && !this.retry();
+  @let enabled = (this.notificationForm().valid() && !this.sendingNotification()) || this.retry() || this.notificationForm.isDraft().value();
   <button type="submit" class="btn btn-sm md:btn-sm xl:btn-md" id="create-notification-apply"
-    [class.btn-disabled]="disabled">
+    [class.btn-disabled]="!enabled">
     @if (this.sendingNotification()) {
       <span class="loading loading-spinner"></span>
     }
