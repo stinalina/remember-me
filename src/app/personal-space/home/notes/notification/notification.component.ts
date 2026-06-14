@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output, computed } from '@angular/core';
 import { ConfirmDialog } from '@app/personal-space/ui/confirmation-dialog/confirmation.dialog';
-import { INotification } from '@utils/models/notification.model';
-import { SafeHtmlPipe } from '@utils/pipe/safe-html.pipe';
+import { SafeHtmlPipe } from '@shared/utils//pipe/safe-html.pipe';
+import { INotification } from '@shared/utils//models/notification.model';
 
 @Component({
   selector: 'reme-notification',

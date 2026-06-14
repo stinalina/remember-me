@@ -7,7 +7,7 @@ import { RegisterComponent } from '@app/anonym-space/ui/register/register.compon
 import { HomePage } from '@app/anonym-space/pages/home/home-page.component';
 import { ImpressumComponent } from '@app/anonym-space/pages/impressum/impressum.component';
 import { ROUTER_TOKENS } from '@app/app.routes';
-import { AuthService } from '@utils/authentication/auth.service';
+import { AuthService } from '@shared/utils/authentication/auth.service';
 import { OutletContainer, SelectedTabComponentEnum } from '@app/shared/ui/outlet-container';
 import { ThemeToggleComponent } from '@app/shared/ui/theme-toggle/theme-toggle.component';
 import { environment } from '@environments/environment';

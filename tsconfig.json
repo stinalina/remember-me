@@ -42,9 +42,6 @@
       "@services/*": [
         "./src/app/shared/services/*"
       ],
-      "@utils/*": [
-        "./src/app/shared/utils/*"
-      ],
       "@components/*": [
         "./src/app/anonym-space/components/*"
       ],

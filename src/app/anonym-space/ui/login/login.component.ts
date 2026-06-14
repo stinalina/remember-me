@@ -3,9 +3,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
 import { ToastService, ToastType } from '@services/toast.service';
-import { AuthService } from '@utils/authentication/auth.service';
+import { AuthService } from '@shared/utils/authentication/auth.service';
 import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
-import { CheckboxComponent } from '@utils/checkbox/checkbox.component';
+import { CheckboxComponent } from '@shared/utils/checkbox/checkbox.component';
 import { MailComponent } from '@app/anonym-space/ui/shared/mail/mail.component';
 import { PasswordComponent } from '@app/anonym-space/ui/shared/password/password.component';
 

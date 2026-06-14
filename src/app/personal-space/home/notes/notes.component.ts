@@ -5,10 +5,10 @@ import { NotificationStore } from '@app/personal-space/data/notification.store';
 import { Navbar } from '@app/personal-space/home/notes/navbar/navbar';
 import { AdjustGridColumnsDirective } from '@app/personal-space/utils/adjust-grid-columns.directive';
 import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
-import { RangePipe } from '@utils/pipe/range.pipe';
+import { RangePipe } from '@shared/utils//pipe/range.pipe';
 import { NotificationComponent } from "./notification/notification.component";
 import { NotificationEditorDialog as NotificationDialog } from '@app/personal-space/home/notes/notification-editor/notification-editor.dialog';
-import { INotification } from '@utils/models/notification.model';
+import { INotification } from '@shared/utils//models/notification.model';
 import { NotesFilterChangedEvent } from '@app/personal-space/home/notes/navbar/navbar';
 
 @Component({

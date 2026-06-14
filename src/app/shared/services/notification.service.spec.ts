@@ -4,7 +4,7 @@ import { InsertNotificationGQL, Notification_Insert_Input, Notification_Set_Inpu
 
 import { firstValueFrom, of, throwError } from 'rxjs';
 import { NotificationService } from './notification.service';
-import { IUser } from '@utils/models/user.model';
+import { IUser } from '@shared/utils/models/user.model';
 
 const mockNotificationReturning = {
   Id: 'abc-123',
