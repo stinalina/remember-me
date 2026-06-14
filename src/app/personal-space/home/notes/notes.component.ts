@@ -2,14 +2,13 @@ import { Dialog } from '@angular/cdk/dialog';
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NotificationStore } from '@app/personal-space/data/notification.store';
-import { Navbar } from '@app/personal-space/home/notes/navbar/navbar';
+import { Navbar, NotesFilterChangedEvent } from '@app/personal-space/home/notes/navbar/navbar';
 import { AdjustGridColumnsDirective } from '@app/personal-space/utils/adjust-grid-columns.directive';
 import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
-import { RangePipe } from '@shared/utils//pipe/range.pipe';
-import { NotificationComponent } from "./notification/notification.component";
+import { RangePipe } from '@shared/utils/pipe/range.pipe';
 import { NotificationEditorDialog as NotificationDialog } from '@app/personal-space/home/notes/notification-editor/notification-editor.dialog';
-import { INotification } from '@shared/utils//models/notification.model';
-import { NotesFilterChangedEvent } from '@app/personal-space/home/notes/navbar/navbar';
+import { INotification } from '@shared/utils/models/notification.model';
+import { NotificationComponent } from '@root/src/app/personal-space/home/notes/notification/notification.component';
 
 @Component({
   selector: 'reme-personal-notes',
