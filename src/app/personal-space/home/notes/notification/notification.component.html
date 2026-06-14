@@ -65,7 +65,11 @@
         </button>
       </div>
       <small class="text-gray-500">
-        Erstellt am: {{ notification.createdAt | date:'dd.MM.yyyy' }}
+        @if (notification.isArchived) {
+          War fällig am: {{ notification.dueDate | date:'dd.MM.yyyy' }}
+        } @else {
+          Erstellt am: {{ notification.createdAt | date:'dd.MM.yyyy' }}
+        }
       </small>
   </div>
 </div>
