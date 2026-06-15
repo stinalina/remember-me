@@ -12,7 +12,6 @@ type PeriodStats = {
 type TimelineEntry = {
   id: string;
   title: string;
-  description: string;
   date: Date | null;
   formattedDate: string;
 };
@@ -68,22 +67,19 @@ export class StatsComponent {
     return [
       {
         id: 'member-since',
-        title: 'Mitglied seit',
-        description: 'Account erstellt',
+        title: 'Beigetreten',
         date: memberSince,
         formattedDate: this.formatDate(memberSince),
       },
       {
         id: 'first-created-note',
-        title: 'Erste Note erstellt am',
-        description: firstCreated?.note.subject ?? 'Noch keine Note erstellt',
+        title: 'Erste Note erstellt',
         date: firstCreated?.date ?? null,
         formattedDate: this.formatDate(firstCreated?.date ?? null),
       },
       {
         id: 'first-due-note',
-        title: 'Erste Note zugestellt am',
-        description: firstDue?.note.subject ?? 'Noch keine Note zugestellt',
+        title: 'Erste Note zugestellt',
         date: firstDue?.date ?? null,
         formattedDate: this.formatDate(firstDue?.date ?? null),
       },
