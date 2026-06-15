@@ -3,6 +3,7 @@ import { Auth } from '@angular/fire/auth';
 import { NotificationStore } from '@app/personal-space/data/notification.store';
 import { INotification } from '@shared/utils/models/notification.model';
 import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
+import { DatePipe } from '@angular/common';
 
 type PeriodStats = {
   created: number;
@@ -13,13 +14,16 @@ type TimelineEntry = {
   id: string;
   title: string;
   date: Date | null;
-  formattedDate: string;
+  description?: string;
 };
 
 @Component({
   selector: 'reme-personal-stats',
   templateUrl: './stats.component.html',
-  imports: [ContentFrameComponent],
+  imports: [
+    ContentFrameComponent,
+    DatePipe,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatsComponent {
@@ -69,19 +73,18 @@ export class StatsComponent {
         id: 'member-since',
         title: 'Beigetreten',
         date: memberSince,
-        formattedDate: this.formatDate(memberSince),
       },
       {
         id: 'first-created-note',
         title: 'Erste Note erstellt',
+        description: firstCreated?.note.subject ?? undefined,
         date: firstCreated?.date ?? null,
-        formattedDate: this.formatDate(firstCreated?.date ?? null),
       },
       {
         id: 'first-due-note',
         title: 'Erste Note zugestellt',
+        description: firstDue?.note.subject ?? undefined,
         date: firstDue?.date ?? null,
-        formattedDate: this.formatDate(firstDue?.date ?? null),
       },
     ];
   });
@@ -134,18 +137,6 @@ export class StatsComponent {
 
     const parsedDate = new Date(value);
     return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
-  }
-
-  private formatDate(date: Date | null): string {
-    if (!date) {
-      return '--.--.----';
-    }
-
-    return new Intl.DateTimeFormat('de-DE', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    }).format(date);
   }
 
   private findFirstByDate(

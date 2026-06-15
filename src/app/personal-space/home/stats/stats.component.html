@@ -39,12 +39,15 @@
               @if (!first) {
                 <hr />
               }
-              <div class="timeline-start">{{ entry.formattedDate }}</div>
+              <div class="timeline-start">{{ entry.date | date:'dd.MM.yyyy' }}</div>
               <div class="timeline-middle text-primary" aria-hidden="true">
                 <span class="material-symbols-outlined">event</span>
               </div>
               <div class="timeline-end timeline-box space-y-1">
                 <p class="font-semibold">{{ entry.title }}</p>
+                @if (entry.description) {
+                  <p class="italic">{{ entry.description }}</p>
+                }
               </div>
               @if (!last) {
                 <hr />
