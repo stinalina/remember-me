@@ -1,10 +1,11 @@
 {
   "name": "remember-me",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "scripts": {
     "start": "ng serve",
     "e2e": "playwright test",
     "e2e:serve": "ng serve --configuration e2e",
+    "prepare": "husky",
     "build": "ng build",
     "test": "ng test",
     "test-workflow": "ng test --configuration ci",
@@ -12,7 +13,8 @@
     "emulator": "npx -y firebase-tools@latest emulators:start --only auth --project rememberme-d356c",
     "cloud": "ng serve --configuration cloud",
     "prod": "ng serve --configuration production",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "git:commitmsg:check": "node ./scripts/validate-commit-msg.js"
   },
   "prettier": {
     "printWidth": 100,
@@ -61,6 +63,7 @@
     "@playwright/test": "^1.57.0",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
+    "@semantic-release/npm": "^13.1.5",
     "@tailwindcss/postcss": "^4.1.14",
     "@types/graphql": "^14.2.3",
     "@types/node": "^25.0.3",
@@ -68,32 +71,11 @@
     "baseline-browser-mapping": "^2.9.19",
     "daisyui": "^5.2.3",
     "eslint": "^10.0.3",
+    "husky": "^9.1.7",
     "postcss": "^8.5.6",
     "semantic-release": "^25.0.3",
     "tailwindcss": "^4.1.14",
     "typescript": "~5.9.2",
     "typescript-eslint": "8.56.1"
-  },
-  "release": {
-    "branches": ["master"],
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      [
-        "@semantic-release/changelog",
-        {
-          "changelogFile": "docs/CHANGELOG.md",
-          "changelogTitle": "# Changelog\n\nAll notable changes to this project will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)."
-        }
-      ],
-      [
-      "@semantic-release/git",
-        {
-          "assets": ["docs/CHANGELOG.md"],
-          "message":
-            "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
-        }
-      ]
-    ]
   }
 }

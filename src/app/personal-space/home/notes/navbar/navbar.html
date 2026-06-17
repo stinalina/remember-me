@@ -10,9 +10,25 @@
       <h1 class="font-bold text-xl self-end">Meine Erinnerungen</h1>
     </div>
     <div class="flex gap-2">
+      <label class="label gap-2">
+        Nur Entwürfe
+        <input
+          type="checkbox"
+          class="toggle"
+          aria-label="Nur Entwürfe anzeigen"
+          (change)="this.onDraftsOnlyChanged($event)" />
+      </label>
+      <label class="label gap-2">
+        Nur Archiviert
+        <input
+          type="checkbox"
+          class="toggle"
+          aria-label="Nur archivierte Notizen anzeigen"
+          (change)="this.onArchivedOnlyChanged($event)" />
+      </label>
       <input
         type="text"
-        placeholder="Suche nach Titel"
+        placeholder="Suche nach..."
         class="input input-bordered w-24 md:w-auto"
         (input)="this.onSearchTermChanged($event)" />
     </div>

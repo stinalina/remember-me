@@ -13,3 +13,11 @@ query GetUserByMail($mail: String!) {
     Name
   }
 }
+
+mutation UpdateStats($id: uuid!, $stats: jsonb!) {
+  update_User(where: {Id: {_eq: $id}}, _set: {Stats: $stats}) {
+    returning {
+      Stats
+    }
+  }
+}

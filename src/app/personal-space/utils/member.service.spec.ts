@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { GetMemberByIdGQL, UpdatePreferencesGQL } from '@hasura/generated';
+import { GetMemberByIdGQL, UpdatePreferencesGQL, UpdateStatsGQL } from '@hasura/generated';
 import { ToastService, ToastType } from '@services/toast.service';
 import { MemberService } from './member.service';
+import { createEmptyYearStats } from '@app/personal-space/data/stats.model';
 
 const mockToastService = {
   showToast: vi.fn(),
@@ -12,11 +13,12 @@ describe('MemberService', () => {
   let service: MemberService;
   let mockGetMemberByIdGQL: { fetch: ReturnType<typeof vi.fn> };
   let mockUpdatePreferencesGQL: { mutate: ReturnType<typeof vi.fn> };
+  let mockUpdateStatsGQL: { mutate: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
     mockGetMemberByIdGQL = {
       fetch: vi.fn().mockReturnValue(
-        of({ data: { User: [{ Name: 'Max Mustermann', Preferences: { avatarName: 'Kingston' } }] } })
+        of({ data: { User: [{ Name: 'Max Mustermann', Preferences: { avatarName: 'Kingston' }, Stats: {} }] } })
       ),
     };
 
@@ -26,12 +28,19 @@ describe('MemberService', () => {
       ),
     };
 
+    mockUpdateStatsGQL = {
+      mutate: vi.fn().mockReturnValue(
+        of({ data: { update_User: { returning: [{ Stats: {} }] } } })
+      ),
+    };
+
     TestBed.configureTestingModule({
       providers: [
         MemberService,
         { provide: ToastService, useValue: mockToastService },
         { provide: GetMemberByIdGQL, useValue: mockGetMemberByIdGQL },
         { provide: UpdatePreferencesGQL, useValue: mockUpdatePreferencesGQL },
+        { provide: UpdateStatsGQL, useValue: mockUpdateStatsGQL },
       ],
     });
 
@@ -49,6 +58,7 @@ describe('MemberService', () => {
         id: 'user-123',
         name: 'Max Mustermann',
         preferences: { avatarName: 'Kingston' },
+        stats: {},
       });
     });
 
@@ -73,7 +83,7 @@ describe('MemberService', () => {
 
   describe('updatePreferences', () => {
     it('should update preferences in the member signal', () => {
-      service.member.set({ id: 'user-123', name: 'Max Mustermann', preferences: { avatarName: 'Kingston' } });
+      service.member.set({ id: 'user-123', name: 'Max Mustermann', preferences: { avatarName: 'Kingston' }, stats: {} });
 
       service.updatePreferences('user-123', { avatarName: 'Lyra' }).subscribe();
 
@@ -109,6 +119,105 @@ describe('MemberService', () => {
         ToastType.Error
       );
       expect(completed).toBe(true);
+    });
+  });
+
+  describe('increaseStatsCount', () => {
+    it('should increase stats count when year already exists', () => {
+      const currentYear = new Date().getFullYear().toString();
+      const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
+      
+      service.member.set({
+        id: 'user-123',
+        name: 'Max Mustermann',
+        preferences: { avatarName: 'Kingston' },
+        stats: {
+          [currentYear]: {
+            '01': 5,
+            '02': 3,
+            [currentMonth]: 10,
+          },
+        },
+      });
+
+      service.increaseStatsCount().subscribe(() => {
+        expect(mockUpdateStatsGQL.mutate).toHaveBeenCalledWith({
+          variables: {
+            id: 'user-123',
+            stats: {
+              [currentYear]: {
+                '01': 5,
+                '02': 3,
+                [currentMonth]: 11, // Erhöht von 10 auf 11
+              },
+            },
+          },
+        });
+      });
+    });
+
+    it('should create new year and month when year does not exist', () => {
+      const now = new Date();
+      const currentYear = now.getFullYear().toString();
+      const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
+      const previousYear = (now.getFullYear() - 1).toString();
+      
+      service.member.set({
+        id: 'user-123',
+        name: 'Max Mustermann',
+        preferences: { avatarName: 'Kingston' },
+        stats: {
+          [previousYear]: {
+            '01': 5,
+            '02': 3,
+          },
+        },
+      });
+
+      const emptyYear = createEmptyYearStats();
+      const expectedStats = {
+        ...{
+          [previousYear]: {
+            '01': 5,
+            '02': 3,
+          },
+        },
+        [currentYear]: {
+          ...emptyYear,
+          [currentMonth]: 1,
+        },
+      };
+
+      service.increaseStatsCount().subscribe(() => {
+        expect(mockUpdateStatsGQL.mutate).toHaveBeenCalledWith({
+          variables: {
+            id: 'user-123',
+            stats: expectedStats,
+          },
+        });
+      });
+    });
+
+    it('should update member signal with new stats after successful mutation', () => {
+      const now = new Date();
+      const currentYear = now.getFullYear().toString();
+      const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
+      
+      service.member.set({
+        id: 'user-123',
+        name: 'Max Mustermann',
+        preferences: { avatarName: 'Kingston' },
+        stats: {
+          [currentYear]: {
+            '01': 5,
+            [currentMonth]: 10,
+          },
+        },
+      });
+
+      service.increaseStatsCount().subscribe(() => {
+        expect(service.member()?.stats[currentYear][currentMonth]).toBe(11);
+      });
     });
   });
 });

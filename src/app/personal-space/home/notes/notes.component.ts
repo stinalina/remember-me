@@ -2,13 +2,14 @@ import { Dialog } from '@angular/cdk/dialog';
 import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NotificationStore } from '@app/personal-space/data/notification.store';
-import { Navbar } from '@app/personal-space/home/notes/navbar/navbar';
+import { Navbar, NotesFilterChangedEvent } from '@app/personal-space/home/notes/navbar/navbar';
 import { AdjustGridColumnsDirective } from '@app/personal-space/utils/adjust-grid-columns.directive';
 import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
-import { RangePipe } from '@app/shared/utils/pipe/range.pipe';
-import { NotificationComponent } from "./notification/notification.component";
+import { RangePipe } from '@shared/utils/pipe/range.pipe';
 import { NotificationEditorDialog as NotificationDialog } from '@app/personal-space/home/notes/notification-editor/notification-editor.dialog';
-import { INotification } from '@app/shared/utils/models/notification.model';
+import { INotification } from '@shared/utils/models/notification.model';
+import { NotificationComponent } from '@app/personal-space/home/notes/notification/notification.component';
+import { MemberService } from '@app/personal-space/utils/member.service';
 
 @Component({
   selector: 'reme-personal-notes',
@@ -25,31 +26,57 @@ import { INotification } from '@app/shared/utils/models/notification.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotesComponent {
-  protected readonly todayDate = new Date();
   protected readonly dialog = inject(Dialog);
   protected readonly notificationStore = inject(NotificationStore);
+  private readonly memberService = inject(MemberService);
+
+  protected readonly todayDate = new Date();
+
   protected readonly searchTerm = signal('');
+  protected readonly draftsOnly = signal(false);
+  protected readonly archivedOnly = signal(false);
 
   protected readonly displayedNotifications = computed(() => {
     const notifications = this.notificationStore.value() ?? [];
     const term = this.searchTerm().trim().toLowerCase();
+    const onlyDrafts = this.draftsOnly();
+    const onlyArchived = this.archivedOnly();
+
+    const filteredNotes = notifications.filter((notification) => {
+      if (onlyDrafts && !notification.isDraft) {
+        return false;
+      }
+
+      if (onlyArchived && !notification.isArchived) {
+        return false;
+      }
+
+      return true;
+    });
 
     if (!term) {
-      return notifications;
+      return filteredNotes;
     }
 
-    return notifications
-      .filter((notification) => notification.subject.toLowerCase().includes(term))
+    return filteredNotes
+      .filter((notification) => {
+        const subject = notification.subject.toLowerCase();
+        const content = notification.content.toLowerCase();
+        return subject.includes(term) || content.includes(term);
+      })
       .sort((a, b) => a.subject.localeCompare(b.subject, undefined, { sensitivity: 'base' }));
   });
 
-  protected onSearchChanged(searchTerm: string): void {
-    this.searchTerm.set(searchTerm);
+  protected onSearchChanged(filter: NotesFilterChangedEvent): void {
+    this.searchTerm.set(filter.searchTerm);
+    this.draftsOnly.set(filter.draftsOnly);
+    this.archivedOnly.set(filter.archivedOnly);
   }
 
   protected openCreateNoteModal(): void {
     NotificationDialog.open(this.dialog, 'create').subscribe((result: INotification | undefined) => {
       if (result) {
+        this.memberService.increaseStatsCount().subscribe();
         this.notificationStore.insertNotification(result);
       }
       else {

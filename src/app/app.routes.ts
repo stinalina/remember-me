@@ -2,10 +2,10 @@ import { Routes } from '@angular/router';
 import { LandingPageComponent } from '@app/anonym-space/pages/landing-page/landing-page';
 import { HomeComponent } from '@app/personal-space/home/home.component';
 import { memberResolver } from '@app/personal-space/utils/member.resolver';
-import { authGuard } from '@app/shared/utils/authentication/auth.guard';
+import { authGuard } from '@shared/utils/authentication/auth.guard';
 import { MobileNotSupportedComponent } from '@app/anonym-space/pages/mobile-not-supported/mobile-not-supported.component';
 import { SelectedTabComponentEnum } from '@app/shared/ui/outlet-container';
-import { desktopOnlyGuard } from '@app/shared/utils/guards/desktop-only.guard';
+import { desktopOnlyGuard } from '@shared/utils/guards/desktop-only.guard';
 
 export enum ROUTER_TOKENS {
   LANDING_PAGE = '',

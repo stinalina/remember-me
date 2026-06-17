@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * adjust workflow ([19ec2ea](https://github.com/stinalina/remember-me/commit/19ec2ea96d4efb0fdb8d389603336e1d6d94ce96))
 * adjust workflow to new angular version ([b8e364e](https://github.com/stinalina/remember-me/commit/b8e364e65bd0d7623cdbe05b2b0d8be78fd2018e))
 * adjustments for PR ([8482546](https://github.com/stinalina/remember-me/commit/8482546a7ae1f6cb623d149ce75ef5e9faa94bc4))
-* **ARUECKPWP-172:** add submit on enter ([5b0a5a8](https://github.com/stinalina/remember-me/commit/5b0a5a844481c73f1a91b7c4c6726bdf7393b3fa))
+* **NOTIFY-172:** add submit on enter ([5b0a5a8](https://github.com/stinalina/remember-me/commit/5b0a5a844481c73f1a91b7c4c6726bdf7393b3fa))
 * close preview environment on close pr ([f2c17d9](https://github.com/stinalina/remember-me/commit/f2c17d9a98574f51f0b24d60da9ea035b25244db))
 * csp ([8d8de11](https://github.com/stinalina/remember-me/commit/8d8de115e2ab140f3f5c52e6b68ed388617b0f13))
 * env file and workflow ([#36](https://github.com/stinalina/remember-me/issues/36)) ([f1131b6](https://github.com/stinalina/remember-me/commit/f1131b6d847efb49b345ed0d0e06b12f9474e5e0))
