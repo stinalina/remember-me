@@ -45,12 +45,16 @@ export class MemberService {
     if (!currentMember) {
       return EMPTY;
     }
-    
-    const updatedStats = { ...currentMember.stats };
-    if (!updatedStats[year]) {
-      updatedStats[year] = createEmptyYearStats();
-    }
-    
+
+    const yearStats = currentMember.stats[year]
+      ? { ...currentMember.stats[year] }
+      : createEmptyYearStats();
+
+    const updatedStats = {
+      ...currentMember.stats,
+      [year]: yearStats,
+    };
+
     updatedStats[year][month] = (updatedStats[year][month] || 0) + 1;
     
     return this.updateStats(currentMember.id, updatedStats);

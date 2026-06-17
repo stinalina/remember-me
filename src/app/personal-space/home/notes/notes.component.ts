@@ -9,6 +9,7 @@ import { RangePipe } from '@shared/utils/pipe/range.pipe';
 import { NotificationEditorDialog as NotificationDialog } from '@app/personal-space/home/notes/notification-editor/notification-editor.dialog';
 import { INotification } from '@shared/utils/models/notification.model';
 import { NotificationComponent } from '@root/src/app/personal-space/home/notes/notification/notification.component';
+import { MemberService } from '@root/src/app/personal-space/utils/member.service';
 
 @Component({
   selector: 'reme-personal-notes',
@@ -27,6 +28,7 @@ import { NotificationComponent } from '@root/src/app/personal-space/home/notes/n
 export class NotesComponent {
   protected readonly dialog = inject(Dialog);
   protected readonly notificationStore = inject(NotificationStore);
+  private readonly memberService = inject(MemberService);
 
   protected readonly todayDate = new Date();
 
@@ -74,6 +76,7 @@ export class NotesComponent {
   protected openCreateNoteModal(): void {
     NotificationDialog.open(this.dialog, 'create').subscribe((result: INotification | undefined) => {
       if (result) {
+        this.memberService.increaseStatsCount().subscribe();
         this.notificationStore.insertNotification(result);
       }
       else {
