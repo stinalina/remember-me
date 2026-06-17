@@ -1,0 +1,13 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "type": "command",
+        "windows": "bash .github/hooks/scripts/posttooluse-prettier.sh",
+        "linux": ".github/hooks/scripts/posttooluse-prettier.sh",
+        "osx": ".github/hooks/scripts/posttooluse-prettier.sh",
+        "timeout": 30
+      }
+    ]
+  }
+}

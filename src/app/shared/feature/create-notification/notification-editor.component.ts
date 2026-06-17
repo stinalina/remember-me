@@ -1,23 +1,22 @@
 import { DatePipe, NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { AbstractControl, FormsModule } from '@angular/forms';
 import { email, form, FormField, maxLength, required, validate } from '@angular/forms/signals';
-import { INotification } from '@app/shared/utils/models/notification.model';
 import { TypewriterActionType, TypewriterEffectService } from '@app/shared/services/typewriter-effect.service';
-import { Notification_Insert_Input, Notification_Set_Input } from '@hasura/generated';
+import { UserService } from '@app/shared/services/user.service';
+import { Notification_Insert_Input } from '@hasura/generated';
+import { CheckboxComponent } from '@root/src/app/shared/utils/checkbox/checkbox.component';
 import { LocalStorageService } from '@services/local-storage.service';
 import { NotificationService } from '@services/notification.service';
 import { ToastService, ToastType } from '@services/toast.service';
-import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '@app/shared/utils/token/editor-config.token';
-import { SESSION_STORAGE } from '@app/shared/utils/token/storage.token';
+import { AuthService } from '@shared/utils/authentication/auth.service';
+import { INotification } from '@shared/utils/models/notification.model';
+import { IUser } from '@shared/utils/models/user.model';
+import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '@shared/utils/token/editor-config.token';
+import { SESSION_STORAGE } from '@shared/utils/token/storage.token';
+import { htmlContentValidator } from '@shared/utils/validators/html-content.validator';
 import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
 import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
-import { htmlContentValidator } from '@app/shared/utils/validators/html-content.validator';
-import { IUser } from '@app/shared/utils/models/user.model';
-import { UserService } from '@app/shared/services/user.service';
-import { CheckboxComponent } from '@app/shared/utils/checkbox/checkbox.component';
-import { AuthService } from '@root/src/app/shared/utils/authentication/auth.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,7 +39,6 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   private readonly notificationService = inject(NotificationService);
   private readonly authenticationService = inject(AuthService);
   private readonly userService = inject(UserService);
-  private readonly destroyRef = inject(DestroyRef);
   private readonly sessionStorage = inject(SESSION_STORAGE);
   private readonly localStorageService = inject(LocalStorageService);
   private readonly toastService = inject(ToastService);
@@ -60,6 +58,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     mail: this.localStorageService.getUserMail ?? '',
     dateTime: this.tomorrow,
     isDraft: false,
+    isArchived: false,
   });
   
   protected readonly notificationForm = form(this.notificationModel, (path) => {
@@ -87,7 +86,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     required(path.mail);
     email(path.mail);
     validate(path.mail, ({ value }) => {
-      if (this.editorMode() !== 'create') {
+      if (this.editorMode() === 'edit') {
         return null;
       }
 
@@ -146,6 +145,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
         mail: notification.mail ?? '',
         dateTime: dueDate ?? this.tomorrow,
         isDraft: notification.isDraft ?? false,
+        isArchived: notification.isArchived ?? false,
       });
     });
 
@@ -219,28 +219,28 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   }
 
   private updateNotification(): void {
-    const formValue = this.notificationModel();
-    const notification = {
-      Subject: formValue.subject || this.placeholderSubject,
-      Content: formValue.content,
-      DueDate: formValue.dateTime.toString(),
-      IsDraft: formValue.isDraft,
-      Mail: formValue.mail 
-    } satisfies Notification_Set_Input;
+    const notification = this.notification();
+    if (!notification) {
+      this.toastService.showToast('Error updating notification. Please try again.', ToastType.Error);
+      this.retry.set(true);
+      this.notificationChanged.emit(undefined);
+      return;
+    }
 
-    this.notificationService.updateNotification(notification, this.notification()!.id).pipe(
-      takeUntilDestroyed(this.destroyRef),
-      catchError((error) => {
-        console.error(`Error updating notification.\n Error message: ${error.message}\n Stack trace: ${error.stack}`);
-        this.toastService.showToast('Error updating notification. Please try again.', ToastType.Error);
-        this.retry.set(true);
-        this.notificationChanged.emit(undefined);
-        return EMPTY;
-      }),
-    ).subscribe(result => {
-      this.resetForm();
-      this.notificationChanged.emit(result);
-    });
+    const formValue = this.notificationModel();
+    const updatedNotification = {
+      id: notification!.id,
+      createdAt: notification!.createdAt,
+      subject: formValue.subject || this.placeholderSubject,
+      content: formValue.content,
+      dueDate: formValue.dateTime.toString(),
+      isDraft: formValue.isDraft,
+      isArchived: formValue.isArchived,
+      mail: formValue.mail,
+    } satisfies INotification;
+
+    this.resetForm();
+    this.notificationChanged.emit(updatedNotification);
   }
 
   private createNotification(): void {
@@ -251,6 +251,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
       Content: formValue.content,
       DueDate: formValue.dateTime.toString(),
       IsDraft: formValue.isDraft,
+      IsArchived: formValue.isArchived,
       UserId: this.userService.currUser()?.userId,
       Mail: mail
     } satisfies Notification_Insert_Input;
@@ -334,6 +335,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
       mail: this.localStorageService.getUserMail ?? '',
       dateTime: this.tomorrow,
       isDraft: false,
+      isArchived: false,
     });
   }
 }
