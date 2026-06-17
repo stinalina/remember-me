@@ -3,7 +3,7 @@
 const fs = require('node:fs');
 
 const COMMIT_MSG_FILE = process.argv[2];
-const CONVENTIONAL_COMMIT_REGEX = /^(build|chore|ci|docs|feat|fix|perf|refactor|style|test|revert)(\([a-z0-9._\/-]+\))?(!)?:/;
+const CONVENTIONAL_COMMIT_REGEX = /^(build|chore|ci|docs|feat|fix|perf|refactor|style|test|revert)(\([A-Z0-9._\/-]+\))?(!)?:/;
 
 if (!COMMIT_MSG_FILE) {
   console.error('[COMMIT-CHECK] Kein Commit-Message-Pfad uebergeben.');

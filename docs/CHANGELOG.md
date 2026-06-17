@@ -7,7 +7,7 @@ Autogenerirte können bereits hier betrachtet werden: https://github.com/stinali
 - Toasts sind immer im Vordergrund und verschwinden nicht hinter der Toolbar
 - Der NotificationCounter hat auch beim Update einer Notiz hochgezählt
 - 
-### Feature
+### Features
 - Searchbar in der Notizübersicht. Hier wird nach dem Notiz Titel gefiltert
 - Date von wann bis wann die Website gepflegt wird steht nun im Footer
 - Submit on Enter für Login
@@ -20,3 +20,13 @@ Autogenerirte können bereits hier betrachtet werden: https://github.com/stinali
 - Die Projektstruktur wurde neu gedacht
 - Workflow für ReleaseTags wurde eingeführt
 - Das Repo wurde für die Mitarbeit von github Copilot fit gemacht
+
+## v1.2.0
+### Bugfixes
+- Notifications auf Entwurf konnten nicht bearbeitet werden, wenn das DueDate in der Vergangenheit lag
+
+### Features
+- Searchbar filtert nun nicht nur Titel sondern auch Content
+- Alte Notes bekommen nun ein Remark und können dann entweder gelöscht oder archiviert werden
+- Such-Filter für nur Entwürfe oder nur Archivierte Notes anzeigen
+- Die Statistik-Page wurde eingeführt
