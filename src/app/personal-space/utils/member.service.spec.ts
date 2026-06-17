@@ -157,9 +157,10 @@ describe('MemberService', () => {
     });
 
     it('should create new year and month when year does not exist', () => {
-      const currentYear = new Date().getFullYear().toString();
-      const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
-      const previousYear = (new Date().getFullYear() - 1).toString();
+      const now = new Date();
+      const currentYear = now.getFullYear().toString();
+      const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
+      const previousYear = (now.getFullYear() - 1).toString();
       
       service.member.set({
         id: 'user-123',
@@ -198,8 +199,9 @@ describe('MemberService', () => {
     });
 
     it('should update member signal with new stats after successful mutation', () => {
-      const currentYear = new Date().getFullYear().toString();
-      const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
+      const now = new Date();
+      const currentYear = now.getFullYear().toString();
+      const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
       
       service.member.set({
         id: 'user-123',
