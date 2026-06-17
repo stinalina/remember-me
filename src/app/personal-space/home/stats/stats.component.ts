@@ -4,11 +4,7 @@ import { NotificationStore } from '@app/personal-space/data/notification.store';
 import { INotification } from '@shared/utils/models/notification.model';
 import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
 import { DatePipe } from '@angular/common';
-
-type PeriodStats = {
-  created: number;
-  due: number;
-};
+import { MemberService } from '@root/src/app/personal-space/utils/member.service';
 
 type TimelineEntry = {
   id: string;
@@ -28,14 +24,15 @@ type TimelineEntry = {
 })
 export class StatsComponent {
   private readonly notificationStore = inject(NotificationStore);
+  private readonly memberService = inject(MemberService);
   private readonly auth = inject(Auth);
 
   protected readonly periodCards = computed(() => {
-    const stats = this.periodStats();
+    const stats = this.createdCount();
     return [
-      { key: 'month', title: 'Diesen Monat', ...stats.month },
-      { key: 'year', title: 'Dieses Jahr', ...stats.year },
-      { key: 'total', title: 'Insgesamt', ...stats.total },
+      { key: 'month', title: 'Diesen Monat', count: stats.month },
+      { key: 'year', title: 'Dieses Jahr', count: stats.year },
+      { key: 'total', title: 'Insgesamt', count: stats.total },
     ];
   });
 
@@ -89,44 +86,24 @@ export class StatsComponent {
     ];
   });
 
-  private readonly periodStats = computed(() => {
-    const notes = this.notificationStore.value() ?? [];
+  private readonly createdCount = computed(() => {
+    const member = this.memberService.member();
+    if (!member) {
+      console.error('Member is missing. Stats only available for logged in users.');
+      return {
+        month: 0,
+        year: 0,
+        total: 0
+      };
+    }
     const now = new Date();
-
-    const isInCurrentMonth = (date: Date | null): boolean => {
-      if (!date) {
-        return false;
-      }
-
-      return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
-    };
-
-    const isInCurrentYear = (date: Date | null): boolean => {
-      if (!date) {
-        return false;
-      }
-
-      return date.getFullYear() === now.getFullYear();
-    };
-
-    const createdDates = notes.map((note) => this.parseDate(note.createdAt));
-    const dueDates = notes
-      .filter((note) => !note.isDraft)
-      .map((note) => this.parseDate(note.dueDate));
+    const currentYear = now.getFullYear().toString();
+    const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
 
     return {
-      month: {
-        created: createdDates.filter((date) => isInCurrentMonth(date)).length,
-        due: dueDates.filter((date) => isInCurrentMonth(date)).length,
-      } satisfies PeriodStats,
-      year: {
-        created: createdDates.filter((date) => isInCurrentYear(date)).length,
-        due: dueDates.filter((date) => isInCurrentYear(date)).length,
-      } satisfies PeriodStats,
-      total: {
-        created: notes.length,
-        due: dueDates.filter((date) => date !== null).length,
-      } satisfies PeriodStats,
+      month: member.stats[currentYear]?.[currentMonth] ?? 0,
+      year: member.stats[currentYear] ? Object.values(member.stats[currentYear]).reduce((sum, count) => sum + count, 0) : 0,
+      total: member.stats ? Object.values(member.stats).reduce((yearSum, year) => yearSum + Object.values(year).reduce((monthSum, count) => monthSum + count, 0), 0) : 0,
     };
   });
 
