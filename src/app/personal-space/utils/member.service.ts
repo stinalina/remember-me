@@ -2,10 +2,10 @@ import { DestroyRef, inject, Injectable, signal } from "@angular/core";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Member } from '@app/personal-space/data/member.model';
 import { Preferences } from "@app/personal-space/data/preferences.model";
-import { ToastService, ToastType } from '@services/toast.service';
 import { GetMemberByIdGQL, UpdatePreferencesGQL, UpdateStatsGQL } from "@hasura/generated";
+import { createEmptyYearStats, Stats } from "@app/personal-space/data/stats.model";
+import { ToastService, ToastType } from '@services/toast.service';
 import { catchError, EMPTY, map, Observable, tap } from "rxjs";
-import { createEmptyYearStats, Stats } from "@root/src/app/personal-space/data/stats.model";
 
 @Injectable({ providedIn: 'root' }) 
 export class MemberService {

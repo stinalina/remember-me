@@ -4,7 +4,7 @@ import { NotificationStore } from '@app/personal-space/data/notification.store';
 import { INotification } from '@shared/utils/models/notification.model';
 import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
 import { CommonModule, DatePipe } from '@angular/common';
-import { MemberService } from '@root/src/app/personal-space/utils/member.service';
+import { MemberService } from '@app/personal-space/utils/member.service';
 
 type TimelineEntry = {
   id: string;

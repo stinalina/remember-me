@@ -8,8 +8,8 @@ import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-fram
 import { RangePipe } from '@shared/utils/pipe/range.pipe';
 import { NotificationEditorDialog as NotificationDialog } from '@app/personal-space/home/notes/notification-editor/notification-editor.dialog';
 import { INotification } from '@shared/utils/models/notification.model';
-import { NotificationComponent } from '@root/src/app/personal-space/home/notes/notification/notification.component';
-import { MemberService } from '@root/src/app/personal-space/utils/member.service';
+import { NotificationComponent } from '@app/personal-space/home/notes/notification/notification.component';
+import { MemberService } from '@app/personal-space/utils/member.service';
 
 @Component({
   selector: 'reme-personal-notes',
