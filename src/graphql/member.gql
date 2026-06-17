@@ -1,7 +1,8 @@
 query GetMemberById($id: uuid!) {
   User(where: {Id: {_eq: $id}}) {
     Name,
-    Preferences
+    Preferences,
+    Stats
   }
 }
 
