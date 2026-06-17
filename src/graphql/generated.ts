@@ -55,7 +55,8 @@ export type Notification = {
   CreatedAt: Scalars['timestamptz']['output'];
   DueDate: Scalars['timestamptz']['output'];
   Id: Scalars['uuid']['output'];
-  IsDraft: Scalars['Boolean']['output'];
+  IsArchived: Scalars['Boolean']['output'];
+  IsDraft?: Maybe<Scalars['Boolean']['output']>;
   Mail: Scalars['String']['output'];
   RememberCount: Scalars['smallint']['output'];
   Subject: Scalars['String']['output'];
@@ -160,6 +161,7 @@ export type Notification_Bool_Exp = {
   CreatedAt?: InputMaybe<Timestamptz_Comparison_Exp>;
   DueDate?: InputMaybe<Timestamptz_Comparison_Exp>;
   Id?: InputMaybe<Uuid_Comparison_Exp>;
+  IsArchived?: InputMaybe<Boolean_Comparison_Exp>;
   IsDraft?: InputMaybe<Boolean_Comparison_Exp>;
   Mail?: InputMaybe<String_Comparison_Exp>;
   RememberCount?: InputMaybe<Smallint_Comparison_Exp>;
@@ -188,6 +190,7 @@ export type Notification_Insert_Input = {
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
+  IsArchived?: InputMaybe<Scalars['Boolean']['input']>;
   IsDraft?: InputMaybe<Scalars['Boolean']['input']>;
   Mail?: InputMaybe<Scalars['String']['input']>;
   RememberCount?: InputMaybe<Scalars['smallint']['input']>;
@@ -268,6 +271,7 @@ export type Notification_Order_By = {
   CreatedAt?: InputMaybe<Order_By>;
   DueDate?: InputMaybe<Order_By>;
   Id?: InputMaybe<Order_By>;
+  IsArchived?: InputMaybe<Order_By>;
   IsDraft?: InputMaybe<Order_By>;
   Mail?: InputMaybe<Order_By>;
   RememberCount?: InputMaybe<Order_By>;
@@ -292,6 +296,8 @@ export enum Notification_Select_Column {
   /** column name */
   Id = 'Id',
   /** column name */
+  IsArchived = 'IsArchived',
+  /** column name */
   IsDraft = 'IsDraft',
   /** column name */
   Mail = 'Mail',
@@ -306,11 +312,15 @@ export enum Notification_Select_Column {
 /** select "Notification_aggregate_bool_exp_bool_and_arguments_columns" columns of table "dev.Notification" */
 export enum Notification_Select_Column_Notification_Aggregate_Bool_Exp_Bool_And_Arguments_Columns {
   /** column name */
+  IsArchived = 'IsArchived',
+  /** column name */
   IsDraft = 'IsDraft'
 }
 
 /** select "Notification_aggregate_bool_exp_bool_or_arguments_columns" columns of table "dev.Notification" */
 export enum Notification_Select_Column_Notification_Aggregate_Bool_Exp_Bool_Or_Arguments_Columns {
+  /** column name */
+  IsArchived = 'IsArchived',
   /** column name */
   IsDraft = 'IsDraft'
 }
@@ -321,6 +331,7 @@ export type Notification_Set_Input = {
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
+  IsArchived?: InputMaybe<Scalars['Boolean']['input']>;
   IsDraft?: InputMaybe<Scalars['Boolean']['input']>;
   Mail?: InputMaybe<Scalars['String']['input']>;
   RememberCount?: InputMaybe<Scalars['smallint']['input']>;
@@ -375,6 +386,7 @@ export type Notification_Stream_Cursor_Value_Input = {
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
+  IsArchived?: InputMaybe<Scalars['Boolean']['input']>;
   IsDraft?: InputMaybe<Scalars['Boolean']['input']>;
   Mail?: InputMaybe<Scalars['String']['input']>;
   RememberCount?: InputMaybe<Scalars['smallint']['input']>;
@@ -403,6 +415,8 @@ export enum Notification_Update_Column {
   DueDate = 'DueDate',
   /** column name */
   Id = 'Id',
+  /** column name */
+  IsArchived = 'IsArchived',
   /** column name */
   IsDraft = 'IsDraft',
   /** column name */
@@ -502,6 +516,7 @@ export type User = {
   Notifications_aggregate: Notification_Aggregate;
   Preferences: Scalars['jsonb']['output'];
   Pricing?: Maybe<Scalars['pricing_enum']['output']>;
+  Stats: Scalars['jsonb']['output'];
 };
 
 
@@ -530,6 +545,12 @@ export type UserPreferencesArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
 
+
+/** columns and relationships of "dev.User" */
+export type UserStatsArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
 /** aggregated selection of "dev.User" */
 export type User_Aggregate = {
   __typename?: 'User_aggregate';
@@ -555,6 +576,7 @@ export type User_Aggregate_FieldsCountArgs = {
 /** append existing jsonb value of filtered columns with new jsonb value */
 export type User_Append_Input = {
   Preferences?: InputMaybe<Scalars['jsonb']['input']>;
+  Stats?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** Boolean expression to filter rows from the table "dev.User". All fields are combined with a logical 'AND'. */
@@ -566,6 +588,7 @@ export type User_Bool_Exp = {
   Notifications_aggregate?: InputMaybe<Notification_Aggregate_Bool_Exp>;
   Preferences?: InputMaybe<Jsonb_Comparison_Exp>;
   Pricing?: InputMaybe<Pricing_Enum_Comparison_Exp>;
+  Stats?: InputMaybe<Jsonb_Comparison_Exp>;
   _and?: InputMaybe<Array<User_Bool_Exp>>;
   _not?: InputMaybe<User_Bool_Exp>;
   _or?: InputMaybe<Array<User_Bool_Exp>>;
@@ -580,16 +603,19 @@ export enum User_Constraint {
 /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 export type User_Delete_At_Path_Input = {
   Preferences?: InputMaybe<Array<Scalars['String']['input']>>;
+  Stats?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 export type User_Delete_Elem_Input = {
   Preferences?: InputMaybe<Scalars['Int']['input']>;
+  Stats?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** delete key/value pair or string element. key/value pairs are matched based on their key value */
 export type User_Delete_Key_Input = {
   Preferences?: InputMaybe<Scalars['String']['input']>;
+  Stats?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** input type for inserting data into table "dev.User" */
@@ -600,6 +626,7 @@ export type User_Insert_Input = {
   Notifications?: InputMaybe<Notification_Arr_Rel_Insert_Input>;
   Preferences?: InputMaybe<Scalars['jsonb']['input']>;
   Pricing?: InputMaybe<Scalars['pricing_enum']['input']>;
+  Stats?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** aggregate max on columns */
@@ -651,6 +678,7 @@ export type User_Order_By = {
   Notifications_aggregate?: InputMaybe<Notification_Aggregate_Order_By>;
   Preferences?: InputMaybe<Order_By>;
   Pricing?: InputMaybe<Order_By>;
+  Stats?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: dev.User */
@@ -661,6 +689,7 @@ export type User_Pk_Columns_Input = {
 /** prepend existing jsonb value of filtered columns with new jsonb value */
 export type User_Prepend_Input = {
   Preferences?: InputMaybe<Scalars['jsonb']['input']>;
+  Stats?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** select columns of table "dev.User" */
@@ -674,7 +703,9 @@ export enum User_Select_Column {
   /** column name */
   Preferences = 'Preferences',
   /** column name */
-  Pricing = 'Pricing'
+  Pricing = 'Pricing',
+  /** column name */
+  Stats = 'Stats'
 }
 
 /** input type for updating data in table "dev.User" */
@@ -684,6 +715,7 @@ export type User_Set_Input = {
   Name?: InputMaybe<Scalars['String']['input']>;
   Preferences?: InputMaybe<Scalars['jsonb']['input']>;
   Pricing?: InputMaybe<Scalars['pricing_enum']['input']>;
+  Stats?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** Streaming cursor of the table "User" */
@@ -701,6 +733,7 @@ export type User_Stream_Cursor_Value_Input = {
   Name?: InputMaybe<Scalars['String']['input']>;
   Preferences?: InputMaybe<Scalars['jsonb']['input']>;
   Pricing?: InputMaybe<Scalars['pricing_enum']['input']>;
+  Stats?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** update columns of table "dev.User" */
@@ -714,7 +747,9 @@ export enum User_Update_Column {
   /** column name */
   Preferences = 'Preferences',
   /** column name */
-  Pricing = 'Pricing'
+  Pricing = 'Pricing',
+  /** column name */
+  Stats = 'Stats'
 }
 
 export type User_Updates = {
@@ -1122,7 +1157,7 @@ export type GetMemberByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetMemberByIdQuery = { __typename?: 'query_root', User: Array<{ __typename?: 'User', Name: string, Preferences: any }> };
+export type GetMemberByIdQuery = { __typename?: 'query_root', User: Array<{ __typename?: 'User', Name: string, Preferences: any, Stats: any }> };
 
 export type UpdatePreferencesMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -1133,11 +1168,11 @@ export type UpdatePreferencesMutationVariables = Exact<{
 export type UpdatePreferencesMutation = { __typename?: 'mutation_root', update_User?: { __typename?: 'User_mutation_response', returning: Array<{ __typename?: 'User', Preferences: any }> } | null };
 
 export type InsertNotificationMutationVariables = Exact<{
-  objects: Array<Notification_Insert_Input> | Notification_Insert_Input;
+  object: Notification_Insert_Input;
 }>;
 
 
-export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', returning: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, IsDraft: boolean, UserId: any, Subject: string, RememberCount: any, Mail: string }> } | null };
+export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', returning: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, IsDraft?: boolean | null, UserId: any, Subject: string, RememberCount: any, Mail: string, IsArchived: boolean }> } | null };
 
 export type UpdateNotificationByIdMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -1145,7 +1180,7 @@ export type UpdateNotificationByIdMutationVariables = Exact<{
 }>;
 
 
-export type UpdateNotificationByIdMutation = { __typename?: 'mutation_root', update_Notification_by_pk?: { __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, IsDraft: boolean, UserId: any, Subject: string, RememberCount: any, Mail: string } | null };
+export type UpdateNotificationByIdMutation = { __typename?: 'mutation_root', update_Notification_by_pk?: { __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, IsDraft?: boolean | null, UserId: any, Subject: string, RememberCount: any, Mail: string, IsArchived: boolean } | null };
 
 export type DeleteNotificationByIdMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -1159,7 +1194,7 @@ export type GetNotificationByUserIdQueryVariables = Exact<{
 }>;
 
 
-export type GetNotificationByUserIdQuery = { __typename?: 'query_root', Notification: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, Subject: string, RememberCount: any, Id: any, DueDate: any, IsDraft: boolean, Mail: string }> };
+export type GetNotificationByUserIdQuery = { __typename?: 'query_root', Notification: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, Subject: string, RememberCount: any, Id: any, DueDate: any, Mail: string, IsDraft?: boolean | null, IsArchived: boolean }> };
 
 export type InsertUserMutationVariables = Exact<{
   mail: Scalars['String']['input'];
@@ -1177,11 +1212,20 @@ export type GetUserByMailQueryVariables = Exact<{
 
 export type GetUserByMailQuery = { __typename?: 'query_root', User: Array<{ __typename?: 'User', Id: any, Name: string }> };
 
+export type UpdateStatsMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+  stats: Scalars['jsonb']['input'];
+}>;
+
+
+export type UpdateStatsMutation = { __typename?: 'mutation_root', update_User?: { __typename?: 'User_mutation_response', returning: Array<{ __typename?: 'User', Stats: any }> } | null };
+
 export const GetMemberByIdDocument = gql`
     query GetMemberById($id: uuid!) {
   User(where: {Id: {_eq: $id}}) {
     Name
     Preferences
+    Stats
   }
 }
     `;
@@ -1217,8 +1261,8 @@ export const UpdatePreferencesDocument = gql`
     }
   }
 export const InsertNotificationDocument = gql`
-    mutation InsertNotification($objects: [Notification_insert_input!]!) {
-  insert_Notification(objects: $objects) {
+    mutation InsertNotification($object: Notification_insert_input!) {
+  insert_Notification(objects: [$object]) {
     returning {
       Content
       CreatedAt
@@ -1229,6 +1273,7 @@ export const InsertNotificationDocument = gql`
       Subject
       RememberCount
       Mail
+      IsArchived
     }
   }
 }
@@ -1256,6 +1301,7 @@ export const UpdateNotificationByIdDocument = gql`
     Subject
     RememberCount
     Mail
+    IsArchived
   }
 }
     `;
@@ -1297,8 +1343,9 @@ export const GetNotificationByUserIdDocument = gql`
     RememberCount
     Id
     DueDate
-    IsDraft
     Mail
+    IsDraft
+    IsArchived
   }
 }
     `;
@@ -1348,6 +1395,26 @@ export const GetUserByMailDocument = gql`
   })
   export class GetUserByMailGQL extends Apollo.Query<GetUserByMailQuery, GetUserByMailQueryVariables> {
     document = GetUserByMailDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const UpdateStatsDocument = gql`
+    mutation UpdateStats($id: uuid!, $stats: jsonb!) {
+  update_User(where: {Id: {_eq: $id}}, _set: {Stats: $stats}) {
+    returning {
+      Stats
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UpdateStatsGQL extends Apollo.Mutation<UpdateStatsMutation, UpdateStatsMutationVariables> {
+    document = UpdateStatsDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

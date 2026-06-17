@@ -1,6 +1,6 @@
 <reme-content-frame [fullHeight]="true">
   <section class="h-full">
-    <reme-navbar (searchChanged)="this.onSearchChanged($event)"></reme-navbar>
+    <reme-navbar (filterChanged)="this.onSearchChanged($event)"></reme-navbar>
     <div remeAdjustGridColumns [notesCount]="this.displayedNotifications().length"
       #adjustGrid="remeAdjustGridColumns"
       class="py-6 grid grid-cols-3 3xl:grid-cols-4 gap-3 h-[85vh] px-1 overflow-auto">
@@ -20,6 +20,7 @@
           <reme-notification [notification]="notification"
             [preId]="'note-' + i"
             (deleteNotification)="this.notificationStore.deleteNotification(notification.id)"
+            (updateNotificationRequested)="this.notificationStore.updateNotification(notification)"
             (editClicked)="this.openEditNoteModal(notification)">
           </reme-notification>
         }

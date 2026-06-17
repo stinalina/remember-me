@@ -11,7 +11,7 @@ import { environment } from '@environments/environment';
 import { provideApollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { routes } from './app.routes';
-import { authHasuraInterceptor } from '@app/shared/utils/authentication/auth.interceptor';
+import { authHasuraInterceptor } from '@shared/utils/authentication/auth.interceptor';
 
 registerLocaleData(localeDe);
 
