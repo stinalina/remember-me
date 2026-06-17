@@ -3,7 +3,7 @@ import { Auth } from '@angular/fire/auth';
 import { NotificationStore } from '@app/personal-space/data/notification.store';
 import { INotification } from '@shared/utils/models/notification.model';
 import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
-import { DatePipe } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { MemberService } from '@root/src/app/personal-space/utils/member.service';
 
 type TimelineEntry = {
@@ -13,12 +13,26 @@ type TimelineEntry = {
   description?: string;
 };
 
+type PeriodCard = {
+  key: string;
+  title: string;
+  count: number;
+  interactive?: boolean;
+};
+
+type MonthStat = {
+  key: string;
+  title: string;
+  count: number;
+};
+
 @Component({
   selector: 'reme-personal-stats',
   templateUrl: './stats.component.html',
   imports: [
     ContentFrameComponent,
     DatePipe,
+    CommonModule,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -26,14 +40,33 @@ export class StatsComponent {
   private readonly notificationStore = inject(NotificationStore);
   private readonly memberService = inject(MemberService);
   private readonly auth = inject(Auth);
+  private readonly datePipe = new DatePipe('de-DE');
 
-  protected readonly periodCards = computed(() => {
+  protected readonly currentYear = new Date().getFullYear();
+
+  protected readonly periodCards = computed<PeriodCard[]>(() => {
     const stats = this.createdCount();
     return [
-      { key: 'month', title: 'Diesen Monat', count: stats.month },
+      { key: 'month', title: 'Diesen Monat', count: stats.month, interactive: true },
       { key: 'year', title: 'Dieses Jahr', count: stats.year },
       { key: 'total', title: 'Insgesamt', count: stats.total },
     ];
+  });
+
+  protected readonly monthStats = computed<MonthStat[]>(() => {
+    const member = this.memberService.member();
+    const yearStats = member?.stats?.[String(this.currentYear)] ?? {};
+
+    return Array.from({ length: 12 }, (_, index) => {
+      const monthNumber = String(index + 1).padStart(2, '0');
+      const monthTitle = this.datePipe.transform(new Date(this.currentYear, index, 1), 'MMMM') ?? '';
+
+      return {
+        key: monthNumber,
+        title: monthTitle,
+        count: yearStats[monthNumber] ?? 0,
+      };
+    });
   });
 
   protected readonly currentDraftCount = computed(
