@@ -4,6 +4,7 @@ const fs = require('node:fs');
 
 const COMMIT_MSG_FILE = process.argv[2];
 const CONVENTIONAL_COMMIT_REGEX = /^(build|chore|ci|docs|feat|fix|perf|refactor|style|test|revert)(\([A-Z0-9._\/-]+\))?(!)?:/;
+const MERGE_COMMIT_REGEX = /^Merge\b/;
 
 if (!COMMIT_MSG_FILE) {
   console.error('[COMMIT-CHECK] Kein Commit-Message-Pfad uebergeben.');
@@ -16,9 +17,9 @@ const firstLine = raw
   .find((line) => line.trim().length > 0)
   ?.trim() || '';
 
-if (!CONVENTIONAL_COMMIT_REGEX.test(firstLine)) {
+if (!CONVENTIONAL_COMMIT_REGEX.test(firstLine) && !MERGE_COMMIT_REGEX.test(firstLine)) {
   console.error('\n[COMMIT-CHECK] Ungueltige Commit-Message.');
   console.error(`[COMMIT-CHECK] Gefunden: "${firstLine}"`);
-  console.error('[COMMIT-CHECK] Erwartet Prefix wie feat:, fix:, chore:, docs:, ...');
+  console.error('[COMMIT-CHECK] Erwartet Prefix wie feat:, fix:, chore:, docs:, ... oder Merge ...');
   process.exit(1);
 }
