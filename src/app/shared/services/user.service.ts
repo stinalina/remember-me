@@ -1,15 +1,16 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { InitialPreferences } from '@app/personal-space/data/preferences.model';
+import { LocalStorageService } from '@app/shared/services/local-storage.service';
 import { GetUserByMailGQL, InsertUserGQL } from '@hasura/generated';
 import { IUser } from '@shared/utils/models/user.model';
 import { map, Observable, of, switchMap } from 'rxjs';
-import { LocalStorageService } from '@app/shared/services/local-storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private readonly localStorageService = inject(LocalStorageService);
   private readonly getUserByMailGQL = inject(GetUserByMailGQL);
   private readonly insertUserGQL = inject(InsertUserGQL);
+
   public readonly currUser = signal<IUser | null>(null);
   public readonly freeNotificationsLimit = signal<number>(5);
 

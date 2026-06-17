@@ -3,14 +3,16 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Member } from '@app/personal-space/data/member.model';
 import { Preferences } from "@app/personal-space/data/preferences.model";
 import { ToastService, ToastType } from '@services/toast.service';
-import { GetMemberByIdGQL, UpdatePreferencesGQL } from "@hasura/generated";
+import { GetMemberByIdGQL, UpdatePreferencesGQL, UpdateStatsGQL } from "@hasura/generated";
 import { catchError, EMPTY, map, Observable, tap } from "rxjs";
+import { createEmptyYearStats, Stats } from "@root/src/app/personal-space/data/stats.model";
 
 @Injectable({ providedIn: 'root' }) 
 export class MemberService {
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
   private readonly updatePreferencesGQL = inject(UpdatePreferencesGQL);
+  private readonly updateStatsGQL = inject(UpdateStatsGQL);
 
   private readonly getMemberByIdGQL = inject(GetMemberByIdGQL);
 
@@ -34,6 +36,44 @@ export class MemberService {
    );
   }
 
+  public increaseStatsCount(): Observable<void> {
+    const now = new Date();
+    const year = now.getFullYear().toString();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    
+    const currentMember = this.member();
+    if (!currentMember) {
+      return EMPTY;
+    }
+    
+    const updatedStats = { ...currentMember.stats };
+    if (!updatedStats[year]) {
+      updatedStats[year] = createEmptyYearStats();
+    }
+    
+    updatedStats[year][month] = (updatedStats[year][month] || 0) + 1;
+    
+    return this.updateStats(currentMember.id, updatedStats);
+  }
+
+  private updateStats(userId: string, stats: Stats): Observable<void> {
+    return this.updateStatsGQL.mutate({ variables: { id: userId, stats } }).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      catchError(error => {
+        console.error('Error updating user stats:', error);
+        this.toastService.showToast('Upss, das hat nicht geklappt. Das Backend ist momentan nicht erreichbar.', ToastType.Error);
+        return EMPTY;
+      }),
+      tap(() => this.member.update(current => {
+        if (current) {
+          return { ...current, stats: { ...stats } };
+        }
+        return current;
+      })),
+      map(() => void(0))
+   );
+  }
+
   public loadMember(id: string): Observable<void> {
     return this.getMemberByIdGQL.fetch({ variables: { id } }).pipe(
       map(result => {
@@ -43,6 +83,7 @@ export class MemberService {
             id,
             name: data.Name,
             preferences: data.Preferences,
+            stats: data.Stats
           } satisfies Member);
         }
         else {
