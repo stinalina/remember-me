@@ -516,6 +516,7 @@ export type User = {
   Notifications_aggregate: Notification_Aggregate;
   Preferences: Scalars['jsonb']['output'];
   Pricing?: Maybe<Scalars['pricing_enum']['output']>;
+  Stats: Scalars['jsonb']['output'];
 };
 
 
@@ -544,6 +545,12 @@ export type UserPreferencesArgs = {
   path?: InputMaybe<Scalars['String']['input']>;
 };
 
+
+/** columns and relationships of "dev.User" */
+export type UserStatsArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
+};
+
 /** aggregated selection of "dev.User" */
 export type User_Aggregate = {
   __typename?: 'User_aggregate';
@@ -569,6 +576,7 @@ export type User_Aggregate_FieldsCountArgs = {
 /** append existing jsonb value of filtered columns with new jsonb value */
 export type User_Append_Input = {
   Preferences?: InputMaybe<Scalars['jsonb']['input']>;
+  Stats?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** Boolean expression to filter rows from the table "dev.User". All fields are combined with a logical 'AND'. */
@@ -580,6 +588,7 @@ export type User_Bool_Exp = {
   Notifications_aggregate?: InputMaybe<Notification_Aggregate_Bool_Exp>;
   Preferences?: InputMaybe<Jsonb_Comparison_Exp>;
   Pricing?: InputMaybe<Pricing_Enum_Comparison_Exp>;
+  Stats?: InputMaybe<Jsonb_Comparison_Exp>;
   _and?: InputMaybe<Array<User_Bool_Exp>>;
   _not?: InputMaybe<User_Bool_Exp>;
   _or?: InputMaybe<Array<User_Bool_Exp>>;
@@ -594,16 +603,19 @@ export enum User_Constraint {
 /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 export type User_Delete_At_Path_Input = {
   Preferences?: InputMaybe<Array<Scalars['String']['input']>>;
+  Stats?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
 export type User_Delete_Elem_Input = {
   Preferences?: InputMaybe<Scalars['Int']['input']>;
+  Stats?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** delete key/value pair or string element. key/value pairs are matched based on their key value */
 export type User_Delete_Key_Input = {
   Preferences?: InputMaybe<Scalars['String']['input']>;
+  Stats?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** input type for inserting data into table "dev.User" */
@@ -614,6 +626,7 @@ export type User_Insert_Input = {
   Notifications?: InputMaybe<Notification_Arr_Rel_Insert_Input>;
   Preferences?: InputMaybe<Scalars['jsonb']['input']>;
   Pricing?: InputMaybe<Scalars['pricing_enum']['input']>;
+  Stats?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** aggregate max on columns */
@@ -665,6 +678,7 @@ export type User_Order_By = {
   Notifications_aggregate?: InputMaybe<Notification_Aggregate_Order_By>;
   Preferences?: InputMaybe<Order_By>;
   Pricing?: InputMaybe<Order_By>;
+  Stats?: InputMaybe<Order_By>;
 };
 
 /** primary key columns input for table: dev.User */
@@ -675,6 +689,7 @@ export type User_Pk_Columns_Input = {
 /** prepend existing jsonb value of filtered columns with new jsonb value */
 export type User_Prepend_Input = {
   Preferences?: InputMaybe<Scalars['jsonb']['input']>;
+  Stats?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** select columns of table "dev.User" */
@@ -688,7 +703,9 @@ export enum User_Select_Column {
   /** column name */
   Preferences = 'Preferences',
   /** column name */
-  Pricing = 'Pricing'
+  Pricing = 'Pricing',
+  /** column name */
+  Stats = 'Stats'
 }
 
 /** input type for updating data in table "dev.User" */
@@ -698,6 +715,7 @@ export type User_Set_Input = {
   Name?: InputMaybe<Scalars['String']['input']>;
   Preferences?: InputMaybe<Scalars['jsonb']['input']>;
   Pricing?: InputMaybe<Scalars['pricing_enum']['input']>;
+  Stats?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** Streaming cursor of the table "User" */
@@ -715,6 +733,7 @@ export type User_Stream_Cursor_Value_Input = {
   Name?: InputMaybe<Scalars['String']['input']>;
   Preferences?: InputMaybe<Scalars['jsonb']['input']>;
   Pricing?: InputMaybe<Scalars['pricing_enum']['input']>;
+  Stats?: InputMaybe<Scalars['jsonb']['input']>;
 };
 
 /** update columns of table "dev.User" */
@@ -728,7 +747,9 @@ export enum User_Update_Column {
   /** column name */
   Preferences = 'Preferences',
   /** column name */
-  Pricing = 'Pricing'
+  Pricing = 'Pricing',
+  /** column name */
+  Stats = 'Stats'
 }
 
 export type User_Updates = {
@@ -1136,7 +1157,7 @@ export type GetMemberByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetMemberByIdQuery = { __typename?: 'query_root', User: Array<{ __typename?: 'User', Name: string, Preferences: any }> };
+export type GetMemberByIdQuery = { __typename?: 'query_root', User: Array<{ __typename?: 'User', Name: string, Preferences: any, Stats: any }> };
 
 export type UpdatePreferencesMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -1191,11 +1212,20 @@ export type GetUserByMailQueryVariables = Exact<{
 
 export type GetUserByMailQuery = { __typename?: 'query_root', User: Array<{ __typename?: 'User', Id: any, Name: string }> };
 
+export type UpdateStatsMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+  stats: Scalars['jsonb']['input'];
+}>;
+
+
+export type UpdateStatsMutation = { __typename?: 'mutation_root', update_User?: { __typename?: 'User_mutation_response', returning: Array<{ __typename?: 'User', Stats: any }> } | null };
+
 export const GetMemberByIdDocument = gql`
     query GetMemberById($id: uuid!) {
   User(where: {Id: {_eq: $id}}) {
     Name
     Preferences
+    Stats
   }
 }
     `;
@@ -1365,6 +1395,26 @@ export const GetUserByMailDocument = gql`
   })
   export class GetUserByMailGQL extends Apollo.Query<GetUserByMailQuery, GetUserByMailQueryVariables> {
     document = GetUserByMailDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const UpdateStatsDocument = gql`
+    mutation UpdateStats($id: uuid!, $stats: jsonb!) {
+  update_User(where: {Id: {_eq: $id}}, _set: {Stats: $stats}) {
+    returning {
+      Stats
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UpdateStatsGQL extends Apollo.Mutation<UpdateStatsMutation, UpdateStatsMutationVariables> {
+    document = UpdateStatsDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

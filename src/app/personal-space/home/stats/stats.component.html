@@ -1,6 +1,102 @@
 <reme-content-frame>
-  <section>
-    <h2>Statistics</h2>
-    <p>Your statistics will appear here once available.</p>
-  </section>
+  <div class="space-y-6">
+    <header class="space-y-1">
+      <h1 class="text-3xl font-semibold">Statistiken</h1>
+      <h2 class="text-lg font-semibold">Ein paar Zahlen...</h2>
+    </header>
+
+    <div class="flex flex-col justify-center gap-2">
+      <div class="flex flex-row justify-center gap-2">
+        @for (card of this.periodCards(); track card.key) {
+          @if (card.interactive) {
+            <button
+              type="button"
+              class="stats shadow bg-base-100 cursor-pointer hover:shadow-lg
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-100"
+              aria-haspopup="dialog"
+              aria-controls="month-stats-modal"
+              (click)="monthStatsDialog.showModal()"
+            >
+              <div class="stat">
+                <div class="stat-title">{{ card.title }}</div>
+                <div class="stat-value text-primary">{{ card.count }}</div>
+                <div class="stat-desc">erstellt</div>
+              </div>
+            </button>
+          } @else {
+            <div class="stats shadow bg-base-100">
+              <div class="stat">
+                <div class="stat-title">{{ card.title }}</div>
+                <div class="stat-value text-primary">{{ card.count }}</div>
+                <div class="stat-desc">erstellt</div>
+              </div>
+            </div>
+          }
+        }
+      </div>
+
+      <div aria-label="Aktueller Status" class="stats shadow bg-base-100">
+        <div class="stat">
+          <div class="stat-title">Derzeit als Draft</div>
+          <div class="stat-value text-warning">{{ this.currentDraftCount() }}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-title">Derzeit noch offen</div>
+          <div class="stat-value text-info">{{ this.currentTodoCount() }}</div>
+        </div>
+      </div>
+  
+      <div aria-label="Mitgliedschaft und erste Ereignisse" class="mt-4">
+        <ul class="flex justify-center timeline timeline-horizontal w-full" role="list">
+          @for (entry of this.timelineEntries(); track entry.id; let first = $first; let last = $last) {
+            <li>
+              @if (!first) {
+                <hr />
+              }
+              <div class="timeline-start">{{ entry.date | date:'dd.MM.yyyy' }}</div>
+              <div class="timeline-middle text-primary" aria-hidden="true">
+                <span class="material-symbols-outlined">event</span>
+              </div>
+              <div class="timeline-end timeline-box space-y-1">
+                <p class="font-semibold">{{ entry.title }}</p>
+                @if (entry.description) {
+                  <p class="italic">{{ entry.description }}</p>
+                }
+              </div>
+              @if (!last) {
+                <hr />
+              }
+            </li>
+          }
+        </ul>
+      </div>
+    </div>
+
+    <dialog #monthStatsDialog id="month-stats-modal" class="modal" aria-labelledby="month-stats-title">
+      <div class="modal-box w-full max-w-5xl">
+        <form method="dialog">
+          <button type="submit" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" aria-label="Dialog schließen">✕</button>
+        </form>
+
+        <div class="space-y-4">
+          <header class="space-y-1">
+            <h3 id="month-stats-title" class="text-2xl font-semibold">Monatsübersicht {{ this.currentYear }}</h3>
+            <p class="text-sm opacity-70">Anzahl der erstellten Notifciations nach Monat.</p>
+          </header>
+
+          <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            @for (month of this.monthStats(); track month.key) {
+              <div class="stats shadow bg-base-100">
+                <div class="stat">
+                  <div class="stat-title">{{ month.title | uppercase}}</div>
+                  <div class="stat-value text-primary">{{ month.count }}</div>
+                  <div class="stat-desc">erstellt</div>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </dialog>
+  </div>
 </reme-content-frame>

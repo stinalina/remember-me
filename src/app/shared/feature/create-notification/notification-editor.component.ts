@@ -1,5 +1,5 @@
 import { DatePipe, NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { AbstractControl, FormsModule } from '@angular/forms';
 import { email, form, FormField, maxLength, required, validate } from '@angular/forms/signals';
 import { TypewriterActionType, TypewriterEffectService } from '@app/shared/services/typewriter-effect.service';
@@ -39,7 +39,6 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   private readonly notificationService = inject(NotificationService);
   private readonly authenticationService = inject(AuthService);
   private readonly userService = inject(UserService);
-  private readonly destroyRef = inject(DestroyRef);
   private readonly sessionStorage = inject(SESSION_STORAGE);
   private readonly localStorageService = inject(LocalStorageService);
   private readonly toastService = inject(ToastService);
