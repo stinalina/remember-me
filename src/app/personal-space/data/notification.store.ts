@@ -27,7 +27,8 @@ export const NotificationStore = signalStore(
   })),
   
   withResource((store) => rxResource({
-    stream: () => store._notificationService.loadNotifications(store._userId()),
+    params: () => store._userId(),
+    stream: (streamParams) => store._notificationService.loadNotifications(streamParams.params),
     defaultValue: []
     })
   ),
