@@ -66,7 +66,7 @@
       </div>
       <small class="text-gray-500">
         @if (notification.isArchived) {
-          War fällig am: {{ notification.dueDate | date:'dd.MM.yyyy' }}
+          Zugestellt am: {{ notification.dueDate | date:'dd.MM.yyyy' }}
         } @else {
           Erstellt am: {{ notification.createdAt | date:'dd.MM.yyyy' }}
         }

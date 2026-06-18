@@ -92,14 +92,14 @@ export class StatsComponent {
     today.setHours(0, 0, 0, 0);
 
     const firstCreated = notes.length === 0 ? null : this.findFirstByDate(notes, (note) => note.createdAt);
-    const firstDue = this.findFirstByDate(
+    const firstDelivered = this.findFirstByDate(
       notes.filter((note) => {
         if (note.isDraft) {
           return false;
         }
 
         const dueDate = this.parseDate(note.dueDate);
-        return !!dueDate && dueDate > today;
+        return !!dueDate && dueDate <= today;
       }),
       (note) => note.dueDate,
     );
@@ -123,8 +123,8 @@ export class StatsComponent {
       {
         id: 'first-due-note',
         title: 'Erste Note zugestellt',
-        description: firstDue?.note.subject ?? '-',
-        date: firstDue?.date ?? null,
+        description: firstDelivered?.note.subject ?? '-',
+        date: firstDelivered?.date ?? null,
       },
     ];
   });
