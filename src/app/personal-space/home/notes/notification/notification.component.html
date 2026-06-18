@@ -59,7 +59,6 @@
         <button type="button" class="btn btn-xs btn-square"
           aria-label="Notiz löschen"
           [attr.data-testid]="this.preId() + '-delete'"
-          [disabled]="isReadonly"
           (click)="deleteDialog.show()">
           <span class="material-symbols-outlined">delete</span>
         </button>
