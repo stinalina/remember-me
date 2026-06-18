@@ -4,6 +4,46 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.1.1](https://github.com/stinalina/remember-me/compare/v1.1.0...v1.1.1) (2026-06-18)
+
+
+### fix
+
+* **NOTIFY-195:** only start deployment when release notes workflow completed (#115) ([](https://github.com/stinalina/remember-me/commit/6e56bf079c64ba139b697641a02bd66ce6a42ff9)), closes [#115](https://github.com/stinalina/remember-me/issues/115)
+* **NOTIFY-199:** revert condition ([](https://github.com/stinalina/remember-me/commit/25ff8a12d99243fb5223cb3f1adf0b8aa1774616))
+* **NOTIFY-199:** show nothing when there is no note available yet for timeline (#113) ([](https://github.com/stinalina/remember-me/commit/38af6e58cae80da1f15cac0cd6ed0673acce01dc)), closes [#113](https://github.com/stinalina/remember-me/issues/113)
+* **NOTIFY-201:** redirect user when registered #112 ([](https://github.com/stinalina/remember-me/commit/4b67860164e32e4dd5b4fdb3563743cd74f49293)), closes [#112](https://github.com/stinalina/remember-me/issues/112)
+* **NOTIFY-203:** enable delete archived notes ([](https://github.com/stinalina/remember-me/commit/323dde1a50d94d83c497d9983f1350fe6622b694))
+
+
+### style
+
+* **NOTIFY-200:** scaling for small devices (#114) ([](https://github.com/stinalina/remember-me/commit/e169b10a24f68247f97f5388d3ce9f72f1df79c9)), closes [#114](https://github.com/stinalina/remember-me/issues/114)
+
+# [1.1.0](https://github.com/stinalina/remember-me/compare/v1.0.0...v1.1.0) (2026-06-17)
+
+
+* DEPLOYMENT-NOTIFY-192 ([](https://github.com/stinalina/remember-me/commit/819f250bf04daaa4fb07dd7a7d791c971b989219))
+
+
+### chore
+
+* **NOTIFY-192:** adjust version #108 ([](https://github.com/stinalina/remember-me/commit/15cc5c410754982e119fa8dfdb8a1ada7c70664a)), closes [#108](https://github.com/stinalina/remember-me/issues/108)
+* **NOTIFY-192:** fill changelog ([](https://github.com/stinalina/remember-me/commit/a12ced77c821280d5af35914e3d50248ed584f20))
+
+
+### feat
+
+* **NOTIFY-130:** stats page (#107) ([](https://github.com/stinalina/remember-me/commit/a17db61543d2de156293b7cb2f77723d88e448ab)), closes [#107](https://github.com/stinalina/remember-me/issues/107)
+* **NOTIFY-178:** handle old notes, archive or delete (#105) ([](https://github.com/stinalina/remember-me/commit/9a00f19cd55d756234ca7c16d38d03aae1e057ba)), closes [#105](https://github.com/stinalina/remember-me/issues/105)
+* **NOTIFY-181:** implement filter for isDraft and add e2e (#103) ([](https://github.com/stinalina/remember-me/commit/8c1610a6c944f83efef5a25b02ca23e8d12a6070)), closes [#103](https://github.com/stinalina/remember-me/issues/103)
+
+
+### fix
+
+* **NOTIFY-184:** release notes (#102) ([](https://github.com/stinalina/remember-me/commit/a38f9780a0b914281a8b206741ef219113d4048e)), closes [#102](https://github.com/stinalina/remember-me/issues/102)
+* **NOTIFY-190:** in draft mode edit is always valid #106 ([](https://github.com/stinalina/remember-me/commit/97277bad794ecf86ba1f1b3c33f49c824ef17eca)), closes [#106](https://github.com/stinalina/remember-me/issues/106)
+
 # 1.0.0 (2026-06-07)
 
 
