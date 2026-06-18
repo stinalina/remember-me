@@ -17,7 +17,7 @@
     md:mr-1 xl:mr-2 
     md:grow xl:grow"
     >
-    <img alt="Elefant" class="logo" src="assets/images/logo.svg" width="110" height="110" />
+    <img alt="Elefant" class="logo" src="assets/images/logo.svg" width="120" height="120" />
     <div class="
       wrapper 
       text-center md:text-left xl:text-left 
@@ -35,15 +35,15 @@
         gap-2
         mt-2 xl:mt-3"
         >
-        <button class="btn btn-sm md:btn-md" type="button"
+        <button class="btn btn-md xl:btn-lg" type="button"
           [class.btn-soft]="this.selectedTabComponent() === SelectedTabEnum.Home"
           (click)="selectTab(SelectedTabEnum.Home)">
           Home</button>
-        <button class="btn btn-sm md:btn-md" type="button"
+        <button class="btn btn-md xl:btn-lg" type="button"
           [class.btn-soft]="this.selectedTabComponent() === SelectedTabEnum.FreeNotification"
           (click)="selectTab(SelectedTabEnum.FreeNotification)">
           Ausprobieren</button>
-        <button class="btn btn-sm md:btn-md" type="button"
+        <button class="btn btn-md xl:btn-lg" type="button"
           [class.btn-soft]="this.selectedTabComponent() === SelectedTabEnum.Login"
           (click)="selectTab(SelectedTabEnum.Login)">
           Dran bleiben</button>
