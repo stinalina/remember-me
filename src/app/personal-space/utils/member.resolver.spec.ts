@@ -9,7 +9,10 @@ import { MemberService } from './member.service';
 import { memberResolver } from './member.resolver';
 
 describe('memberResolver', () => {
-  let mockAuth: { currentUser: { email?: string } | null };
+  let mockAuth: {
+    currentUser: { email?: string } | null;
+    authStateReady: ReturnType<typeof vi.fn>;
+  };
   let mockRouter: { navigate: ReturnType<typeof vi.fn> };
   let mockUserService: {
     getUserByMailOrCreateUserIfNotExists: ReturnType<typeof vi.fn>;
@@ -33,7 +36,10 @@ describe('memberResolver', () => {
   };
 
   beforeEach(() => {
-    mockAuth = { currentUser: null };
+    mockAuth = {
+      currentUser: null,
+      authStateReady: vi.fn().mockResolvedValue(undefined),
+    };
     mockRouter = { navigate: vi.fn() };
     mockUserService = {
       getUserByMailOrCreateUserIfNotExists: vi.fn(),
@@ -56,6 +62,7 @@ describe('memberResolver', () => {
   it('should redirect to login when no authenticated user email exists', async () => {
     await firstValueFrom(runResolver().pipe(defaultIfEmpty(undefined)));
 
+    expect(mockAuth.authStateReady).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith([ROUTER_TOKENS.LOGIN]);
     expect(mockUserService.getUserByMailOrCreateUserIfNotExists).not.toHaveBeenCalled();
     expect(mockMemberService.loadMember).not.toHaveBeenCalled();
