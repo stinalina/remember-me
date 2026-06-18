@@ -9,12 +9,12 @@
     h-auto md:h-screen xl:h-screen"
     >
     <div class="flex flex-col justify-center items-center gap-4">
-      <h1 class="text-2xl md:text-3xl xl:text-4xl font-bold text-center">
+      <h1 class="text-xl md:text-3xl 2xl:text-4xl font-bold text-center">
         Willkommen<br/>
         <span data-testid="home-username">{{ this.username() }}</span>!
       </h1>
-      <div class="avatar indicator mt-4">
-        <div class="ring-primary ring-offset-base-100 w-36 rounded-full ring-2 ring-offset-2">
+      <div class="avatar indicator mt-3">
+        <div class="ring-primary ring-offset-base-100 w-28 rounded-full ring-2 ring-offset-2">
           <img alt="profil-bild"
             src="{{ this.avatarName() | avatarImage}}" />
         </div>
@@ -67,25 +67,25 @@
 
 <ng-template #menu>
   <nav class="flex flex-col gap-2 mt-2 xl:mt-4">
-    <button class="btn btn-md xl:btn-lg"
+    <button class="btn btn-sm md:btn-md 2xl:btn-lg"
       [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Notes"
       (click)="selectTab(SelectedTab.Notes)" type="button">
       <span class="material-symbols-outlined">note_stack</span>
       Meine Erinnerungen
     </button>
-        <button class="btn btn-md xl:btn-lg"
+        <button class="btn btn-sm md:btn-md 2xl:btn-lg"
       [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Stats"
       (click)="selectTab(SelectedTab.Stats)" type="button">
       <span class="material-symbols-outlined">query_stats</span>
       Statistiken
     </button>
-    <button class="btn btn-md xl:btn-lg"
+    <button class="btn btn-sm md:btn-md 2xl:btn-lg"
       [class.btn-soft]="this.selectedTabComponent() === SelectedTab.Settings"
       (click)="selectTab(SelectedTab.Settings)" type="button">
       <span class="material-symbols-outlined">settings</span>
       Einstellungen
     </button>
-    <button class="btn btn-md xl:btn-lg"
+    <button class="btn btn-sm md:btn-md 2xl:btn-lg"
       (click)="this.logout()" type="button">
       <span class="material-symbols-outlined">logout</span>
       Abmelden
