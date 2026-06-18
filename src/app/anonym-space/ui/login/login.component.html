@@ -1,6 +1,6 @@
 <reme-content-frame>
   <div class="max-w-md">
-    <h1 class="md:text-3xl xl:text-5xl text-2xl font-bold">Einloggen & <br/> Dran bleiben!</h1>
+    <h1 class="md:text-3xl xl:text-4xl 2xl:text-5xl text-2xl font-bold">Einloggen & <br/> Dran bleiben!</h1>
     <form
       class="md:py-4 xl:py-6 py-3 flex flex-col gap-3"
       (submit)="$event.preventDefault(); !(mail.mailControl.invalid || pw.passwordControl.invalid) &&
@@ -10,7 +10,7 @@
       <reme-checkbox preId="login-remember-me" [(value)]="this.rememberMeFlag">
         Angemeldet bleiben
       </reme-checkbox>
-      <button class="btn w-full" type="submit"
+      <button class="btn btn-md w-full" type="submit"
         [disabled]="mail.mailControl.invalid || pw.passwordControl.invalid">
         Einloggen
       </button>

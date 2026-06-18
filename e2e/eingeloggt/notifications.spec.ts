@@ -353,7 +353,7 @@ test.describe('Notifications Page', () => {
 
     await expect(card.getByRole('button', { name: 'Überfällige Notiz verwalten' })).toHaveCount(0);
     await expect(card.getByText('Archiviert', { exact: true })).toBeVisible();
-    await expect(card.getByText(`War fällig am: ${expectedDueDate}`, { exact: true })).toBeVisible();
+    await expect(card.getByText(`Zugestellt am: ${expectedDueDate}`, { exact: true })).toBeVisible();
 
     const editButton = card.getByTestId(/note-\d+-edit/);
     const deleteButton = card.getByTestId(/note-\d+-delete/);
