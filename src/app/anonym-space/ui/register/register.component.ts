@@ -66,8 +66,8 @@ export class RegisterComponent {
       }),
       finalize(() => this.isLoading.set(false))
     ).subscribe(() => {
-      this.toastService.showToast('Registrierung erfolgreich! Sie werden nun zum Login weitergeleitet.', ToastType.Success);
-      this.router.navigate([ROUTER_TOKENS.LOGIN]);
+      this.toastService.showToast('Registrierung erfolgreich! Du wirst nun weitergeleitet.', ToastType.Success);
+      this.router.navigate([ROUTER_TOKENS.HOME]);
     });
   }
 }

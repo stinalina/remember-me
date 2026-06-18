@@ -50,11 +50,6 @@ test.describe('RegisterComponent', () => {
     await page.getByTestId('register-repeat-pw-reme-password-input').fill('password123');
     await page.getByTestId('register-dsgvo-checkbox').check();
     await page.getByRole('button', { name: 'Loslegen!' }).click();
-    await page.waitForURL('/login');
-
-    // Warte 3 Sekunden, um sicherzustellen, dass der Benutzer in der Datenbank erstellt und geladen wurde
-    await page.waitForTimeout(3000);
-    
-    await expect(page).toHaveURL(/.*home/, { timeout: 5000 });
+    await expect(page).toHaveURL(/.*home/, { timeout: 10000 });
   });
 });
