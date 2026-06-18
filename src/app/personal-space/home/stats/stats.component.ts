@@ -88,9 +88,19 @@ export class StatsComponent {
 
   protected readonly timelineEntries = computed<TimelineEntry[]>(() => {
     const notes = this.notificationStore.value() ?? [];
-    const firstCreated = this.findFirstByDate(notes, (note) => note.createdAt);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const firstCreated = notes.length === 0 ? null : this.findFirstByDate(notes, (note) => note.createdAt);
     const firstDue = this.findFirstByDate(
-      notes.filter((note) => !note.isDraft),
+      notes.filter((note) => {
+        if (note.isDraft) {
+          return false;
+        }
+
+        const dueDate = this.parseDate(note.dueDate);
+        return !!dueDate && dueDate > today;
+      }),
       (note) => note.dueDate,
     );
 
@@ -107,13 +117,13 @@ export class StatsComponent {
       {
         id: 'first-created-note',
         title: 'Erste Note erstellt',
-        description: firstCreated?.note.subject ?? undefined,
+        description: firstCreated?.note.subject ?? '-',
         date: firstCreated?.date ?? null,
       },
       {
         id: 'first-due-note',
         title: 'Erste Note zugestellt',
-        description: firstDue?.note.subject ?? undefined,
+        description: firstDue?.note.subject ?? '-',
         date: firstDue?.date ?? null,
       },
     ];
