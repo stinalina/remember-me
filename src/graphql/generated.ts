@@ -1189,6 +1189,13 @@ export type DeleteNotificationByIdMutationVariables = Exact<{
 
 export type DeleteNotificationByIdMutation = { __typename?: 'mutation_root', delete_Notification_by_pk?: { __typename?: 'Notification', Id: any } | null };
 
+export type DeleteNotificationsByUserIdMutationVariables = Exact<{
+  userId: Scalars['uuid']['input'];
+}>;
+
+
+export type DeleteNotificationsByUserIdMutation = { __typename?: 'mutation_root', delete_Notification?: { __typename?: 'Notification_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'Notification', Id: any }> } | null };
+
 export type GetNotificationByUserIdQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['uuid']['input']>;
 }>;
@@ -1219,6 +1226,21 @@ export type UpdateStatsMutationVariables = Exact<{
 
 
 export type UpdateStatsMutation = { __typename?: 'mutation_root', update_User?: { __typename?: 'User_mutation_response', returning: Array<{ __typename?: 'User', Stats: any }> } | null };
+
+export type UpdateNameMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+  name: Scalars['String']['input'];
+}>;
+
+
+export type UpdateNameMutation = { __typename?: 'mutation_root', update_User?: { __typename?: 'User_mutation_response', returning: Array<{ __typename?: 'User', Name: string }> } | null };
+
+export type DeleteUserByIdMutationVariables = Exact<{
+  id: Scalars['uuid']['input'];
+}>;
+
+
+export type DeleteUserByIdMutation = { __typename?: 'mutation_root', delete_User?: { __typename?: 'User_mutation_response', affected_rows: number } | null };
 
 export const GetMemberByIdDocument = gql`
     query GetMemberById($id: uuid!) {
@@ -1334,6 +1356,27 @@ export const DeleteNotificationByIdDocument = gql`
       super(apollo);
     }
   }
+export const DeleteNotificationsByUserIdDocument = gql`
+    mutation DeleteNotificationsByUserId($userId: uuid!) {
+  delete_Notification(where: {UserId: {_eq: $userId}}) {
+    affected_rows
+    returning {
+      Id
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DeleteNotificationsByUserIdGQL extends Apollo.Mutation<DeleteNotificationsByUserIdMutation, DeleteNotificationsByUserIdMutationVariables> {
+    document = DeleteNotificationsByUserIdDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
 export const GetNotificationByUserIdDocument = gql`
     query GetNotificationByUserId($userId: uuid) {
   Notification(order_by: {CreatedAt: desc}, where: {UserId: {_eq: $userId}}) {
@@ -1415,6 +1458,44 @@ export const UpdateStatsDocument = gql`
   })
   export class UpdateStatsGQL extends Apollo.Mutation<UpdateStatsMutation, UpdateStatsMutationVariables> {
     document = UpdateStatsDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const UpdateNameDocument = gql`
+    mutation UpdateName($id: uuid!, $name: String!) {
+  update_User(where: {Id: {_eq: $id}}, _set: {Name: $name}) {
+    returning {
+      Name
+    }
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class UpdateNameGQL extends Apollo.Mutation<UpdateNameMutation, UpdateNameMutationVariables> {
+    document = UpdateNameDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const DeleteUserByIdDocument = gql`
+    mutation DeleteUserById($id: uuid!) {
+  delete_User(where: {Id: {_eq: $id}}) {
+    affected_rows
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class DeleteUserByIdGQL extends Apollo.Mutation<DeleteUserByIdMutation, DeleteUserByIdMutationVariables> {
+    document = DeleteUserByIdDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

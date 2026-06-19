@@ -21,3 +21,17 @@ mutation UpdateStats($id: uuid!, $stats: jsonb!) {
     }
   }
 }
+
+mutation UpdateName($id: uuid!, $name: String!) {
+  update_User(where: {Id: {_eq: $id}}, _set: {Name: $name}) {
+    returning {
+      Name
+    }
+  }
+}
+
+mutation DeleteUserById($id: uuid!) {
+  delete_User(where: {Id: {_eq: $id}}) {
+    affected_rows
+  }
+}
