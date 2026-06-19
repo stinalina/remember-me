@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Auth, browserLocalPersistence, browserSessionPersistence, createUserWithEmailAndPassword, sendPasswordResetEmail, setPersistence, signInAnonymously, signInWithEmailAndPassword, signOut } from '@angular/fire/auth';
+import { Auth, browserLocalPersistence, browserSessionPersistence, createUserWithEmailAndPassword, deleteUser, sendPasswordResetEmail, setPersistence, signInAnonymously, signInWithEmailAndPassword, signOut, updatePassword } from '@angular/fire/auth';
 import { LocalStorageService } from '@services/local-storage.service';
 import { ToastService, ToastType } from '@services/toast.service';
 import { User, UserCredential } from 'firebase/auth';
@@ -63,6 +63,28 @@ export class AuthService {
       catchError(error => {
         this.handleError(error);
         return EMPTY; 
+      })
+    );
+  }
+
+  public deleteAccount(): Observable<void> {
+    const user = this.fireAuth.currentUser;
+    if (!user) return EMPTY;
+    return from(deleteUser(user)).pipe(
+      catchError(error => {
+        this.handleError(error);
+        return EMPTY;
+      })
+    );
+  }
+
+  public updatePassword(newPassword: string): Observable<void> {
+    const user = this.fireAuth.currentUser;
+    if (!user) return EMPTY;
+    return from(updatePassword(user, newPassword)).pipe(
+      catchError(error => {
+        this.handleError(error);
+        return EMPTY;
       })
     );
   }

@@ -2,7 +2,7 @@ import { DestroyRef, inject, Injectable, signal } from "@angular/core";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Member } from '@app/personal-space/data/member.model';
 import { Preferences } from "@app/personal-space/data/preferences.model";
-import { GetMemberByIdGQL, UpdatePreferencesGQL, UpdateStatsGQL } from "@hasura/generated";
+import { DeleteUserByIdGQL, GetMemberByIdGQL, UpdateNameGQL, UpdatePreferencesGQL, UpdateStatsGQL } from "@hasura/generated";
 import { createEmptyYearStats, Stats } from "@app/personal-space/data/stats.model";
 import { ToastService, ToastType } from '@services/toast.service';
 import { catchError, EMPTY, map, Observable, tap } from "rxjs";
@@ -13,6 +13,8 @@ export class MemberService {
   private readonly toastService = inject(ToastService);
   private readonly updatePreferencesGQL = inject(UpdatePreferencesGQL);
   private readonly updateStatsGQL = inject(UpdateStatsGQL);
+  private readonly updateNameGQL = inject(UpdateNameGQL);
+  private readonly deleteUserByIdGQL = inject(DeleteUserByIdGQL);
 
   private readonly getMemberByIdGQL = inject(GetMemberByIdGQL);
 
@@ -96,6 +98,36 @@ export class MemberService {
           throw new Error(`Hasura query did not return user data for id: ${id}`);
         }
       })
+    );
+  }
+
+  public updateName(userId: string, name: string): Observable<void> {
+    return this.updateNameGQL.mutate({ variables: { id: userId, name } }).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      catchError(error => {
+        console.error('Error updating user name:', error);
+        this.toastService.showToast('Upss, das hat nicht geklappt. Das Backend ist momentan nicht erreichbar.', ToastType.Error);
+        return EMPTY;
+      }),
+      tap(() => this.member.update(current => {
+        if (current) {
+          return { ...current, name };
+        }
+        return current;
+      })),
+      map(() => void(0))
+    );
+  }
+
+  public deleteMember(userId: string): Observable<void> {
+    return this.deleteUserByIdGQL.mutate({ variables: { id: userId } }).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      catchError(error => {
+        console.error('Error deleting user:', error);
+        this.toastService.showToast('Upss, das hat nicht geklappt. Das Backend ist momentan nicht erreichbar.', ToastType.Error);
+        return EMPTY;
+      }),
+      map(() => void(0))
     );
   }
 }
