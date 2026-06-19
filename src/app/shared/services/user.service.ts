@@ -14,11 +14,6 @@ export class UserService {
   public readonly currUser = signal<IUser | null>(null);
   public readonly freeNotificationsLimit = signal<number>(5);
 
-  public readonly username = computed<string | null>(() => {
-    this.localStorageService.storageChangeSignal();
-    return this.localStorageService.getUserMail?.split('@')[0] ?? null;
-  });
-
   public readonly createdNotesThisMonthCount = computed<number>(() => {
     this.localStorageService.storageChangeSignal();
     return this.localStorageService.getSendedNotificationCount(this.localStorageService.getUserMail ?? '');

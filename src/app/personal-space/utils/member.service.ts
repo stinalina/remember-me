@@ -2,8 +2,8 @@ import { DestroyRef, inject, Injectable, signal } from "@angular/core";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Member } from '@app/personal-space/data/member.model';
 import { Preferences } from "@app/personal-space/data/preferences.model";
-import { DeleteUserByIdGQL, GetMemberByIdGQL, UpdateNameGQL, UpdatePreferencesGQL, UpdateStatsGQL } from "@hasura/generated";
 import { createEmptyYearStats, Stats } from "@app/personal-space/data/stats.model";
+import { DeleteUserByIdGQL, GetMemberByIdGQL, UpdateNameGQL, UpdatePreferencesGQL, UpdateStatsGQL } from "@hasura/generated";
 import { ToastService, ToastType } from '@services/toast.service';
 import { catchError, EMPTY, map, Observable, tap } from "rxjs";
 
@@ -11,6 +11,7 @@ import { catchError, EMPTY, map, Observable, tap } from "rxjs";
 export class MemberService {
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
+
   private readonly updatePreferencesGQL = inject(UpdatePreferencesGQL);
   private readonly updateStatsGQL = inject(UpdateStatsGQL);
   private readonly updateNameGQL = inject(UpdateNameGQL);
