@@ -90,7 +90,8 @@ export class MemberService {
             id,
             name: data.Name,
             preferences: data.Preferences,
-            stats: data.Stats
+            stats: data.Stats,
+            mail: data.Mail
           } satisfies Member);
         }
         else {

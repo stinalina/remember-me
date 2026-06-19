@@ -1157,7 +1157,7 @@ export type GetMemberByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetMemberByIdQuery = { __typename?: 'query_root', User: Array<{ __typename?: 'User', Name: string, Preferences: any, Stats: any }> };
+export type GetMemberByIdQuery = { __typename?: 'query_root', User: Array<{ __typename?: 'User', Name: string, Preferences: any, Stats: any, Mail: string }> };
 
 export type UpdatePreferencesMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -1189,12 +1189,12 @@ export type DeleteNotificationByIdMutationVariables = Exact<{
 
 export type DeleteNotificationByIdMutation = { __typename?: 'mutation_root', delete_Notification_by_pk?: { __typename?: 'Notification', Id: any } | null };
 
-export type DeleteNotificationsByUserIdMutationVariables = Exact<{
+export type DeleteArchivedNotificationsByUserIdMutationVariables = Exact<{
   userId: Scalars['uuid']['input'];
 }>;
 
 
-export type DeleteNotificationsByUserIdMutation = { __typename?: 'mutation_root', delete_Notification?: { __typename?: 'Notification_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'Notification', Id: any }> } | null };
+export type DeleteArchivedNotificationsByUserIdMutation = { __typename?: 'mutation_root', delete_Notification?: { __typename?: 'Notification_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'Notification', Id: any }> } | null };
 
 export type GetNotificationByUserIdQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['uuid']['input']>;
@@ -1248,6 +1248,7 @@ export const GetMemberByIdDocument = gql`
     Name
     Preferences
     Stats
+    Mail
   }
 }
     `;
@@ -1356,9 +1357,11 @@ export const DeleteNotificationByIdDocument = gql`
       super(apollo);
     }
   }
-export const DeleteNotificationsByUserIdDocument = gql`
-    mutation DeleteNotificationsByUserId($userId: uuid!) {
-  delete_Notification(where: {UserId: {_eq: $userId}}) {
+export const DeleteArchivedNotificationsByUserIdDocument = gql`
+    mutation DeleteArchivedNotificationsByUserId($userId: uuid!) {
+  delete_Notification(
+    where: {UserId: {_eq: $userId}, _and: {IsArchived: {_eq: true}}}
+  ) {
     affected_rows
     returning {
       Id
@@ -1370,8 +1373,8 @@ export const DeleteNotificationsByUserIdDocument = gql`
   @Injectable({
     providedIn: 'root'
   })
-  export class DeleteNotificationsByUserIdGQL extends Apollo.Mutation<DeleteNotificationsByUserIdMutation, DeleteNotificationsByUserIdMutationVariables> {
-    document = DeleteNotificationsByUserIdDocument;
+  export class DeleteArchivedNotificationsByUserIdGQL extends Apollo.Mutation<DeleteArchivedNotificationsByUserIdMutation, DeleteArchivedNotificationsByUserIdMutationVariables> {
+    document = DeleteArchivedNotificationsByUserIdDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);
