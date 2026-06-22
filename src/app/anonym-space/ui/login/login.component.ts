@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { ROUTER_TOKENS } from '@app/app.routes';
@@ -28,6 +28,7 @@ export class LoginComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router); 
 
+  protected readonly isLoading = signal(false);
   protected errorMessage: string | null = null;
   protected rememberMeFlag = true;
 
@@ -39,6 +40,7 @@ export class LoginComponent {
       return;
     }
 
+    this.isLoading.set(true);
     this.authenticationService.signIn(mail, password, rememberMe).pipe(
       takeUntilDestroyed(this.destroyRef),
     ).subscribe(
