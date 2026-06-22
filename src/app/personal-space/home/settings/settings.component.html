@@ -1,6 +1,205 @@
 <reme-content-frame>
-  <section>
-    <h1>Settings</h1>
-    <p>Manage your personal preferences and account options from this page.</p>
-  </section>
+	<section class="max-w-2xl mx-auto">
+		<h1 class="text-2xl font-bold mb-2">Einstellungen</h1>
+		<p class="text-base-content/70 mb-8">Verwalte deine persönlichen Daten und Kontooptionen.</p>
+
+		@if (!this.member()) {
+			<p>No User logged in</p>
+		} @else {
+			<!-- Profildaten -->
+			<div class="card bg-base-200 mb-6">
+				<div class="card-body gap-4">
+					<h2 class="card-title text-lg self-center">Profildaten</h2>
+	
+					<!-- Username -->
+					<div class="grid grid-cols-[minmax(8rem,1fr)_2fr] items-center gap-3">
+						<label class="font-medium" for="username-input">Benutzername</label>
+						<div class="join w-full">
+							<input
+								id="username-input"
+								type="text"
+								class="input join-item w-full"
+								[(ngModel)]="this.usernameValue"
+								[disabled]="!editingUsername()"
+								aria-label="Benutzername"
+							/>
+							@if (!editingUsername()) {
+								<button
+									type="button"
+									class="btn btn-outline join-item"
+									aria-label="Benutzernamen bearbeiten"
+									(click)="startEditing('username')"
+								>
+									<span aria-hidden="true">&#9998;</span>
+								</button>
+							} @else {
+								<button
+									type="button"
+									class="btn btn-success join-item"
+									aria-label="Benutzernamen speichern"
+									[disabled]="isSaving()"
+									(click)="saveUsername()"
+								>
+									@if (isSaving()) {
+										<span class="loading loading-spinner loading-xs" aria-hidden="true"></span>
+									} @else {
+										<span aria-hidden="true">&#10003;</span>
+									}
+								</button>
+								<button
+									type="button"
+									class="btn btn-ghost join-item"
+									aria-label="Abbrechen"
+									(click)="cancelEditing('username')"
+								>
+									<span aria-hidden="true">&#10005;</span>
+								</button>
+							}
+						</div>
+					</div>
+	
+					<!-- Standard-E-Mail -->
+					<div class="grid grid-cols-[minmax(8rem,1fr)_2fr] items-center gap-3">
+						<label class="font-medium tooltip" for="default-mail-input"
+							data-tip="Diese E-Mail wird zum Vorausfüllen neuer Benachrichtigungen verwendet.">
+							Standard-E-Mail *
+						</label>
+						<div class="join w-full">
+							<input
+								id="default-mail-input"
+								type="email"
+								class="input join-item w-full"
+								[(ngModel)]="this.defaultMailValue"
+								[disabled]="!editingDefaultMail()"
+								aria-label="Standard-E-Mail"
+								aria-describedby="default-mail-hint"
+							/>
+							@if (!editingDefaultMail()) {
+								<button
+									type="button"
+									class="btn btn-outline join-item"
+									aria-label="Standard-E-Mail bearbeiten"
+									(click)="startEditing('defaultMail')"
+								>
+									<span aria-hidden="true">&#9998;</span>
+								</button>
+							} @else {
+								<button
+									type="button"
+									class="btn btn-success join-item"
+									aria-label="Standard-E-Mail speichern"
+									[disabled]="isSaving()"
+									(click)="saveDefaultMail()"
+								>
+									@if (isSaving()) {
+										<span class="loading loading-spinner loading-xs" aria-hidden="true"></span>
+									} @else {
+										<span aria-hidden="true">&#10003;</span>
+									}
+								</button>
+								<button
+									type="button"
+									class="btn btn-ghost join-item"
+									aria-label="Abbrechen"
+									(click)="cancelEditing('defaultMail')"
+								>
+									<span aria-hidden="true">&#10005;</span>
+								</button>
+							}
+						</div>
+					</div>
+	
+					<!-- Passwort -->
+					<div class="grid grid-cols-[minmax(8rem,1fr)_2fr] items-center gap-3">
+						<label class="font-medium" for="password-input">Passwort</label>
+						<div class="join w-full">
+							<input id="password-input"
+								type="password" minlength="6"
+								class="input join-item w-full"
+								placeholder="************"
+								[(ngModel)]="this.passwordValue"
+								[disabled]="!editingPassword()"
+								aria-label="Neues Passwort"
+								autocomplete="new-password"
+							/>
+							@if (!editingPassword()) {
+								<button
+									type="button"
+									class="btn btn-outline join-item"
+									aria-label="Passwort ändern"
+									(click)="startEditing('password')"
+								>
+									<span aria-hidden="true">&#9998;</span>
+								</button>
+							} @else {
+								<button
+									type="button"
+									class="btn btn-success join-item"
+									aria-label="Passwort speichern"
+									[disabled]="isSaving() || passwordValue().length < 6"
+									(click)="savePassword()"
+								>
+									@if (isSaving()) {
+										<span class="loading loading-spinner loading-xs" aria-hidden="true"></span>
+									} @else {
+										<span aria-hidden="true">&#10003;</span>
+									}
+								</button>
+								<button
+									type="button"
+									class="btn btn-ghost join-item"
+									aria-label="Abbrechen"
+									(click)="cancelEditing('password')"
+								>
+									<span aria-hidden="true">&#10005;</span>
+								</button>
+							}
+						</div>
+					</div>
+				</div>
+			</div>
+	
+			<!-- Rechtliches & Konto -->
+			<div class="card bg-base-200 mb-6">
+				<div class="card-body gap-3 flex flex-col justify-items-center">
+					<h2 class="card-title text-lg self-center">Rechtliches &amp; Konto</h2>
+	
+					<a
+						type="button"
+						class="btn btn-outline btn-sm w-fit self-center"
+						onclick="dsgvo.showModal()"
+					>
+						Datenschutzerklärung lesen
+				</a>
+	
+					<div class="divider my-1"></div>
+	
+					<div>
+						<p class="text-sm text-base-content/70 mb-2">
+							Dein Profil und alle gespeicherten Daten werden unwiderruflich gelöscht.
+						</p>
+						<button
+							type="button"
+							class="btn btn-error btn-sm"
+							(click)="deleteConfirmDialog.show()"
+						>
+							Profil löschen
+						</button>
+					</div>
+				</div>
+			</div>
+		}
+	</section>
 </reme-content-frame>
+
+<!-- Löschen Bestätigungs-Dialog -->
+<reme-confirm-dialog
+	#deleteConfirmDialog
+	title="Profil wirklich löschen?"
+	confirmLabel="Ja, Profil löschen"
+	cancelLabel="Abbrechen"
+	confirmButtonClass="btn-error"
+	(confirm)="deleteAccount()"
+>
+	<strong>Achtung!</strong> Diese Aktion ist unwiderruflich. Dein Konto und bereits zugestellte Notifications werden gelöscht. Noch offene werden zugestellt.
+</reme-confirm-dialog>

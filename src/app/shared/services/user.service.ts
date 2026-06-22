@@ -19,11 +19,16 @@ export class UserService {
     return this.localStorageService.getSendedNotificationCount(this.localStorageService.getUserMail ?? '');
   });
 
+  private normalizeMail(mail: string): string {
+    return mail.trim().toLowerCase();
+  }
+
   public addUserToDb(mail: string): Observable<IUser> {
-    const name = mail.split('@')[0];
-    return this.insertUserGQL.mutate({ variables: { mail, name, preferences: InitialPreferences } }).pipe(
+    const normalizedMail = this.normalizeMail(mail);
+    const name = mail.split('@')[0]; // keep camelCase for
+    return this.insertUserGQL.mutate({ variables: { mail: normalizedMail, name, preferences: InitialPreferences } }).pipe(
       map(res => ({
-        mail,
+        mail: normalizedMail,
         name: res.data?.insert_User?.returning[0].Name ?? '',
         userId: res.data?.insert_User?.returning[0].Id,
         newCreated: true
@@ -32,31 +37,33 @@ export class UserService {
   }
 
   public getUserByMailOrCreateUserIfNotExists(mail: string): Observable<IUser> {
-    return this.loadUserFromDb(mail).pipe(
+    const normalizedMail = this.normalizeMail(mail);
+    return this.loadUserFromDb(normalizedMail).pipe(
       switchMap(user => {
         if (user) {
           return of(user);
         } else {
-          return this.addUserToDb(mail);
+          return this.addUserToDb(normalizedMail);
         }
       })
     );
   }
 
   private loadUserFromDb(mail: string): Observable<IUser | null> {
-    return this.getUserByMailGQL.fetch({ variables: { mail } }).pipe(
+    const normalizedMail = this.normalizeMail(mail);
+    return this.getUserByMailGQL.fetch({ variables: { mail: normalizedMail } }).pipe(
       map(result => {
         const userData = result.data?.User[0];
         if (userData) {
           this.currUser.set({
-            mail,
+            mail: normalizedMail,
             name: userData.Name,
             userId: userData.Id,
             newCreated: false
           } satisfies IUser);
         }
         else {
-          console.error(`User with mail ${mail} not found.`);
+          console.info(`User with mail ${normalizedMail} not found and will be created.`);
           this.currUser.set(null);
         }
         return this.currUser();

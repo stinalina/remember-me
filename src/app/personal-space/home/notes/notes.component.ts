@@ -74,14 +74,15 @@ export class NotesComponent {
   }
 
   protected openCreateNoteModal(): void {
-    NotificationDialog.open(this.dialog, 'create').subscribe((result: INotification | undefined) => {
-      if (result) {
-        this.memberService.increaseStatsCount().subscribe();
-        this.notificationStore.insertNotification(result);
-      }
-      else {
-        // Creation aborted
-      }
+    NotificationDialog.open(this.dialog, 'create', undefined, this.memberService.member()!.preferences.defaultMail)
+      .subscribe((result: INotification | undefined) => {
+        if (result) {
+          this.memberService.increaseStatsCount().subscribe();
+          this.notificationStore.insertNotification(result);
+        }
+        else {
+          // Creation aborted
+        }
     });
   }
 

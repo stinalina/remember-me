@@ -33,32 +33,40 @@ import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
 })
 export class NotificationEditorComponent implements OnInit, OnDestroy {
   public readonly editorMode = input<'create' | 'edit'>('create');
+  public readonly defaultMail = input<string | undefined>(undefined);
   public readonly notification = input<INotification | undefined>(undefined);
   public readonly notificationChanged = output<INotification | undefined>();
 
   private readonly notificationService = inject(NotificationService);
-  private readonly authenticationService = inject(AuthService);
+  private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
   private readonly sessionStorage = inject(SESSION_STORAGE);
   private readonly localStorageService = inject(LocalStorageService);
   private readonly toastService = inject(ToastService);
   private readonly typewriterEffectService = inject(TypewriterEffectService);
   
-  protected readonly isLoggedIn = this.authenticationService.isAuthenticated.asReadonly();
+  protected readonly isLoggedIn = this.authService.isAuthenticated.asReadonly();
   private readonly freeNotificationsLimit = this.userService.freeNotificationsLimit;
   private readonly limitReached = signal<boolean>(false);
 
   public readonly editor: Editor = new Editor();
   public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);
 
-  private readonly notificationModel = signal({
-    subject: '',
-    additionalInfo: '',
-    content: '',
-    mail: this.localStorageService.getUserMail ?? '',
-    dateTime: this.tomorrow,
-    isDraft: false,
-    isArchived: false,
+  private readonly notificationModel = linkedSignal(() => {
+    const notification = this.notification();
+    let dueDate = notification?.dueDate;
+    if (dueDate) {
+      dueDate = new DatePipe('en-US').transform(dueDate, 'yyyy-MM-dd')!;
+    }
+    return ({
+      subject: notification?.subject ?? '',
+      additionalInfo: '',
+      content: notification?.content ?? '',
+      mail: notification?.mail ?? this.defaultMail() ?? this.localStorageService.getUserMail ?? '',
+      dateTime: dueDate ?? this.tomorrow,
+      isDraft: notification?.isDraft ?? false,
+      isArchived: notification?.isArchived ?? false,
+    })
   });
   
   protected readonly notificationForm = form(this.notificationModel, (path) => {
@@ -128,27 +136,6 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   }
 
   constructor() {
-    effect(() => {
-      const notification = this.notification();
-      if (!notification) {
-        return;
-      }
-      let dueDate = notification.dueDate;
-      if (dueDate) {
-        dueDate = new DatePipe('en-US').transform(dueDate, 'yyyy-MM-dd')!;
-      }
-
-      this.notificationModel.set({
-        subject: notification.subject ?? '',
-        additionalInfo: '',
-        content: notification.content ?? '',
-        mail: notification.mail ?? '',
-        dateTime: dueDate ?? this.tomorrow,
-        isDraft: notification.isDraft ?? false,
-        isArchived: notification.isArchived ?? false,
-      });
-    });
-
     effect(() => {
       if (this.limitReached() && this.editorMode() === 'create') {
         this.resetForm();

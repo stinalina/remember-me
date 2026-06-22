@@ -8,7 +8,7 @@ import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-fram
 import { ToastService, ToastType } from '@services/toast.service';
 import { AuthService } from '@shared/utils/authentication/auth.service';
 import { CheckboxComponent } from '@shared/utils/checkbox/checkbox.component';
-import { catchError, EMPTY, finalize } from 'rxjs';
+import { catchError, EMPTY } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,7 +57,7 @@ export class RegisterComponent {
         this.toastService.showToast('Registrierung fehlgeschlagen: ' + error.message, ToastType.Error);
         return EMPTY;
       }),
-      finalize(() => this.isLoading.set(false))
+      //finalize(() => this.isLoading.set(false)) intenionally not used, da wir auch während der Weiterleitung noch isLOading true haben wollen
     ).subscribe(() => {
       this.toastService.showToast('Registrierung erfolgreich! Du wirst nun weitergeleitet.', ToastType.Success);
       this.router.navigate([ROUTER_TOKENS.HOME]);

@@ -6,11 +6,14 @@
       <reme-password preId="register-pw" #password></reme-password>
       <reme-password preId="register-repeat-pw" #repeatPassword></reme-password>
       <reme-checkbox preId="register-dsgvo" [(value)]="this.acceptDsgvoFlag">
-        Akzeptiere <a class="reme-link" onclick="dsgvo.showModal()">DSGVO</a>
+        Akzeptiere <a class="reme-link" onclick="dsgvo.showModal()">DSGVO *</a>
       </reme-checkbox>
       <button class="btn btn-md w-full" type="submit"
         [disabled]="mail.mailControl.invalid || password.passwordControl.invalid || repeatPassword.passwordControl.invalid || !acceptDsgvoFlag || this.isLoading()"
         (click)="register(mail.mailControl.value!, password.passwordControl.value!, repeatPassword.passwordControl.value!)">
+        @if (this.isLoading()) {
+          <span class="loading loading-spinner"></span>
+        }
         Loslegen!
       </button>
       @if (errorMessage) {

@@ -21,6 +21,11 @@ export class MemberService {
 
   public readonly member = signal<Member | null>(null);
 
+  public updateMail(userId: string, mail: string): Observable<void> {
+    const updatedPreferences = { ...this.member()?.preferences, defaultMail: mail } as Preferences;
+    return this.updatePreferences(userId, updatedPreferences);
+  }
+
   public updatePreferences(userId: string, preferences: Preferences): Observable<void> {
     return this.updatePreferencesGQL.mutate({ variables: { id: userId, preferences } }).pipe(
       takeUntilDestroyed(this.destroyRef),
