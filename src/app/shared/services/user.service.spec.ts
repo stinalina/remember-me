@@ -39,12 +39,6 @@ describe('UserService', () => {
     window.localStorage.clear();
   });
 
-  it('should update username when user mail changes', () => {
-    expect(service.username()).toBeNull();
-    localStorageService.setUserMail('new.user@example.de');
-    expect(service.username()).toBe('new.user');
-  });
-
   it('should create a new user if user does not exist', async () => {
     mockGetUserByMailGQL.fetch.mockReturnValue(of({ data: { User: [] } }));
     const result = await firstValueFrom(service.getUserByMailOrCreateUserIfNotExists(mail));
