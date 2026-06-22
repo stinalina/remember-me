@@ -1,4 +1,5 @@
 import { test, expect, type APIRequestContext, type Locator, type Page } from '@playwright/test';
+import { Global } from '../global-helper.object';
 
 test.describe('Notifications Page', () => {
   const testuserEmail = 'testuser@mail.de';
@@ -178,15 +179,7 @@ test.describe('Notifications Page', () => {
 
   test.beforeEach(async ({ page, request }) => {
     await deleteSeededNotifications(request);
-
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
-    await page.getByRole('button', { name: 'Dran bleiben' }).click();
-    await page.getByTestId('login-reme-mail-input').fill(testuserEmail);
-    await page.getByTestId('login-reme-password-input').fill(testuserPassword);
-    await page.getByRole('button', { name: 'Einloggen' }).click();
-
-    await expect(page).toHaveURL(/.*home/);
+    await Global.login(page, testuserEmail, testuserPassword);
   });
 
   test.afterEach(async ({ request }) => {

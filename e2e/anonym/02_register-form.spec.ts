@@ -10,7 +10,7 @@ test.describe('RegisterComponent', () => {
 
   test('should open dsgvo modal on clicking dsgvo', async ({ page }) => {
     const registerComponent = page.locator('reme-register');
-    await registerComponent.getByText('DSGVO', {exact: true}).click();
+    await registerComponent.getByText('DSGVO').click();
     
     const modal = page.locator('#dsgvo');
     await expect(modal).toBeVisible();
