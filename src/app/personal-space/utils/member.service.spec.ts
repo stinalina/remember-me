@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { GetMemberByIdGQL, UpdatePreferencesGQL, UpdateStatsGQL } from '@hasura/generated';
+import { DeleteUserByIdGQL, GetMemberByIdGQL, UpdateNameGQL, UpdatePreferencesGQL, UpdateStatsGQL } from '@hasura/generated';
 import { ToastService, ToastType } from '@services/toast.service';
 import { MemberService } from './member.service';
 import { createEmptyYearStats } from '@app/personal-space/data/stats.model';
@@ -14,6 +14,8 @@ describe('MemberService', () => {
   let mockGetMemberByIdGQL: { fetch: ReturnType<typeof vi.fn> };
   let mockUpdatePreferencesGQL: { mutate: ReturnType<typeof vi.fn> };
   let mockUpdateStatsGQL: { mutate: ReturnType<typeof vi.fn> };
+  let mockUpdateNameGQL: { mutate: ReturnType<typeof vi.fn> };
+  let mockDeleteUserByIdGQL: { mutate: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
     mockGetMemberByIdGQL = {
@@ -34,6 +36,18 @@ describe('MemberService', () => {
       ),
     };
 
+    mockUpdateNameGQL = {
+      mutate: vi.fn().mockReturnValue(
+        of({ data: { update_User: { returning: [{ Name: 'Max Mustermann' }] } } })
+      ),
+    };
+
+    mockDeleteUserByIdGQL = {
+      mutate: vi.fn().mockReturnValue(
+        of({ data: { delete_User_by_pk: { id: 'user-123' } } })
+      ),
+    };
+
     TestBed.configureTestingModule({
       providers: [
         MemberService,
@@ -41,6 +55,8 @@ describe('MemberService', () => {
         { provide: GetMemberByIdGQL, useValue: mockGetMemberByIdGQL },
         { provide: UpdatePreferencesGQL, useValue: mockUpdatePreferencesGQL },
         { provide: UpdateStatsGQL, useValue: mockUpdateStatsGQL },
+        { provide: UpdateNameGQL, useValue: mockUpdateNameGQL },
+        { provide: DeleteUserByIdGQL, useValue: mockDeleteUserByIdGQL },
       ],
     });
 
@@ -83,7 +99,7 @@ describe('MemberService', () => {
 
   describe('updatePreferences', () => {
     it('should update preferences in the member signal', () => {
-      service.member.set({ id: 'user-123', name: 'Max Mustermann', preferences: { avatarName: 'Kingston' }, stats: {} });
+      service.member.set({ id: 'user-123', name: 'Max Mustermann', mail: '', preferences: { avatarName: 'Kingston' }, stats: {} });
 
       service.updatePreferences('user-123', { avatarName: 'Lyra' }).subscribe();
 
@@ -131,6 +147,7 @@ describe('MemberService', () => {
         id: 'user-123',
         name: 'Max Mustermann',
         preferences: { avatarName: 'Kingston' },
+        mail: '',
         stats: {
           [currentYear]: {
             '01': 5,
@@ -166,6 +183,7 @@ describe('MemberService', () => {
         id: 'user-123',
         name: 'Max Mustermann',
         preferences: { avatarName: 'Kingston' },
+        mail: '',
         stats: {
           [previousYear]: {
             '01': 5,
@@ -207,6 +225,7 @@ describe('MemberService', () => {
         id: 'user-123',
         name: 'Max Mustermann',
         preferences: { avatarName: 'Kingston' },
+        mail: '',
         stats: {
           [currentYear]: {
             '01': 5,

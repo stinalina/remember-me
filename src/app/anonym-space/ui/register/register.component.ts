@@ -1,17 +1,14 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
+import { MailComponent } from '@app/anonym-space/ui/shared/mail/mail.component';
+import { PasswordComponent } from '@app/anonym-space/ui/shared/password/password.component';
 import { ROUTER_TOKENS } from '@app/app.routes';
+import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
 import { ToastService, ToastType } from '@services/toast.service';
 import { AuthService } from '@shared/utils/authentication/auth.service';
-import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
 import { CheckboxComponent } from '@shared/utils/checkbox/checkbox.component';
-import { MailComponent } from '@app/anonym-space/ui/shared/mail/mail.component';
-import { ModalComponent } from '@app/shared/ui/modal/modal.component';
-import { PasswordComponent } from '@app/anonym-space/ui/shared/password/password.component';
-import { TextFrameComponent } from '@app/shared/ui/text-frame/text-frame.component';
-import * as dsgvo from '@assets/text/dsgvo.txt';
-import { catchError, EMPTY, finalize } from 'rxjs';
+import { catchError, EMPTY } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -21,9 +18,7 @@ import { catchError, EMPTY, finalize } from 'rxjs';
     CheckboxComponent,
     ContentFrameComponent,
     MailComponent,
-    ModalComponent,
     PasswordComponent,
-    TextFrameComponent
   ],
 })
 export class RegisterComponent {
@@ -31,8 +26,6 @@ export class RegisterComponent {
   private readonly toastService = inject(ToastService)
   private readonly destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
-
-  protected readonly DsgvoText = dsgvo.default;
   
   protected readonly isLoading = signal<boolean>(false);
   protected errorMessage: string | null = null;
@@ -62,9 +55,10 @@ export class RegisterComponent {
       catchError(error => {
         console.error('Registration error:', error);
         this.toastService.showToast('Registrierung fehlgeschlagen: ' + error.message, ToastType.Error);
+        this.isLoading.set(false);
         return EMPTY;
       }),
-      finalize(() => this.isLoading.set(false))
+      // finalize(() => this.isLoading.set(false)) intentionally not used, da wir auch während der Weiterleitung noch isLoading true haben wollen
     ).subscribe(() => {
       this.toastService.showToast('Registrierung erfolgreich! Du wirst nun weitergeleitet.', ToastType.Success);
       this.router.navigate([ROUTER_TOKENS.HOME]);
