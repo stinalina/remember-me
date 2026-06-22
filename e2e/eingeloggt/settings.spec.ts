@@ -88,6 +88,12 @@ test.describe('Settings Page', () => {
 		await passwordInput.fill(updatedPassword);
 		await passwordRow.getByRole('button', { name: 'Passwort speichern' }).click();
 
+		const openDialog = page.locator('dialog[open]');
+		await expect(openDialog).toBeVisible();
+		await expect(openDialog.getByRole('heading', { name: 'Passwort bestätigen' })).toBeVisible();
+		await openDialog.locator('#current-password-input').fill(testuserPassword);
+		await openDialog.locator('#confirm-deletion').click();
+
 		await expect(page.getByText('Passwort erfolgreich geändert.')).toBeVisible();
 
 		await page.getByRole('button', { name: 'Abmelden' }).click();
@@ -103,16 +109,15 @@ test.describe('Settings Page', () => {
 		const openDialog = page.locator('dialog[open]');
 		await expect(openDialog).toBeVisible();
 		await expect(openDialog.getByRole('heading', { name: 'Profil wirklich löschen?' })).toBeVisible();
+		await openDialog.locator('#delete-account-password-input').fill(testuserPassword);
 		await expect(openDialog.locator('#confirm-deletion')).toBeVisible();
 
 		await openDialog.locator('#confirm-deletion').click();
 		await expect(page).toHaveURL(/.*login/);
 		await expect(page.getByText('Dein Profil wurde erfolgreich gelöscht.')).toBeVisible();
 
-		await page.waitForTimeout(3000);
-
 		await page.getByTestId('login-reme-mail-input').fill(testuserEmail);
-		await page.getByTestId('login-reme-password-input').fill(updatedPassword);
+		await page.getByTestId('login-reme-password-input').fill(testuserPassword);
 		await page.getByRole('button', { name: 'Einloggen' }).click();
 
 		await expect(page).toHaveURL(/.*login/);

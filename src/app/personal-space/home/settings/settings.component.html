@@ -181,7 +181,7 @@
 						<button
 							type="button"
 							class="btn btn-error btn-sm"
-							(click)="deleteConfirmDialog.show()"
+							(click)="openDeleteAccountDialog()"
 						>
 							Profil löschen
 						</button>
@@ -199,7 +199,43 @@
 	confirmLabel="Ja, Profil löschen"
 	cancelLabel="Abbrechen"
 	confirmButtonClass="btn-error"
+	[confirmDisabled]="isSaving() || deleteAccountPasswordValue().trim().length === 0"
 	(confirm)="deleteAccount()"
 >
-	<strong>Achtung!</strong> Diese Aktion ist unwiderruflich. Dein Konto und bereits zugestellte Notifications werden gelöscht. Noch offene werden zugestellt.
+	<p class="mb-3"><strong>Achtung!</strong> Diese Aktion ist unwiderruflich. Dein Konto und bereits zugestellte Notifications werden gelöscht. Noch offene werden zugestellt.</p>
+	<label class="label" for="delete-account-password-input">
+		<span class="label-text">Aktuelles Passwort</span>
+	</label>
+	<input
+		id="delete-account-password-input"
+		type="password"
+		class="input input-bordered w-full"
+		[(ngModel)]="deleteAccountPasswordValue"
+		placeholder="Aktuelles Passwort eingeben"
+		autocomplete="current-password"
+		aria-label="Aktuelles Passwort für Kontolöschung"
+	/>
+</reme-confirm-dialog>
+
+<reme-confirm-dialog
+	#passwordConfirmDialog
+	title="Passwort bestätigen"
+	confirmLabel="Passwort ändern"
+	cancelLabel="Abbrechen"
+	confirmButtonClass="btn-primary"
+	[confirmDisabled]="isSaving() || currentPasswordValue().trim().length === 0"
+	(confirm)="confirmSavePassword()"
+>
+	<label class="label" for="current-password-input">
+		<span class="label-text">Aktuelles Passwort</span>
+	</label>
+	<input
+		id="current-password-input"
+		type="password"
+		class="input input-bordered w-full"
+		[(ngModel)]="currentPasswordValue"
+		placeholder="Aktuelles Passwort eingeben"
+		autocomplete="current-password"
+		aria-label="Aktuelles Passwort"
+	/>
 </reme-confirm-dialog>

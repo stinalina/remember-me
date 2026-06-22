@@ -14,6 +14,7 @@ export class ConfirmDialog {
   public readonly cancelLabel = input('Abbrechen');
   public readonly confirmLabel = input('Bestätigen');
   public readonly confirmButtonClass = input('btn-error');
+  public readonly confirmDisabled = input(false);
   public readonly secondaryConfirmLabel = input<string | undefined>(undefined);
   public readonly secondaryConfirmButtonClass = input('btn-warning');
   public readonly confirm = output<void>();

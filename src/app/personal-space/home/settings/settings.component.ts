@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, linkedSignal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, linkedSignal, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -35,9 +35,13 @@ export class SettingsComponent {
   protected readonly isSaving = signal(false);
 
   protected readonly member = this.memberService.member;
+  protected readonly passwordConfirmDialog = viewChild.required<ConfirmDialog>('passwordConfirmDialog');
+  protected readonly deleteConfirmDialog = viewChild.required<ConfirmDialog>('deleteConfirmDialog');
   protected readonly defaultMailValue = linkedSignal(() => this.member()?.preferences?.defaultMail ?? this.member()?.mail);
   protected readonly usernameValue = linkedSignal(() => this.member()?.name ?? 'Unbekannt'); //Bei Usern, die nach v1.0.0 eingeführt wurden, ist der Name immer gesetzt. 
   protected readonly passwordValue = signal('');
+  protected readonly currentPasswordValue = signal('');
+  protected readonly deleteAccountPasswordValue = signal('');
 
   protected startEditing(field: 'username' | 'defaultMail' | 'password'): void {
     if (field === 'username') {
@@ -48,6 +52,7 @@ export class SettingsComponent {
     }
     if (field === 'password') {
       this.passwordValue.set('');
+      this.currentPasswordValue.set('');
       this.editingPassword.set(true);
     }
   }
@@ -63,6 +68,7 @@ export class SettingsComponent {
     }
     if (field === 'password') {
       this.passwordValue.set('');
+      this.currentPasswordValue.set('');
       this.editingPassword.set(false);
     }
   }
@@ -102,33 +108,58 @@ export class SettingsComponent {
     if (newPassword.length < 6) {
       return;
     };
+
+    this.currentPasswordValue.set('');
+    this.passwordConfirmDialog().show();
+  }
+
+  protected confirmSavePassword(): void {
+    const newPassword = this.passwordValue();
+    const currentPassword = this.currentPasswordValue().trim();
+    if (newPassword.length < 6 || currentPassword.length === 0) {
+      return;
+    }
+
     this.isSaving.set(true);
-    this.authService.updatePassword(newPassword).pipe(
-      takeUntilDestroyed(this.destroyRef)
+    this.authService.updatePassword(newPassword, currentPassword).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.isSaving.set(false))
     ).subscribe({
       next: () => {
         this.toastService.showToast('Passwort erfolgreich geändert.', ToastType.Success);
         this.passwordValue.set('');
+        this.currentPasswordValue.set('');
         this.editingPassword.set(false);
       },
-      complete: () => this.isSaving.set(false),
     });
   }
 
   protected deleteAccount(): void {
     const member = this.memberService.member();
+    const currentPassword = this.deleteAccountPasswordValue().trim();
     if (!member) {
       return;
     }
-    this.memberService.deleteMember(member.id).pipe(
+    if (currentPassword.length === 0) {
+      return;
+    }
+
+    this.isSaving.set(true);
+    this.notificationService.deleteArchivedNotificationsByUserId(member.id).pipe(
       takeUntilDestroyed(this.destroyRef),
-      switchMap(() => this.notificationService.deleteArchivedNotificationsByUserId(member.id)),
-      switchMap(() => this.authService.deleteAccount())
+      switchMap(() => this.memberService.deleteMember(member.id)),
+      switchMap(() => this.authService.deleteAccount(currentPassword)),
+      finalize(() => this.isSaving.set(false))
     ).subscribe({
       next: () => {
         this.toastService.showToast('Dein Profil wurde erfolgreich gelöscht.', ToastType.Success);
         this.router.navigate([ROUTER_TOKENS.LOGIN]);
       },
     });
+  }
+
+  protected openDeleteAccountDialog(): void {
+    this.deleteAccountPasswordValue.set('');
+    this.deleteConfirmDialog().show();
   }
 }
