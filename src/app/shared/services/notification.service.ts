@@ -4,7 +4,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { INotification } from "@shared/utils/models/notification.model";
 import { IUser } from "@shared/utils/models/user.model";
 import { environment } from "@environments/environment";
-import { DeleteNotificationByIdGQL, DeleteArchivedNotificationsByUserIdGQL, GetNotificationByUserIdGQL, InsertNotificationGQL, Notification_Insert_Input, Notification_Set_Input, UpdateNotificationByIdGQL } from "@hasura/generated";
+import { DeleteNotificationByIdGQL, DeleteNotificationsByUserIdGQL, GetNotificationByUserIdGQL, InsertNotificationGQL, Notification_Insert_Input, Notification_Set_Input, UpdateNotificationByIdGQL } from "@hasura/generated";
 import { catchError, map, Observable, of, tap } from 'rxjs';
 import { ToastService, ToastType } from "./toast.service";
 
@@ -18,7 +18,7 @@ export class NotificationService {
   private readonly updateNotificationGQL = inject(UpdateNotificationByIdGQL);
   private readonly deleteNotificationByIdGQL = inject(DeleteNotificationByIdGQL);
   private readonly getNotificationByUserIdGQL = inject(GetNotificationByUserIdGQL);
-  private readonly deleteArchivedNotificationsByUserIdGQL = inject(DeleteArchivedNotificationsByUserIdGQL);
+  private readonly deleteArchivedNotificationsByUserIdGQL = inject(DeleteNotificationsByUserIdGQL);
   
   /**
    * Inserts notification and send email.
@@ -135,7 +135,7 @@ export class NotificationService {
     );
   }
 
-  public deleteArchivedNotificationsByUserId(userId: string): Observable<boolean> {
+  public deleteAllNotificationsByUserId(userId: string): Observable<boolean> {
     return this.deleteArchivedNotificationsByUserIdGQL.mutate({ variables: { userId } }).pipe(
       takeUntilDestroyed(this.destroyRef),
       map(result => Boolean(result.data?.delete_Notification?.affected_rows)),

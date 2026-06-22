@@ -1189,12 +1189,12 @@ export type DeleteNotificationByIdMutationVariables = Exact<{
 
 export type DeleteNotificationByIdMutation = { __typename?: 'mutation_root', delete_Notification_by_pk?: { __typename?: 'Notification', Id: any } | null };
 
-export type DeleteArchivedNotificationsByUserIdMutationVariables = Exact<{
+export type DeleteNotificationsByUserIdMutationVariables = Exact<{
   userId: Scalars['uuid']['input'];
 }>;
 
 
-export type DeleteArchivedNotificationsByUserIdMutation = { __typename?: 'mutation_root', delete_Notification?: { __typename?: 'Notification_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'Notification', Id: any }> } | null };
+export type DeleteNotificationsByUserIdMutation = { __typename?: 'mutation_root', delete_Notification?: { __typename?: 'Notification_mutation_response', affected_rows: number, returning: Array<{ __typename?: 'Notification', Id: any }> } | null };
 
 export type GetNotificationByUserIdQueryVariables = Exact<{
   userId?: InputMaybe<Scalars['uuid']['input']>;
@@ -1357,11 +1357,9 @@ export const DeleteNotificationByIdDocument = gql`
       super(apollo);
     }
   }
-export const DeleteArchivedNotificationsByUserIdDocument = gql`
-    mutation DeleteArchivedNotificationsByUserId($userId: uuid!) {
-  delete_Notification(
-    where: {UserId: {_eq: $userId}, _and: {IsArchived: {_eq: true}}}
-  ) {
+export const DeleteNotificationsByUserIdDocument = gql`
+    mutation DeleteNotificationsByUserId($userId: uuid!) {
+  delete_Notification(where: {UserId: {_eq: $userId}}) {
     affected_rows
     returning {
       Id
@@ -1373,8 +1371,8 @@ export const DeleteArchivedNotificationsByUserIdDocument = gql`
   @Injectable({
     providedIn: 'root'
   })
-  export class DeleteArchivedNotificationsByUserIdGQL extends Apollo.Mutation<DeleteArchivedNotificationsByUserIdMutation, DeleteArchivedNotificationsByUserIdMutationVariables> {
-    document = DeleteArchivedNotificationsByUserIdDocument;
+  export class DeleteNotificationsByUserIdGQL extends Apollo.Mutation<DeleteNotificationsByUserIdMutation, DeleteNotificationsByUserIdMutationVariables> {
+    document = DeleteNotificationsByUserIdDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

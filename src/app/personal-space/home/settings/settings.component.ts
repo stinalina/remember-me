@@ -145,7 +145,7 @@ export class SettingsComponent {
     }
 
     this.isSaving.set(true);
-    this.notificationService.deleteArchivedNotificationsByUserId(member.id).pipe(
+    this.notificationService.deleteAllNotificationsByUserId(member.id).pipe(
       takeUntilDestroyed(this.destroyRef),
       switchMap(() => this.memberService.deleteMember(member.id)),
       switchMap(() => this.authService.deleteAccount(currentPassword)),

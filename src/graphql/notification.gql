@@ -36,8 +36,8 @@ mutation DeleteNotificationById($id: uuid!) {
   }
 }
 
-mutation DeleteArchivedNotificationsByUserId($userId: uuid!) {
-  delete_Notification(where: {UserId: {_eq: $userId}, _and: {IsArchived: {_eq: true}}}) {
+mutation DeleteNotificationsByUserId($userId: uuid!) {
+  delete_Notification(where: {UserId: {_eq: $userId}}) {
     affected_rows
     returning {
       Id
