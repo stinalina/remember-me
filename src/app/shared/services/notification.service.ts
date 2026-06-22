@@ -138,7 +138,7 @@ export class NotificationService {
   public deleteAllNotificationsByUserId(userId: string): Observable<boolean> {
     return this.deleteArchivedNotificationsByUserIdGQL.mutate({ variables: { userId } }).pipe(
       takeUntilDestroyed(this.destroyRef),
-      map(result => Boolean(result.data?.delete_Notification?.affected_rows)),
+      map(result => result.data?.delete_Notification !== null && result.data?.delete_Notification !== undefined),
       catchError(error => {
         console.error('Error deleting notification:', error);
         return of(false);

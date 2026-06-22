@@ -15,7 +15,7 @@
       }
       <button
         type="button"
-        id="confirm-deletion"
+        [id]="this.preId() + '-confirm'"
         [class]="'btn ' + this.confirmButtonClass()"
         [disabled]="this.confirmDisabled()"
         (click)="onConfirm()">

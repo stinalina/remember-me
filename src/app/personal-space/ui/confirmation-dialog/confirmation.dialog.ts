@@ -9,6 +9,7 @@ import { ChangeDetectionStrategy, Component, ElementRef, input, output, viewChil
 export class ConfirmDialog {
   private readonly dialogRef = viewChild.required<ElementRef<HTMLDialogElement>>('dialogRef');
 
+  public readonly preId = input.required<string>(); // prevent multiple identical ids when multiple dialogs are used on the same page
   public readonly title = input('Achtung!');
   public readonly showCancel = input(true);
   public readonly cancelLabel = input('Abbrechen');

@@ -25,7 +25,7 @@ export class UserService {
 
   public addUserToDb(mail: string): Observable<IUser> {
     const normalizedMail = this.normalizeMail(mail);
-    const name = mail.split('@')[0]; // keep camelCase for
+    const name = mail.split('@')[0]; // keep camelCase for username
     return this.insertUserGQL.mutate({ variables: { mail: normalizedMail, name, preferences: InitialPreferences } }).pipe(
       map(res => ({
         mail: normalizedMail,
@@ -63,7 +63,7 @@ export class UserService {
           } satisfies IUser);
         }
         else {
-          console.info(`User with mail ${normalizedMail} not found and will be created.`);
+          console.info(`User not found and will be created.`);
           this.currUser.set(null);
         }
         return this.currUser();

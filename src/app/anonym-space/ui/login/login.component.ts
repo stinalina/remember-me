@@ -8,6 +8,7 @@ import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-fram
 import { CheckboxComponent } from '@shared/utils/checkbox/checkbox.component';
 import { MailComponent } from '@app/anonym-space/ui/shared/mail/mail.component';
 import { PasswordComponent } from '@app/anonym-space/ui/shared/password/password.component';
+import { catchError, EMPTY } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,6 +44,11 @@ export class LoginComponent {
     this.isLoading.set(true);
     this.authenticationService.signIn(mail, password, rememberMe).pipe(
       takeUntilDestroyed(this.destroyRef),
+      catchError(error => {
+        console.error('Login error:', error);
+        this.isLoading.set(false);
+        return EMPTY;
+      }),
     ).subscribe(
       () => this.router.navigate([ROUTER_TOKENS.HOME])
     );

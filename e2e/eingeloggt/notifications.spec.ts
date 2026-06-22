@@ -243,7 +243,7 @@ test.describe('Notifications Page', () => {
     await deleteButton.evaluate((element: HTMLElement) => element.click());
     const openDialog = page.locator('dialog[open]');
     await expect(openDialog).toBeVisible();
-    await openDialog.locator('#confirm-deletion').click();
+    await openDialog.locator('#note-delete-confirm').click();
 
     await expect(notesDeleteButtons).toHaveCount(count - 1);
   });

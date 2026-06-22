@@ -76,6 +76,7 @@
 <reme-confirm-dialog #deleteDialog
   title="Notiz löschen"
   confirmLabel="Löschen"
+  preId="note-delete"
   (confirm)="this.deleteNotification.emit()">
   Notiz dauerhaft löschen?
 </reme-confirm-dialog>
@@ -86,6 +87,7 @@
   confirmLabel="Archivieren"
   secondaryConfirmLabel="Löschen"
   secondaryConfirmButtonClass="btn-error"
+  preId="note-archive"
   (confirm)="this.updateArchiveState()"
   (secondaryConfirm)="this.deleteNotification.emit()">
   Diese Notiz scheint erledigt. Möchtest du sie archivieren oder löschen?

@@ -92,7 +92,7 @@ test.describe('Settings Page', () => {
 		await expect(openDialog).toBeVisible();
 		await expect(openDialog.getByRole('heading', { name: 'Passwort bestätigen' })).toBeVisible();
 		await openDialog.locator('#current-password-input').fill(testuserPassword);
-		await openDialog.locator('#confirm-deletion').click();
+		await openDialog.locator('#settings-password-change-confirm').click();
 
 		await expect(page.getByText('Passwort erfolgreich geändert.')).toBeVisible();
 
@@ -110,9 +110,9 @@ test.describe('Settings Page', () => {
 		await expect(openDialog).toBeVisible();
 		await expect(openDialog.getByRole('heading', { name: 'Profil wirklich löschen?' })).toBeVisible();
 		await openDialog.locator('#delete-account-password-input').fill(testuserPassword);
-		await expect(openDialog.locator('#confirm-deletion')).toBeVisible();
+		await expect(openDialog.locator('#settings-deletion-confirm')).toBeVisible();
 
-		await openDialog.locator('#confirm-deletion').click();
+		await openDialog.locator('#settings-deletion-confirm').click();
 		await expect(page).toHaveURL(/.*login/);
 		await expect(page.getByText('Dein Profil wurde erfolgreich gelöscht.')).toBeVisible();
 

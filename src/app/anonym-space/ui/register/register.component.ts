@@ -55,9 +55,10 @@ export class RegisterComponent {
       catchError(error => {
         console.error('Registration error:', error);
         this.toastService.showToast('Registrierung fehlgeschlagen: ' + error.message, ToastType.Error);
+        this.isLoading.set(false);
         return EMPTY;
       }),
-      //finalize(() => this.isLoading.set(false)) intenionally not used, da wir auch während der Weiterleitung noch isLOading true haben wollen
+      // finalize(() => this.isLoading.set(false)) intentionally not used, da wir auch während der Weiterleitung noch isLoading true haben wollen
     ).subscribe(() => {
       this.toastService.showToast('Registrierung erfolgreich! Du wirst nun weitergeleitet.', ToastType.Success);
       this.router.navigate([ROUTER_TOKENS.HOME]);

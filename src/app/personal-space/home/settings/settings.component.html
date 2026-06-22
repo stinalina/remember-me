@@ -199,6 +199,7 @@
 	confirmLabel="Ja, Profil löschen"
 	cancelLabel="Abbrechen"
 	confirmButtonClass="btn-error"
+	preId="settings-deletion"
 	[confirmDisabled]="isSaving() || deleteAccountPasswordValue().trim().length === 0"
 	(confirm)="deleteAccount()"
 >
@@ -223,6 +224,7 @@
 	confirmLabel="Passwort ändern"
 	cancelLabel="Abbrechen"
 	confirmButtonClass="btn-primary"
+	preId="settings-password-change"
 	[confirmDisabled]="isSaving() || currentPasswordValue().trim().length === 0"
 	(confirm)="confirmSavePassword()"
 >

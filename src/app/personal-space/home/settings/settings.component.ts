@@ -1,3 +1,4 @@
+import { NotificationService } from '@services/notification.service';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, linkedSignal, signal, viewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -6,7 +7,6 @@ import { ROUTER_TOKENS } from '@app/app.routes';
 import { ConfirmDialog } from '@app/personal-space/ui/confirmation-dialog/confirmation.dialog';
 import { MemberService } from '@app/personal-space/utils/member.service';
 import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
-import { NotificationService } from '@root/src/app/shared/services/notification.service';
 import { ToastService, ToastType } from '@services/toast.service';
 import { AuthService } from '@shared/utils/authentication/auth.service';
 import { finalize, switchMap } from 'rxjs';
