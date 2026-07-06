@@ -258,13 +258,18 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     ).subscribe((result) => {
       this.resetForm();
       this.localStorageService.setUserMail(mail);
-      this.localStorageService.increaseSendedNotificationCount();
-      if (this.checkIfMaxSendedNotificationCountIsReached()) {
-        this.toastService.showToast(
-          'Max amount of notifications reached this month',
-          ToastType.Warning,
-          10000
-        );
+
+      if (!this.authService.isAuthenticated()) {
+        this.localStorageService.increaseSendedNotificationCount();
+        if (this.checkIfMaxSendedNotificationCountIsReached()) {
+          this.toastService.showToast(
+            'Max amount of notifications reached this month',
+            ToastType.Warning,
+            10000
+          );
+        }
+      } else {
+        // localStorage is handled by dialogClose event
       }
 
       this.notificationChanged.emit(result);

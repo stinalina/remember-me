@@ -4,6 +4,7 @@ import { Member } from '@app/personal-space/data/member.model';
 import { Preferences } from "@app/personal-space/data/preferences.model";
 import { createEmptyYearStats, Stats } from "@app/personal-space/data/stats.model";
 import { DeleteUserByIdGQL, GetMemberByIdGQL, UpdateNameGQL, UpdatePreferencesGQL, UpdateStatsGQL } from "@hasura/generated";
+import { LocalStorageService } from "@root/src/app/shared/services/local-storage.service";
 import { ToastService, ToastType } from '@services/toast.service';
 import { catchError, EMPTY, map, Observable, tap } from "rxjs";
 
@@ -11,6 +12,7 @@ import { catchError, EMPTY, map, Observable, tap } from "rxjs";
 export class MemberService {
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
+  private readonly localStorageService = inject(LocalStorageService);
 
   private readonly updatePreferencesGQL = inject(UpdatePreferencesGQL);
   private readonly updateStatsGQL = inject(UpdateStatsGQL);
@@ -64,6 +66,7 @@ export class MemberService {
     };
 
     updatedStats[year][month] = (updatedStats[year][month] || 0) + 1;
+    this.localStorageService.increaseSendedNotificationCount();
     
     return this.updateStats(currentMember.id, updatedStats);
   }
