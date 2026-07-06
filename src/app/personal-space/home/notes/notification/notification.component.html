@@ -49,6 +49,12 @@
 
     <div class="card-footer">
       <div class="card-actions flex flex-row gap-2 justify-end">
+        <button type="button" class="btn btn-xs btn-square tooltip"
+          aria-label="Notiz duplizieren" data-tip="Duplizieren"
+          [attr.data-testid]="this.preId() + '-duplicate'"
+          (click)="duplicateClicked.emit()">
+          <span class="material-symbols-outlined">content_copy</span>
+        </button>
         <button type="button" class="btn btn-xs btn-square"
           aria-label="Notiz bearbeiten"
           [attr.data-testid]="this.preId() + '-edit'"

@@ -3,13 +3,17 @@ import { CommonModule, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NotificationStore } from '@app/personal-space/data/notification.store';
 import { Navbar, NotesFilterChangedEvent } from '@app/personal-space/home/notes/navbar/navbar';
-import { AdjustGridColumnsDirective } from '@app/personal-space/utils/adjust-grid-columns.directive';
-import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
-import { RangePipe } from '@shared/utils/pipe/range.pipe';
 import { NotificationEditorDialog as NotificationDialog } from '@app/personal-space/home/notes/notification-editor/notification-editor.dialog';
-import { INotification } from '@shared/utils/models/notification.model';
 import { NotificationComponent } from '@app/personal-space/home/notes/notification/notification.component';
+import { AdjustGridColumnsDirective } from '@app/personal-space/utils/adjust-grid-columns.directive';
 import { MemberService } from '@app/personal-space/utils/member.service';
+import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
+import { Utils } from '@shared/utils/utils';
+import { Notification_Insert_Input } from '@root/src/graphql/generated';
+import { NotificationService } from '@shared/services/notification.service';
+import { INotification } from '@shared/utils/models/notification.model';
+import { RangePipe } from '@shared/utils/pipe/range.pipe';
+import { filter, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'reme-personal-notes',
@@ -28,6 +32,7 @@ import { MemberService } from '@app/personal-space/utils/member.service';
 export class NotesComponent {
   protected readonly dialog = inject(Dialog);
   protected readonly notificationStore = inject(NotificationStore);
+  private readonly notificationService = inject(NotificationService);
   private readonly memberService = inject(MemberService);
 
   protected readonly todayDate = new Date();
@@ -95,5 +100,23 @@ export class NotesComponent {
         // Edit aborted
       }
     });
+  }
+
+  protected duplicateNotification(notification: INotification): void {
+    const duplicatedNote = {
+      Subject: notification.subject ,
+      Content: notification.content,
+      DueDate: Utils.tomorrow,
+      IsDraft: false,
+      IsArchived: false,
+      UserId: this.memberService.member()!.id,
+      Mail: notification.mail,
+    } satisfies Notification_Insert_Input;
+
+    this.notificationService.createNotification(duplicatedNote).pipe(
+      filter((createdNotification): createdNotification is INotification => createdNotification !== undefined),
+      tap(createdNotification => this.notificationStore.insertNotification(createdNotification)),
+      switchMap(() => this.memberService.increaseStatsCount()),
+    ).subscribe();
   }
 }

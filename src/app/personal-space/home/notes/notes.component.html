@@ -21,6 +21,7 @@
             [preId]="'note-' + i"
             (deleteNotification)="this.notificationStore.deleteNotification(notification.id)"
             (updateNotificationRequested)="this.notificationStore.updateNotification(notification)"
+            (duplicateClicked)="this.duplicateNotification(notification)"
             (editClicked)="this.openEditNoteModal(notification)">
           </reme-notification>
         }
