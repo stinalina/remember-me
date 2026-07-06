@@ -11,6 +11,7 @@
       Betreff
       <input type="text" id="create-notifcation-subject" 
         [formField]="this.notificationForm.subject"
+        data-bwignore data-lpignore="true" data-1p-ignore data-form-type="other"
         class="pl-1" placeholder="{{ this.placeholderSubject }}" />
     </label>
 
@@ -37,12 +38,15 @@
         Wann möchtest du erinnert werden?
       </label>
       <input id="create-notification-date-time" class="input input-md w-full"
+        data-bwignore data-lpignore="true" data-1p-ignore data-form-type="other"
         [formField]="this.notificationForm.dateTime"
         type="date"/>
     </div>
 
     <input
       type="text"
+      title="Additional Info"
+      data-bwignore data-lpignore="true" data-1p-ignore data-form-type="other"
       [formField]="this.notificationForm.additionalInfo"
       class="hidden"
       autocomplete="off"
@@ -66,6 +70,7 @@
           </g>
         </svg>
         <input id="create-notifcation-mail"
+          data-bwignore data-lpignore="true" data-1p-ignore data-form-type="other"
           [formField]="this.notificationForm.mail" class="pl-1"
           type="email" placeholder="mail@site.com" />
       </label>
