@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+# [1.2.0](https://github.com/stinalina/remember-me/compare/v1.1.1...v1.2.0) (2026-07-07)
+
+
+### feat
+
+* **NOTIFY-189:** add duplicate btn for notes (#122) ([](https://github.com/stinalina/remember-me/commit/a3aa196e128a830d60f8c98b70c4d6334d75c5d7)), closes [#122](https://github.com/stinalina/remember-me/issues/122)
+* **NOTIFY-89:** settings page (#117) ([](https://github.com/stinalina/remember-me/commit/5cc4294f78d3f74507b7a5f5e7089e71d193cc61)), closes [#117](https://github.com/stinalina/remember-me/issues/117)
+
+
+### fix
+
+* **NOTIFY-194:** prevent adding duplicated user to DB and introduce mail constraint (#123) ([](https://github.com/stinalina/remember-me/commit/ebdef04e5ac6b3b151c28eca96c1cead175a2705)), closes [#123](https://github.com/stinalina/remember-me/issues/123)
+* **NOTIFY-195:** remove dripple run on closed ([](https://github.com/stinalina/remember-me/commit/7c177b79b6425c2f7ba646cfa88bdced4738792f))
+* **NOTIFY-206:** change eol for batch scripts #119 ([](https://github.com/stinalina/remember-me/commit/cce0ce162d9c637dcdabe338550cdd766ae24f15)), closes [#119](https://github.com/stinalina/remember-me/issues/119)
+* **NOTIFY-208:** solve conflict between dialog focus trap and bitworden by adding data-bwignore attribut for input #118 ([](https://github.com/stinalina/remember-me/commit/87178310340c63de4c495e3d54c47f723e0dcf80)), closes [#118](https://github.com/stinalina/remember-me/issues/118)
+
+
+### style
+
+* **NOTIFY-204:** preload ttfs for icons (#120) ([](https://github.com/stinalina/remember-me/commit/c7a6ede30da227190fcae229e0454348fea559e2)), closes [#120](https://github.com/stinalina/remember-me/issues/120)
+* **NOTIFY-205:** adjust heading sizes (#121) ([](https://github.com/stinalina/remember-me/commit/f98de5810918f41c0da063d45443465f63c8d57c)), closes [#121](https://github.com/stinalina/remember-me/issues/121)
+
 ## [1.1.1](https://github.com/stinalina/remember-me/compare/v1.1.0...v1.1.1) (2026-06-18)
 
 
