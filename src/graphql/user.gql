@@ -1,5 +1,10 @@
 mutation InsertUser($mail: String!, $name: String!, $preferences: jsonb!) {
-  insert_User(objects: { Mail: $mail, Name: $name, Preferences: $preferences }) {
+  insert_User(objects: { Mail: $mail, Name: $name, Preferences: $preferences }
+  on_conflict: {
+      constraint: User_Mail_key
+      update_columns: []
+    }
+  ) {
     returning {
       Id,
       Name

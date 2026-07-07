@@ -13,16 +13,18 @@ describe('UserService', () => {
   let mockInsertUserGQL: { mutate: ReturnType<typeof vi.fn> };
 
   beforeEach(() => {
+    // Default: Insert erfolgreich (kein Conflict) -> neuer User
     mockInsertUserGQL = {
       mutate: vi.fn().mockReturnValue(
         of({ data: { insert_User: { returning: [{ Name: 'Heinz', Id: 'def-456' }] } } })
-      )
+      ),
     };
 
+    // Default: SELECT liefert einen bestehenden User (wird für Conflict-Fallback genutzt)
     mockGetUserByMailGQL = {
       fetch: vi.fn().mockReturnValue(
         of({ data: { User: [{ Name: 'Max Mustermann', Id: 'user-123' }] } })
-      )
+      ),
     };
 
     TestBed.configureTestingModule({
@@ -31,7 +33,7 @@ describe('UserService', () => {
         UserService,
         { provide: GetUserByMailGQL, useValue: mockGetUserByMailGQL },
         { provide: InsertUserGQL, useValue: mockInsertUserGQL },
-      ]
+      ],
     });
 
     service = TestBed.inject(UserService);
@@ -39,20 +41,41 @@ describe('UserService', () => {
     window.localStorage.clear();
   });
 
-  it('should create a new user if user does not exist', async () => {
-    mockGetUserByMailGQL.fetch.mockReturnValue(of({ data: { User: [] } }));
+  it('should create a new user when insert succeeds (no conflict)', async () => {
     const result = await firstValueFrom(service.getUserByMailOrCreateUserIfNotExists(mail));
-    expect(mockInsertUserGQL.mutate).toHaveBeenCalled();
+
+    expect(mockInsertUserGQL.mutate).toHaveBeenCalledTimes(1);
+    expect(mockGetUserByMailGQL.fetch).not.toHaveBeenCalled();
     expect(result.newCreated).toBe(true);
+    expect(result.userId).toBe('def-456');
   });
-  
-  it('should return existing user if user exists', async () => {
+
+  it('should return existing user when insert reports a conflict (empty returning)', async () => {
+    // Hasura on_conflict mit update_columns: [] -> returning ist leer
+    mockInsertUserGQL.mutate.mockReturnValue(
+      of({ data: { insert_User: { returning: [] } } })
+    );
     mockGetUserByMailGQL.fetch.mockReturnValue(
       of({ data: { User: [{ Name: 'Horst', Id: 'abc-123' }] } })
     );
+
     const result = await firstValueFrom(service.getUserByMailOrCreateUserIfNotExists(mail));
-    expect(mockInsertUserGQL.mutate).not.toHaveBeenCalled();
+
+    expect(mockInsertUserGQL.mutate).toHaveBeenCalledTimes(1);
+    expect(mockGetUserByMailGQL.fetch).toHaveBeenCalledTimes(1);
     expect(result.newCreated).toBe(false);
+    expect(result.userId).toBe('abc-123');
+  });
+
+  it('should throw when upsert conflicts but existing user cannot be found', async () => {
+    mockInsertUserGQL.mutate.mockReturnValue(
+      of({ data: { insert_User: { returning: [] } } })
+    );
+    mockGetUserByMailGQL.fetch.mockReturnValue(of({ data: { User: [] } }));
+
+    await expect(
+      firstValueFrom(service.getUserByMailOrCreateUserIfNotExists(mail))
+    ).rejects.toThrow(/could not be resolved after upsert/);
   });
 
   it('should update created notes count when count changes', () => {
@@ -62,4 +85,3 @@ describe('UserService', () => {
     expect(service.createdNotesThisMonthCount()).toBe(1);
   });
 });
-

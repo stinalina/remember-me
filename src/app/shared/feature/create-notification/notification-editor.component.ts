@@ -6,7 +6,6 @@ import { TypewriterActionType, TypewriterEffectService } from '@app/shared/servi
 import { UserService } from '@app/shared/services/user.service';
 import { Notification_Insert_Input } from '@hasura/generated';
 import { CheckboxComponent } from '@root/src/app/shared/utils/checkbox/checkbox.component';
-import { Utils } from '@shared/utils/utils';
 import { LocalStorageService } from '@services/local-storage.service';
 import { NotificationService } from '@services/notification.service';
 import { ToastService, ToastType } from '@services/toast.service';
@@ -15,9 +14,10 @@ import { INotification } from '@shared/utils/models/notification.model';
 import { IUser } from '@shared/utils/models/user.model';
 import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '@shared/utils/token/editor-config.token';
 import { SESSION_STORAGE } from '@shared/utils/token/storage.token';
+import { Utils } from '@shared/utils/utils';
 import { htmlContentValidator } from '@shared/utils/validators/html-content.validator';
 import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
-import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
+import { catchError, EMPTY, finalize, switchMap } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -242,7 +242,6 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
 
     this.sendingNotification.set(true)
     this.userService.getUserByMailOrCreateUserIfNotExists(mail).pipe(
-      delay(500), // prevent race condition when new user is createdand immediately receives a notification
       switchMap((user: IUser) => this.notificationService.createNotification(notification, user)),
       catchError((error) => {
         console.error(`Error creating notification.\n Error message: ${error.message}\n Stack trace: ${error.stack}`);

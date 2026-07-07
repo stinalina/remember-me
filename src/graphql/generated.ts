@@ -596,6 +596,8 @@ export type User_Bool_Exp = {
 
 /** unique or primary key constraints on table "dev.User" */
 export enum User_Constraint {
+  /** unique or primary key constraint on columns "Mail" */
+  UserMailKey = 'User_Mail_key',
   /** unique or primary key constraint on columns "Id" */
   UserPkey = 'User_pkey'
 }
@@ -1406,7 +1408,10 @@ export const GetNotificationByUserIdDocument = gql`
   }
 export const InsertUserDocument = gql`
     mutation InsertUser($mail: String!, $name: String!, $preferences: jsonb!) {
-  insert_User(objects: {Mail: $mail, Name: $name, Preferences: $preferences}) {
+  insert_User(
+    objects: {Mail: $mail, Name: $name, Preferences: $preferences}
+    on_conflict: {constraint: User_Mail_key, update_columns: []}
+  ) {
     returning {
       Id
       Name
