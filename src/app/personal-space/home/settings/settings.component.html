@@ -58,6 +58,54 @@
 						</div>
 					</div>
 	
+					<!-- Passwort -->
+					<div class="grid grid-cols-[minmax(8rem,1fr)_2fr] items-center gap-3">
+						<label class="font-medium" for="password-input">Passwort</label>
+						<div class="join w-full">
+							<input id="password-input"
+								type="password" minlength="6"
+								class="input join-item w-full"
+								placeholder="************"
+								[(ngModel)]="this.passwordValue"
+								[disabled]="!editingPassword()"
+								aria-label="Neues Passwort"
+								autocomplete="new-password"
+							/>
+							@if (!editingPassword()) {
+								<button
+									type="button"
+									class="btn btn-outline join-item"
+									aria-label="Passwort ändern"
+									(click)="startEditing('password')"
+								>
+									<span aria-hidden="true">&#9998;</span>
+								</button>
+							} @else {
+								<button
+									type="button"
+									class="btn btn-success join-item"
+									aria-label="Passwort speichern"
+									[disabled]="isSaving() || passwordValue().length < 6"
+									(click)="savePassword()"
+								>
+									@if (isSaving()) {
+										<span class="loading loading-spinner loading-xs" aria-hidden="true"></span>
+									} @else {
+										<span aria-hidden="true">&#10003;</span>
+									}
+								</button>
+								<button
+									type="button"
+									class="btn btn-ghost join-item"
+									aria-label="Abbrechen"
+									(click)="cancelEditing('password')"
+								>
+									<span aria-hidden="true">&#10005;</span>
+								</button>
+							}
+						</div>
+					</div>
+	
 					<!-- Standard-E-Mail -->
 					<div class="grid grid-cols-[minmax(8rem,1fr)_2fr] items-center gap-3">
 						<label class="font-medium tooltip" for="default-mail-input"
@@ -109,51 +157,26 @@
 						</div>
 					</div>
 	
-					<!-- Passwort -->
-					<div class="grid grid-cols-[minmax(8rem,1fr)_2fr] items-center gap-3">
-						<label class="font-medium" for="password-input">Passwort</label>
-						<div class="join w-full">
-							<input id="password-input"
-								type="password" minlength="6"
-								class="input join-item w-full"
-								placeholder="************"
-								[(ngModel)]="this.passwordValue"
-								[disabled]="!editingPassword()"
-								aria-label="Neues Passwort"
-								autocomplete="new-password"
+					<!-- Release-Benachrichtigungen -->
+					<div class="grid grid-cols-[minmax(8rem,1fr)_2fr] items-center gap-3 ml-3">
+						<label class="font-medium tooltip" for="subscribe-release-mails-toggle"
+							data-tip="Erhalte eine Mail, sobald ein neues Release veröffentlicht wurde.">
+							Release-Mails *
+						</label>
+						<div class="flex items-center gap-3">
+							<input
+								id="subscribe-release-mails-toggle"
+								type="checkbox"
+								role="switch"
+								class="toggle toggle-primary"
+								[checked]="subscribeReleaseMailsValue()"
+								[disabled]="isSaving()"
+								(change)="toggleSubscribeReleaseMails($any($event.target).checked)"
+								aria-describedby="subscribe-release-mails-hint"
 							/>
-							@if (!editingPassword()) {
-								<button
-									type="button"
-									class="btn btn-outline join-item"
-									aria-label="Passwort ändern"
-									(click)="startEditing('password')"
-								>
-									<span aria-hidden="true">&#9998;</span>
-								</button>
-							} @else {
-								<button
-									type="button"
-									class="btn btn-success join-item"
-									aria-label="Passwort speichern"
-									[disabled]="isSaving() || passwordValue().length < 6"
-									(click)="savePassword()"
-								>
-									@if (isSaving()) {
-										<span class="loading loading-spinner loading-xs" aria-hidden="true"></span>
-									} @else {
-										<span aria-hidden="true">&#10003;</span>
-									}
-								</button>
-								<button
-									type="button"
-									class="btn btn-ghost join-item"
-									aria-label="Abbrechen"
-									(click)="cancelEditing('password')"
-								>
-									<span aria-hidden="true">&#10005;</span>
-								</button>
-							}
+							<span id="subscribe-release-mails-hint" class="text-sm text-base-content/70">
+								{{ subscribeReleaseMailsValue() ? 'Aktiviert' : 'Deaktiviert' }}
+							</span>
 						</div>
 					</div>
 				</div>
