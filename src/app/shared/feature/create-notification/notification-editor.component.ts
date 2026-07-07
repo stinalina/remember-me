@@ -6,6 +6,7 @@ import { TypewriterActionType, TypewriterEffectService } from '@app/shared/servi
 import { UserService } from '@app/shared/services/user.service';
 import { Notification_Insert_Input } from '@hasura/generated';
 import { CheckboxComponent } from '@root/src/app/shared/utils/checkbox/checkbox.component';
+import { Utils } from '@shared/utils/utils';
 import { LocalStorageService } from '@services/local-storage.service';
 import { NotificationService } from '@services/notification.service';
 import { ToastService, ToastType } from '@services/toast.service';
@@ -63,7 +64,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
       additionalInfo: '',
       content: notification?.content ?? '',
       mail: notification?.mail ?? this.defaultMail() ?? this.localStorageService.getUserMail ?? '',
-      dateTime: dueDate ?? this.tomorrow,
+      dateTime: dueDate ?? Utils.tomorrow,
       isDraft: notification?.isDraft ?? false,
       isArchived: notification?.isArchived ?? false,
     })
@@ -129,11 +130,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   public readonly typedPlaceholder = signal('');
   public readonly showPlaceholderAnimation = linkedSignal(() => this.editorMode() === 'create');
 
-  private get tomorrow(): string {
-    const date = new Date();
-    const dateTime = new Date(date.getTime() + 24 * 60 * 60 * 1000); // add one day
-    return new DatePipe('en-US').transform(dateTime, 'yyyy-MM-dd')!;
-  }
+  private readonly tomorrow = Utils.tomorrow;
 
   constructor() {
     effect(() => {
@@ -261,13 +258,18 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     ).subscribe((result) => {
       this.resetForm();
       this.localStorageService.setUserMail(mail);
-      this.localStorageService.increaseSendedNotificationCount();
-      if (this.checkIfMaxSendedNotificationCountIsReached()) {
-        this.toastService.showToast(
-          'Max amount of notifications reached this month',
-          ToastType.Warning,
-          10000
-        );
+
+      if (!this.authService.isAuthenticated()) {
+        this.localStorageService.increaseSendedNotificationCount();
+        if (this.checkIfMaxSendedNotificationCountIsReached()) {
+          this.toastService.showToast(
+            'Max amount of notifications reached this month',
+            ToastType.Warning,
+            10000
+          );
+        }
+      } else {
+        // localStorage is handled by dialogClose event
       }
 
       this.notificationChanged.emit(result);

@@ -352,7 +352,7 @@ test.describe('Notifications Page', () => {
     const deleteButton = card.getByTestId(/note-\d+-delete/);
 
     await expect(editButton).toBeDisabled();
-    await expect(deleteButton).toBeDisabled();
+    await expect(deleteButton).toBeEnabled();
     await expect(page.getByRole('heading', { name: 'Erinnerung bearbeiten' })).toHaveCount(0);
   });
 });

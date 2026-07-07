@@ -25,11 +25,11 @@ export class NotificationService {
    * @param insertNotification 
    * @returns a bollean indicating whether the operation was successful.
    */
-  public createNotification(insertNotification: Notification_Insert_Input, user: IUser): Observable<INotification | undefined> {
+  public createNotification(insertNotification: Notification_Insert_Input, user?: IUser): Observable<INotification | undefined> {
     return this.insertNotificationGQL.mutate({ variables: { object: insertNotification }}).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap(() => {
-        if (user.newCreated === true) {
+        if (user?.newCreated === true) {
           this.sendWelcomeMail(user);
         }
         this.toastService.showToast('Notification created successfully!', ToastType.Success);

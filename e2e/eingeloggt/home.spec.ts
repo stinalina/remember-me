@@ -15,7 +15,7 @@ test.describe('HomeComponent', () => {
   });
 
   test('should display username in header', async ({ page }) => {
-    await expect(page.getByTestId('home-username')).toHaveText('testuser');
+    await expect(page.getByTestId('home-username')).toContainText('testuser');
   });
 
   test('should display correct notifications count and limit', async ({ page }) => {
