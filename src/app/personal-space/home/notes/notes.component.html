@@ -3,7 +3,7 @@
     <reme-navbar (filterChanged)="this.onSearchChanged($event)"></reme-navbar>
     <div remeAdjustGridColumns [notesCount]="this.displayedNotifications().length"
       #adjustGrid="remeAdjustGridColumns"
-      class="py-4 grid grid-cols-3 3xl:grid-cols-4 gap-2 h-[85vh] px-1 overflow-auto">
+      class="notes-container py-4 grid grid-cols-3 3xl:grid-cols-4 gap-2 h-[85vh] px-1 overflow-auto">
       @let gridColumns = adjustGrid.gridColumns();
 
       @if (this.notificationStore.isLoading()) {
@@ -21,6 +21,7 @@
             [preId]="'note-' + i"
             (deleteNotification)="this.notificationStore.deleteNotification(notification.id)"
             (updateNotificationRequested)="this.notificationStore.updateNotification(notification)"
+            (duplicateClicked)="this.duplicateNotification(notification)"
             (editClicked)="this.openEditNoteModal(notification)">
           </reme-notification>
         }

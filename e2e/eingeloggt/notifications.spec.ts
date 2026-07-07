@@ -1,4 +1,5 @@
 import { test, expect, type APIRequestContext, type Locator, type Page } from '@playwright/test';
+import { Global } from '../global-helper.object';
 
 test.describe('Notifications Page', () => {
   const testuserEmail = 'testuser@mail.de';
@@ -178,15 +179,7 @@ test.describe('Notifications Page', () => {
 
   test.beforeEach(async ({ page, request }) => {
     await deleteSeededNotifications(request);
-
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
-    await page.getByRole('button', { name: 'Dran bleiben' }).click();
-    await page.getByTestId('login-reme-mail-input').fill(testuserEmail);
-    await page.getByTestId('login-reme-password-input').fill(testuserPassword);
-    await page.getByRole('button', { name: 'Einloggen' }).click();
-
-    await expect(page).toHaveURL(/.*home/);
+    await Global.login(page, testuserEmail, testuserPassword);
   });
 
   test.afterEach(async ({ request }) => {
@@ -250,7 +243,7 @@ test.describe('Notifications Page', () => {
     await deleteButton.evaluate((element: HTMLElement) => element.click());
     const openDialog = page.locator('dialog[open]');
     await expect(openDialog).toBeVisible();
-    await openDialog.locator('#confirm-deletion').click();
+    await openDialog.locator('#note-delete-confirm').click();
 
     await expect(notesDeleteButtons).toHaveCount(count - 1);
   });
@@ -359,7 +352,7 @@ test.describe('Notifications Page', () => {
     const deleteButton = card.getByTestId(/note-\d+-delete/);
 
     await expect(editButton).toBeDisabled();
-    await expect(deleteButton).toBeDisabled();
+    await expect(deleteButton).toBeEnabled();
     await expect(page.getByRole('heading', { name: 'Erinnerung bearbeiten' })).toHaveCount(0);
   });
 });

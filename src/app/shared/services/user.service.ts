@@ -3,7 +3,7 @@ import { InitialPreferences } from '@app/personal-space/data/preferences.model';
 import { LocalStorageService } from '@app/shared/services/local-storage.service';
 import { GetUserByMailGQL, InsertUserGQL } from '@hasura/generated';
 import { IUser } from '@shared/utils/models/user.model';
-import { map, Observable, of, switchMap } from 'rxjs';
+import { map, Observable, of, switchMap, throwError } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -14,54 +14,64 @@ export class UserService {
   public readonly currUser = signal<IUser | null>(null);
   public readonly freeNotificationsLimit = signal<number>(5);
 
-  public readonly username = computed<string | null>(() => {
-    this.localStorageService.storageChangeSignal();
-    return this.localStorageService.getUserMail?.split('@')[0] ?? null;
-  });
-
   public readonly createdNotesThisMonthCount = computed<number>(() => {
     this.localStorageService.storageChangeSignal();
     return this.localStorageService.getSendedNotificationCount(this.localStorageService.getUserMail ?? '');
   });
 
-  public addUserToDb(mail: string): Observable<IUser> {
-    const name = mail.split('@')[0];
-    return this.insertUserGQL.mutate({ variables: { mail, name, preferences: InitialPreferences } }).pipe(
-      map(res => ({
-        mail,
-        name: res.data?.insert_User?.returning[0].Name ?? '',
-        userId: res.data?.insert_User?.returning[0].Id,
-        newCreated: true
-      } satisfies IUser)
-    ));
+  private normalizeMail(mail: string): string {
+    return mail.trim().toLowerCase();
   }
 
   public getUserByMailOrCreateUserIfNotExists(mail: string): Observable<IUser> {
-    return this.loadUserFromDb(mail).pipe(
-      switchMap(user => {
-        if (user) {
-          return of(user);
-        } else {
-          return this.addUserToDb(mail);
-        }
-      })
-    );
+    const normalizedMail = this.normalizeMail(mail);
+    const name = mail.split('@')[0]; // keep camelCase for username
+
+    return this.insertUserGQL
+      .mutate({ variables: { mail: normalizedMail, name, preferences: InitialPreferences } })
+      .pipe(
+        switchMap(res => {
+          const inserted = res.data?.insert_User?.returning?.[0];
+
+          if (inserted) {
+            const user: IUser = {
+              mail: normalizedMail,
+              name: inserted.Name,
+              userId: inserted.Id,
+              newCreated: true,
+            };
+            this.currUser.set(user);
+            return of(user);
+          }
+
+          // Conflict: User existiert bereits -> existierenden per Mail laden
+          return this.loadUserFromDb(normalizedMail).pipe(
+            switchMap(existing => {
+              if (!existing) {
+                return throwError(() => new Error(`User with mail ${normalizedMail} could not be resolved after upsert.`));
+              }
+              return of(existing);
+            }),
+          );
+        }),
+      );
   }
 
   private loadUserFromDb(mail: string): Observable<IUser | null> {
-    return this.getUserByMailGQL.fetch({ variables: { mail } }).pipe(
+    const normalizedMail = this.normalizeMail(mail);
+    return this.getUserByMailGQL.fetch({ variables: { mail: normalizedMail } }).pipe(
       map(result => {
         const userData = result.data?.User[0];
         if (userData) {
           this.currUser.set({
-            mail,
+            mail: normalizedMail,
             name: userData.Name,
             userId: userData.Id,
             newCreated: false
           } satisfies IUser);
         }
         else {
-          console.error(`User with mail ${mail} not found.`);
+          console.info(`User not found and will be created.`);
           this.currUser.set(null);
         }
         return this.currUser();

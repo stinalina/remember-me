@@ -42,7 +42,7 @@ export class HomeComponent extends OutletContainer {
   protected readonly SelectedTab = SelectedTabComponentEnum;
   protected readonly selectedTabComponent = signal<SelectedTabComponentEnum>(SelectedTabComponentEnum.Notes);
 
-  protected readonly username = computed<string>(() => this.userService.username() ?? 'Nutzer');
+  protected readonly username = computed<string>(() => this.memberService.member()?.name ?? 'Unbekannt');
   protected readonly freeNotificationsLimit = this.userService.freeNotificationsLimit;
   protected readonly notificationsCount = this.userService.createdNotesThisMonthCount;
 

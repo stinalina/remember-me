@@ -14,9 +14,10 @@ import { INotification } from '@shared/utils/models/notification.model';
 import { IUser } from '@shared/utils/models/user.model';
 import { EDITOR_TOOLBAR_MIN_CONFIG_TOKEN } from '@shared/utils/token/editor-config.token';
 import { SESSION_STORAGE } from '@shared/utils/token/storage.token';
+import { Utils } from '@shared/utils/utils';
 import { htmlContentValidator } from '@shared/utils/validators/html-content.validator';
 import { Editor, NgxEditorModule, Toolbar } from 'ngx-editor';
-import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
+import { catchError, EMPTY, finalize, switchMap } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,32 +34,40 @@ import { catchError, delay, EMPTY, finalize, switchMap } from 'rxjs';
 })
 export class NotificationEditorComponent implements OnInit, OnDestroy {
   public readonly editorMode = input<'create' | 'edit'>('create');
+  public readonly defaultMail = input<string | undefined>(undefined);
   public readonly notification = input<INotification | undefined>(undefined);
   public readonly notificationChanged = output<INotification | undefined>();
 
   private readonly notificationService = inject(NotificationService);
-  private readonly authenticationService = inject(AuthService);
+  private readonly authService = inject(AuthService);
   private readonly userService = inject(UserService);
   private readonly sessionStorage = inject(SESSION_STORAGE);
   private readonly localStorageService = inject(LocalStorageService);
   private readonly toastService = inject(ToastService);
   private readonly typewriterEffectService = inject(TypewriterEffectService);
   
-  protected readonly isLoggedIn = this.authenticationService.isAuthenticated.asReadonly();
+  protected readonly isLoggedIn = this.authService.isAuthenticated.asReadonly();
   private readonly freeNotificationsLimit = this.userService.freeNotificationsLimit;
   private readonly limitReached = signal<boolean>(false);
 
   public readonly editor: Editor = new Editor();
   public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);
 
-  private readonly notificationModel = signal({
-    subject: '',
-    additionalInfo: '',
-    content: '',
-    mail: this.localStorageService.getUserMail ?? '',
-    dateTime: this.tomorrow,
-    isDraft: false,
-    isArchived: false,
+  private readonly notificationModel = linkedSignal(() => {
+    const notification = this.notification();
+    let dueDate = notification?.dueDate;
+    if (dueDate) {
+      dueDate = new DatePipe('en-US').transform(dueDate, 'yyyy-MM-dd')!;
+    }
+    return ({
+      subject: notification?.subject ?? '',
+      additionalInfo: '',
+      content: notification?.content ?? '',
+      mail: notification?.mail ?? this.defaultMail() ?? this.localStorageService.getUserMail ?? '',
+      dateTime: dueDate ?? Utils.tomorrow,
+      isDraft: notification?.isDraft ?? false,
+      isArchived: notification?.isArchived ?? false,
+    })
   });
   
   protected readonly notificationForm = form(this.notificationModel, (path) => {
@@ -121,34 +130,9 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   public readonly typedPlaceholder = signal('');
   public readonly showPlaceholderAnimation = linkedSignal(() => this.editorMode() === 'create');
 
-  private get tomorrow(): string {
-    const date = new Date();
-    const dateTime = new Date(date.getTime() + 24 * 60 * 60 * 1000); // add one day
-    return new DatePipe('en-US').transform(dateTime, 'yyyy-MM-dd')!;
-  }
+  private readonly tomorrow = Utils.tomorrow;
 
   constructor() {
-    effect(() => {
-      const notification = this.notification();
-      if (!notification) {
-        return;
-      }
-      let dueDate = notification.dueDate;
-      if (dueDate) {
-        dueDate = new DatePipe('en-US').transform(dueDate, 'yyyy-MM-dd')!;
-      }
-
-      this.notificationModel.set({
-        subject: notification.subject ?? '',
-        additionalInfo: '',
-        content: notification.content ?? '',
-        mail: notification.mail ?? '',
-        dateTime: dueDate ?? this.tomorrow,
-        isDraft: notification.isDraft ?? false,
-        isArchived: notification.isArchived ?? false,
-      });
-    });
-
     effect(() => {
       if (this.limitReached() && this.editorMode() === 'create') {
         this.resetForm();
@@ -258,7 +242,6 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
 
     this.sendingNotification.set(true)
     this.userService.getUserByMailOrCreateUserIfNotExists(mail).pipe(
-      delay(500), // prevent race condition when new user is createdand immediately receives a notification
       switchMap((user: IUser) => this.notificationService.createNotification(notification, user)),
       catchError((error) => {
         console.error(`Error creating notification.\n Error message: ${error.message}\n Stack trace: ${error.stack}`);
@@ -274,13 +257,18 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     ).subscribe((result) => {
       this.resetForm();
       this.localStorageService.setUserMail(mail);
-      this.localStorageService.increaseSendedNotificationCount();
-      if (this.checkIfMaxSendedNotificationCountIsReached()) {
-        this.toastService.showToast(
-          'Max amount of notifications reached this month',
-          ToastType.Warning,
-          10000
-        );
+
+      if (!this.authService.isAuthenticated()) {
+        this.localStorageService.increaseSendedNotificationCount();
+        if (this.checkIfMaxSendedNotificationCountIsReached()) {
+          this.toastService.showToast(
+            'Max amount of notifications reached this month',
+            ToastType.Warning,
+            10000
+          );
+        }
+      } else {
+        // localStorage is handled by dialogClose event
       }
 
       this.notificationChanged.emit(result);

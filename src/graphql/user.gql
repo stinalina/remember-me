@@ -1,5 +1,10 @@
 mutation InsertUser($mail: String!, $name: String!, $preferences: jsonb!) {
-  insert_User(objects: { Mail: $mail, Name: $name, Preferences: $preferences }) {
+  insert_User(objects: { Mail: $mail, Name: $name, Preferences: $preferences }
+  on_conflict: {
+      constraint: User_Mail_key
+      update_columns: []
+    }
+  ) {
     returning {
       Id,
       Name
@@ -19,5 +24,19 @@ mutation UpdateStats($id: uuid!, $stats: jsonb!) {
     returning {
       Stats
     }
+  }
+}
+
+mutation UpdateName($id: uuid!, $name: String!) {
+  update_User(where: {Id: {_eq: $id}}, _set: {Name: $name}) {
+    returning {
+      Name
+    }
+  }
+}
+
+mutation DeleteUserById($id: uuid!) {
+  delete_User(where: {Id: {_eq: $id}}) {
+    affected_rows
   }
 }

@@ -4,7 +4,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { INotification } from "@shared/utils/models/notification.model";
 import { IUser } from "@shared/utils/models/user.model";
 import { environment } from "@environments/environment";
-import { DeleteNotificationByIdGQL, GetNotificationByUserIdGQL, InsertNotificationGQL, Notification_Insert_Input, Notification_Set_Input, UpdateNotificationByIdGQL } from "@hasura/generated";
+import { DeleteNotificationByIdGQL, DeleteNotificationsByUserIdGQL, GetNotificationByUserIdGQL, InsertNotificationGQL, Notification_Insert_Input, Notification_Set_Input, UpdateNotificationByIdGQL } from "@hasura/generated";
 import { catchError, map, Observable, of, tap } from 'rxjs';
 import { ToastService, ToastType } from "./toast.service";
 
@@ -18,17 +18,18 @@ export class NotificationService {
   private readonly updateNotificationGQL = inject(UpdateNotificationByIdGQL);
   private readonly deleteNotificationByIdGQL = inject(DeleteNotificationByIdGQL);
   private readonly getNotificationByUserIdGQL = inject(GetNotificationByUserIdGQL);
+  private readonly deleteArchivedNotificationsByUserIdGQL = inject(DeleteNotificationsByUserIdGQL);
   
   /**
    * Inserts notification and send email.
    * @param insertNotification 
    * @returns a bollean indicating whether the operation was successful.
    */
-  public createNotification(insertNotification: Notification_Insert_Input, user: IUser): Observable<INotification | undefined> {
+  public createNotification(insertNotification: Notification_Insert_Input, user?: IUser): Observable<INotification | undefined> {
     return this.insertNotificationGQL.mutate({ variables: { object: insertNotification }}).pipe(
       takeUntilDestroyed(this.destroyRef),
       tap(() => {
-        if (user.newCreated === true) {
+        if (user?.newCreated === true) {
           this.sendWelcomeMail(user);
         }
         this.toastService.showToast('Notification created successfully!', ToastType.Success);
@@ -127,6 +128,17 @@ export class NotificationService {
     return this.deleteNotificationByIdGQL.mutate({ variables: { id } }).pipe(
       takeUntilDestroyed(this.destroyRef),
       map(result => Boolean(result.data?.delete_Notification_by_pk)),
+      catchError(error => {
+        console.error('Error deleting notification:', error);
+        return of(false);
+      })
+    );
+  }
+
+  public deleteAllNotificationsByUserId(userId: string): Observable<boolean> {
+    return this.deleteArchivedNotificationsByUserIdGQL.mutate({ variables: { userId } }).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      map(result => result.data?.delete_Notification !== null && result.data?.delete_Notification !== undefined),
       catchError(error => {
         console.error('Error deleting notification:', error);
         return of(false);
