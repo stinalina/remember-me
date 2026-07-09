@@ -40,7 +40,6 @@ export class UserService {
               userId: inserted.Id,
               newCreated: true,
             };
-            this.currUser.set(user);
             return of(user);
           }
 
@@ -63,18 +62,17 @@ export class UserService {
       map(result => {
         const userData = result.data?.User[0];
         if (userData) {
-          this.currUser.set({
+          return {
             mail: normalizedMail,
             name: userData.Name,
             userId: userData.Id,
             newCreated: false
-          } satisfies IUser);
+          } satisfies IUser;
         }
         else {
           console.info(`User not found and will be created.`);
-          this.currUser.set(null);
+          return null;
         }
-        return this.currUser();
       })
     );
   }

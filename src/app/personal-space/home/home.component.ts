@@ -65,6 +65,7 @@ export class HomeComponent extends OutletContainer {
   protected logout(): void {
     this.authenticationService.signOut().pipe(
       finalize(() => {
+        this.userService.currUser.set(null);
         this.router.navigate([ROUTER_TOKENS.LOGIN]); //ignore logout failure and navigate to login page anyway
       })
     ).subscribe(() => this.dialog.closeAll());
