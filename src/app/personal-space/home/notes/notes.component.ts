@@ -103,10 +103,12 @@ export class NotesComponent {
   }
 
   protected duplicateNotification(notification: INotification): void {
+    const today = new Date();
+    const isPast = new Date(notification.dueDate) < today;
     const duplicatedNote = {
       Subject: notification.subject ,
       Content: notification.content,
-      DueDate: Utils.tomorrow,
+      DueDate: isPast ? Utils.tomorrow : notification.dueDate,
       IsDraft: false,
       IsArchived: false,
       UserId: this.memberService.member()!.id,

@@ -2,6 +2,7 @@ import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { AbstractControl, FormsModule } from '@angular/forms';
 import { email, form, FormField, maxLength, required, validate } from '@angular/forms/signals';
+import { MemberService } from '@app/personal-space/utils/member.service';
 import { TypewriterActionType, TypewriterEffectService } from '@app/shared/services/typewriter-effect.service';
 import { UserService } from '@app/shared/services/user.service';
 import { Notification_Insert_Input } from '@hasura/generated';
@@ -40,6 +41,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
 
   private readonly notificationService = inject(NotificationService);
   private readonly authService = inject(AuthService);
+  private readonly memberService = inject(MemberService);
   private readonly userService = inject(UserService);
   private readonly sessionStorage = inject(SESSION_STORAGE);
   private readonly localStorageService = inject(LocalStorageService);
@@ -99,7 +101,10 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
         return null;
       }
 
-      const limitReached = this.localStorageService.getSendedNotificationCount(value()) >= this.freeNotificationsLimit();
+      const notificationCount = this.isLoggedIn()
+        ? this.memberService.createdNotificationsThisMonthCount()
+        : this.localStorageService.getSendedNotificationCount(value());
+      const limitReached = notificationCount >= this.freeNotificationsLimit();
       if (limitReached) {
         return {
           kind: 'freeLimitReached',
@@ -296,8 +301,9 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   }
 
   private checkIfMaxSendedNotificationCountIsReached(): boolean {
-    const mail = this.localStorageService.getUserMail ?? '';
-    const count = this.localStorageService.getSendedNotificationCount(mail);
+    const count = this.isLoggedIn()
+      ? this.memberService.createdNotificationsThisMonthCount()
+      : this.localStorageService.getSendedNotificationCount(this.localStorageService.getUserMail ?? '');
     const limitReached = count >= this.freeNotificationsLimit();
     this.limitReached.set(limitReached);
     return limitReached;
