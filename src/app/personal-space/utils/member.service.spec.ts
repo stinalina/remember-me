@@ -239,4 +239,50 @@ describe('MemberService', () => {
       });
     });
   });
+
+  describe('createdNotificationsThisMonthCount', () => {
+    it('should return 0 when no member is loaded', () => {
+      expect(service.createdNotificationsThisMonthCount()).toBe(0);
+    });
+
+    it('should return the current month count from member stats', () => {
+      const now = new Date();
+      const currentYear = now.getFullYear().toString();
+      const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
+
+      service.member.set({
+        id: 'user-123',
+        name: 'Max Mustermann',
+        preferences: { avatarName: 'Kingston' },
+        mail: '',
+        stats: {
+          [currentYear]: {
+            '01': 2,
+            [currentMonth]: 7,
+          },
+        },
+      });
+
+      expect(service.createdNotificationsThisMonthCount()).toBe(7);
+    });
+
+    it('should return 0 when the current month is missing', () => {
+      const currentYear = new Date().getFullYear().toString();
+
+      service.member.set({
+        id: 'user-123',
+        name: 'Max Mustermann',
+        preferences: { avatarName: 'Kingston' },
+        mail: '',
+        stats: {
+          [currentYear]: {
+            '01': 2,
+            '02': 4,
+          },
+        },
+      });
+
+      expect(service.createdNotificationsThisMonthCount()).toBe(0);
+    });
+  });
 });

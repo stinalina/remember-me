@@ -44,7 +44,7 @@ export class HomeComponent extends OutletContainer {
 
   protected readonly username = computed<string>(() => this.memberService.member()?.name ?? 'Unbekannt');
   protected readonly freeNotificationsLimit = this.userService.freeNotificationsLimit;
-  protected readonly notificationsCount = this.userService.createdNotesThisMonthCount;
+  protected readonly notificationsCount = this.memberService.createdNotificationsThisMonthCount;
 
   protected readonly member = this.memberService.member;
   protected readonly preferences = computed<Preferences>(() => this.member()?.preferences ?? InitialPreferences);
