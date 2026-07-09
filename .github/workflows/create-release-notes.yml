@@ -31,5 +31,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
           RELEASE_MAIL_FN_URL: ${{ secrets.RELEASE_MAIL_FN_URL }}
-          RELEASE_MAIL_FN_KEY: ${{ secrets.RELEASE_MAIL_FN_KEY }}
         run: npx semantic-release
