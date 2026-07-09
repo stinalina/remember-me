@@ -50,7 +50,6 @@ module.exports = {
         successCmd:
           'curl --fail --show-error --silent --retry 3 --retry-connrefused --max-time 30 ' +
           '--request POST ' +
-          '--header "x-functions-key: $RELEASE_MAIL_FN_KEY" ' +
           '--header "Content-Type: application/json" ' +
           '--data \'{"version":"${nextRelease.version}",' + '"$RELEASE_MAIL_FN_URL"',
       },

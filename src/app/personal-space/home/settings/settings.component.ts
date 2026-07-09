@@ -39,7 +39,6 @@ export class SettingsComponent {
   protected readonly deleteConfirmDialog = viewChild.required<ConfirmDialog>('deleteConfirmDialog');
   protected readonly defaultMailValue = linkedSignal(() => this.member()?.preferences?.defaultMail ?? this.member()?.mail);
   protected readonly usernameValue = linkedSignal(() => this.member()?.name ?? 'Unbekannt'); //Bei Usern, die nach v1.0.0 eingeführt wurden, ist der Name immer gesetzt. 
-  // Opt-out toggle; legacy records without the flag are treated as subscribed (default true).
   protected readonly subscribeReleaseMailsValue = linkedSignal(() => this.member()?.preferences?.subscribeReleaseMails ?? true);
   protected readonly passwordValue = signal('');
   protected readonly currentPasswordValue = signal('');

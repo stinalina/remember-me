@@ -1,7 +1,7 @@
 export interface Preferences {
     avatarName: string;
     defaultMail?: string;
-    subscribeReleaseMails: boolean; //TODO Hasura default value
+    subscribeReleaseMails: boolean;
 }
 
 export const InitialPreferences: Preferences = {
