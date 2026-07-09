@@ -27,7 +27,7 @@ export class AuthService {
     });
   }
 
-  public signUp(email: string, password: string): Observable<UserCredential> {
+  public signUp(email: string, password: string): Observable<UserCredential | null> {
     return from(createUserWithEmailAndPassword(this.fireAuth, email, password)).pipe(
       switchMap((credential) => from(credential.user.getIdToken(true)).pipe(map(() => credential))),
       tap((credential) => {
@@ -37,12 +37,12 @@ export class AuthService {
       }),
       catchError(error => {
         this.handleError(error);
-        return EMPTY; 
+        return of(null); 
       })
     );
   }
 
-  public signIn(email: string, password: string, rememberMe: boolean): Observable<void> {
+  public signIn(email: string, password: string, rememberMe: boolean): Observable<boolean> {
     const persistence = rememberMe ? browserLocalPersistence : browserSessionPersistence;
     return from(setPersistence(this.fireAuth, persistence)).pipe(
       switchMap(() => signInWithEmailAndPassword(this.fireAuth, email, password)),
@@ -54,9 +54,9 @@ export class AuthService {
       }),
       catchError(error => {
         this.handleError(error);
-        return EMPTY;
+        return of(false);
       }),
-      map(() => void 0)
+      map(() => true)
     );
   }
 

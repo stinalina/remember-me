@@ -23,9 +23,6 @@
         (click)="forgetPassword(mail.mailControl.value)">
         Passwort vergessen?
       </button>
-      @if (errorMessage) {
-        <div class="reme-validator-hint">{{ errorMessage }}</div>
-      }
     </form>
     <span>👉 Noch nicht dabei? <button class="btn-ghost reme-link" type="button" (click)="requestRegistration.emit()">Werde Mitglied</button>!</span>
   </div>
