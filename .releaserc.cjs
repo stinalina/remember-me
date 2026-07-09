@@ -41,5 +41,19 @@ module.exports = {
         message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
       },
     ],
+    // Fires only when a release was actually created. Notifies the backend AZ
+    // Function which fans out release e-mails to all opted-in users via queue.
+    // Requires env vars RELEASE_MAIL_FN_URL and RELEASE_MAIL_FN_KEY provided by the workflow.
+    [
+      '@semantic-release/exec',
+      {
+        successCmd:
+          'curl --fail --show-error --silent --retry 3 --retry-connrefused --max-time 30 ' +
+          '--request POST ' +
+          '--header "x-functions-key: $RELEASE_MAIL_FN_KEY" ' +
+          '--header "Content-Type: application/json" ' +
+          '--data \'{"version":"${nextRelease.version}",' + '"$RELEASE_MAIL_FN_URL"',
+      },
+    ],
   ],
 };
