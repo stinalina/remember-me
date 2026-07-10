@@ -51,7 +51,8 @@ module.exports = {
           'curl --fail --show-error --silent --retry 3 --retry-connrefused --max-time 30 ' +
           '--request POST ' +
           '--header "Content-Type: application/json" ' +
-          '--data \'{"version":"${nextRelease.version}",' + '"$RELEASE_MAIL_FN_URL"',
+          '--data \'{"version":"${nextRelease.version}"}\' ' +
+          '"$RELEASE_MAIL_FN_URL"',
       },
     ],
   ],
