@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+# [1.3.0](https://github.com/stinalina/remember-me/compare/v1.2.0...v1.3.0) (2026-07-10)
+
+
+### feat
+
+* **NOTIFY-198:** release notes per mail per pipeline (#129) ([](https://github.com/stinalina/remember-me/commit/d1d7515bcd63698c450462bffdf376f7cd46cdcd)), closes [#129](https://github.com/stinalina/remember-me/issues/129)
+
+
+### fix
+
+* **NOTIFY-211:** swap user should reload store & get notes count from user stats  (#126) ([](https://github.com/stinalina/remember-me/commit/24cecb34ef5c03ac79525e08dfac028e22e4b933)), closes [#126](https://github.com/stinalina/remember-me/issues/126)
+* **NOTIFY-212:** reset loading spinner when login failed #125 ([](https://github.com/stinalina/remember-me/commit/aca92acd84252cdb8b7e6f8a98098166f06f0cfa)), closes [#125](https://github.com/stinalina/remember-me/issues/125)
+* **NOTIFY-213:** adjust duplicated note due date & get notes count from member stats (#127) ([](https://github.com/stinalina/remember-me/commit/bcab78e0881790fe47837d29fc911f3cbc2896bd)), closes [#127](https://github.com/stinalina/remember-me/issues/127)
+
 # [1.2.0](https://github.com/stinalina/remember-me/compare/v1.1.1...v1.2.0) (2026-07-07)
 
 
