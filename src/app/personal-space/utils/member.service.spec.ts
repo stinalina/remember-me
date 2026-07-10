@@ -230,7 +230,7 @@ describe('MemberService', () => {
       service.member.set({
         id: 'user-123',
         name: 'Max Mustermann',
-        preferences: { avatarName: 'Kingston' },
+        preferences: { avatarName: 'Kingston', subscribeReleaseMails: true },
         mail: '',
         stats: {
           [currentYear]: {
@@ -249,7 +249,7 @@ describe('MemberService', () => {
       service.member.set({
         id: 'user-123',
         name: 'Max Mustermann',
-        preferences: { avatarName: 'Kingston' },
+        preferences: { avatarName: 'Kingston', subscribeReleaseMails: true },
         mail: '',
         stats: {
           [currentYear]: {
