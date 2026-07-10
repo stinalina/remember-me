@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.3.1](https://github.com/stinalina/remember-me/compare/v1.3.0...v1.3.1) (2026-07-10)
+
+
+### fix
+
+* **NOTIFY-198:** release notes pipeline ([](https://github.com/stinalina/remember-me/commit/d878bba5d822835c618c38f08fbe96145dac6533))
+
 # [1.3.0](https://github.com/stinalina/remember-me/compare/v1.2.0...v1.3.0) (2026-07-10)
 
 
