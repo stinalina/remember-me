@@ -1,4 +1,4 @@
-import { DestroyRef, inject, Injectable, signal } from "@angular/core";
+import { computed, DestroyRef, inject, Injectable, signal } from "@angular/core";
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Member } from '@app/personal-space/data/member.model';
 import { Preferences } from "@app/personal-space/data/preferences.model";
@@ -22,14 +22,30 @@ export class MemberService {
   private readonly getMemberByIdGQL = inject(GetMemberByIdGQL);
 
   public readonly member = signal<Member | null>(null);
+  public readonly createdNotificationsThisMonthCount = computed<number>(() => {
+    const member = this.member();
+    if (!member) {
+      return 0;
+    }
+
+    const currentYear = new Date().getFullYear().toString();
+    const currentMonth = String(new Date().getMonth() + 1).padStart(2, '0');
+
+    return member.stats[currentYear]?.[currentMonth] ?? 0;
+  });
 
   public updateMail(userId: string, mail: string): Observable<void> {
     const updatedPreferences = { ...this.member()?.preferences, defaultMail: mail } as Preferences;
     return this.updatePreferences(userId, updatedPreferences);
   }
 
-  public updatePreferences(userId: string, preferences: Preferences): Observable<void> {
-    return this.updatePreferencesGQL.mutate({ variables: { id: userId, preferences } }).pipe(
+  public updatePreferences(userId: string, preferences: Partial<Preferences>): Observable<void> {
+    const currentPreferences = this.member()?.preferences;
+    if (!currentPreferences) {
+      return EMPTY;
+    }
+    const updatedPreferences: Preferences = { ...currentPreferences, ...preferences };
+    return this.updatePreferencesGQL.mutate({ variables: { id: userId, preferences:  updatedPreferences } }).pipe(
       takeUntilDestroyed(this.destroyRef),
       catchError(error => {
         console.error('Error updating user preferences:', error);
@@ -38,7 +54,7 @@ export class MemberService {
       }),
       tap(() => this.member.update(current => {
         if (current) {
-          return { ...current, preferences: { ...current.preferences, ...preferences } };
+          return { ...current, preferences: updatedPreferences };
         }
         return current;
       })),

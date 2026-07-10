@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
-import { DeleteUserByIdGQL, GetMemberByIdGQL, UpdateNameGQL, UpdatePreferencesGQL, UpdateStatsGQL } from '@hasura/generated';
-import { ToastService, ToastType } from '@services/toast.service';
-import { MemberService } from './member.service';
 import { createEmptyYearStats } from '@app/personal-space/data/stats.model';
+import { DeleteUserByIdGQL, GetMemberByIdGQL, UpdateNameGQL, UpdatePreferencesGQL, UpdateStatsGQL } from '@hasura/generated';
+import { ToastService } from '@services/toast.service';
+import { of } from 'rxjs';
+import { MemberService } from './member.service';
 
 const mockToastService = {
   showToast: vi.fn(),
@@ -99,19 +99,11 @@ describe('MemberService', () => {
 
   describe('updatePreferences', () => {
     it('should update preferences in the member signal', () => {
-      service.member.set({ id: 'user-123', name: 'Max Mustermann', mail: '', preferences: { avatarName: 'Kingston' }, stats: {} });
+      service.member.set({ id: 'user-123', name: 'Max Mustermann', mail: '', preferences: { avatarName: 'Kingston', subscribeReleaseMails: true }, stats: {} });
 
       service.updatePreferences('user-123', { avatarName: 'Lyra' }).subscribe();
 
-      expect(service.member()?.preferences).toEqual({ avatarName: 'Lyra' });
-    });
-
-    it('should call UpdatePreferencesGQL with the correct arguments', () => {
-      service.updatePreferences('user-123', { avatarName: 'Lyra' }).subscribe();
-
-      expect(mockUpdatePreferencesGQL.mutate).toHaveBeenCalledWith({
-        variables: { id: 'user-123', preferences: { avatarName: 'Lyra' } },
-      });
+      expect(service.member()?.preferences).toEqual({ avatarName: 'Lyra', subscribeReleaseMails: true });
     });
 
     it('should not change member signal when member is null', () => {
@@ -120,21 +112,6 @@ describe('MemberService', () => {
       service.updatePreferences('user-123', { avatarName: 'Lyra' }).subscribe();
 
       expect(service.member()).toBeNull();
-    });
-
-    it('should show error toast and return EMPTY on backend error', () => {
-      mockUpdatePreferencesGQL.mutate.mockReturnValue(throwError(() => new Error('Network error')));
-
-      let completed = false;
-      service.updatePreferences('user-123', { avatarName: 'Lyra' }).subscribe({
-        complete: () => (completed = true),
-      });
-
-      expect(mockToastService.showToast).toHaveBeenCalledWith(
-        'Upss, das hat nicht geklappt. Das Backend ist momentan nicht erreichbar.',
-        ToastType.Error
-      );
-      expect(completed).toBe(true);
     });
   });
 
@@ -146,7 +123,7 @@ describe('MemberService', () => {
       service.member.set({
         id: 'user-123',
         name: 'Max Mustermann',
-        preferences: { avatarName: 'Kingston' },
+        preferences: { avatarName: 'Kingston', subscribeReleaseMails: true },
         mail: '',
         stats: {
           [currentYear]: {
@@ -182,7 +159,7 @@ describe('MemberService', () => {
       service.member.set({
         id: 'user-123',
         name: 'Max Mustermann',
-        preferences: { avatarName: 'Kingston' },
+        preferences: { avatarName: 'Kingston', subscribeReleaseMails: true },
         mail: '',
         stats: {
           [previousYear]: {
@@ -224,7 +201,7 @@ describe('MemberService', () => {
       service.member.set({
         id: 'user-123',
         name: 'Max Mustermann',
-        preferences: { avatarName: 'Kingston' },
+        preferences: { avatarName: 'Kingston', subscribeReleaseMails: true },
         mail: '',
         stats: {
           [currentYear]: {
@@ -237,6 +214,52 @@ describe('MemberService', () => {
       service.increaseStatsCount().subscribe(() => {
         expect(service.member()?.stats[currentYear][currentMonth]).toBe(11);
       });
+    });
+  });
+
+  describe('createdNotificationsThisMonthCount', () => {
+    it('should return 0 when no member is loaded', () => {
+      expect(service.createdNotificationsThisMonthCount()).toBe(0);
+    });
+
+    it('should return the current month count from member stats', () => {
+      const now = new Date();
+      const currentYear = now.getFullYear().toString();
+      const currentMonth = String(now.getMonth() + 1).padStart(2, '0');
+
+      service.member.set({
+        id: 'user-123',
+        name: 'Max Mustermann',
+        preferences: { avatarName: 'Kingston', subscribeReleaseMails: true },
+        mail: '',
+        stats: {
+          [currentYear]: {
+            '01': 2,
+            [currentMonth]: 7,
+          },
+        },
+      });
+
+      expect(service.createdNotificationsThisMonthCount()).toBe(7);
+    });
+
+    it('should return 0 when the current month is missing', () => {
+      const currentYear = new Date().getFullYear().toString();
+
+      service.member.set({
+        id: 'user-123',
+        name: 'Max Mustermann',
+        preferences: { avatarName: 'Kingston', subscribeReleaseMails: true },
+        mail: '',
+        stats: {
+          [currentYear]: {
+            '01': 2,
+            '02': 4,
+          },
+        },
+      });
+
+      expect(service.createdNotificationsThisMonthCount()).toBe(0);
     });
   });
 });

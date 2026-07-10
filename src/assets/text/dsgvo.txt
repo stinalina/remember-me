@@ -37,6 +37,10 @@ Die Verarbeitung dieser Daten erfolgt,
 
 Rechtsgrundlage ist Art. 6 Abs. 1 S. 1 lit. b DSGVO.
 
+c) Release-Benachrichtigungen per E-Mail
+Nach jedem neuen Release der Anwendung senden wir registrierten Nutzern eine kurze Informations-E-Mail mit der Versionsnummer und einem Link zu den Release Notes an die im Nutzerkonto hinterlegte E-Mail-Adresse. Diese Benachrichtigung ist bei der Registrierung standardmäßig aktiviert (Voreinstellung) und kann in den Einstellungen jederzeit über den Schalter „Release-Mails" ohne Angabe von Gründen deaktiviert werden. Zur technischen Zustellung wird die E-Mail-Adresse an unseren Mail-Versanddienst übergeben; darüber hinaus findet keine Weitergabe zu Werbezwecken statt.
+Rechtsgrundlage ist Art. 6 Abs. 1 S. 1 lit. f DSGVO (berechtigtes Interesse an der Information über Produktänderungen); der Widerspruch nach Art. 21 DSGVO ist jederzeit über den genannten Schalter oder per Nachricht an den Verantwortlichen möglich.
+
 3. Weitergabe von Daten
 Eine Übermittlung Ihrer persönlichen Daten an Dritte zu anderen als den im Folgenden aufgeführten Zwecken findet nicht statt.
 Wir geben Ihre persönlichen Daten nur an Dritte weiter, wenn:

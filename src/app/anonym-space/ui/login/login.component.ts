@@ -1,14 +1,13 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { ROUTER_TOKENS } from '@app/app.routes';
-import { ToastService, ToastType } from '@services/toast.service';
-import { AuthService } from '@shared/utils/authentication/auth.service';
-import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
-import { CheckboxComponent } from '@shared/utils/checkbox/checkbox.component';
 import { MailComponent } from '@app/anonym-space/ui/shared/mail/mail.component';
 import { PasswordComponent } from '@app/anonym-space/ui/shared/password/password.component';
-import { catchError, EMPTY } from 'rxjs';
+import { ROUTER_TOKENS } from '@app/app.routes';
+import { ContentFrameComponent } from '@app/shared/ui/content-frame/content-frame.component';
+import { ToastService, ToastType } from '@services/toast.service';
+import { AuthService } from '@shared/utils/authentication/auth.service';
+import { CheckboxComponent } from '@shared/utils/checkbox/checkbox.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,12 +29,9 @@ export class LoginComponent {
   private readonly router = inject(Router); 
 
   protected readonly isLoading = signal(false);
-  protected errorMessage: string | null = null;
   protected rememberMeFlag = true;
 
   public login(mail: string, password: string, rememberMe: boolean): void {
-    this.errorMessage = null;
-
     if (!mail || !password) {
       this.toastService.showToast('Bitte gib eine gültige E-Mail und ein Passwort ein.', ToastType.Warning);
       return;
@@ -44,19 +40,15 @@ export class LoginComponent {
     this.isLoading.set(true);
     this.authenticationService.signIn(mail, password, rememberMe).pipe(
       takeUntilDestroyed(this.destroyRef),
-      catchError(error => {
-        console.error('Login error:', error);
-        this.isLoading.set(false);
-        return EMPTY;
-      }),
-    ).subscribe(
-      () => this.router.navigate([ROUTER_TOKENS.HOME])
-    );
+    ).subscribe(success => {
+      this.isLoading.set(false);
+      if (success) {
+        this.router.navigate([ROUTER_TOKENS.HOME]);
+      }
+  });
   }
 
   public forgetPassword(mail: string | null): void {
-    this.errorMessage = null;
-
     if (!mail) {
       this.toastService.showToast('Bitte gib eine gültige E-Mail ein.', ToastType.Warning);
       return;
