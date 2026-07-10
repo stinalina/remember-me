@@ -39,8 +39,13 @@ export class MemberService {
     return this.updatePreferences(userId, updatedPreferences);
   }
 
-  public updatePreferences(userId: string, preferences: Preferences): Observable<void> {
-    return this.updatePreferencesGQL.mutate({ variables: { id: userId, preferences } }).pipe(
+  public updatePreferences(userId: string, preferences: Partial<Preferences>): Observable<void> {
+    const currentPreferences = this.member()?.preferences;
+    if (!currentPreferences) {
+      return EMPTY;
+    }
+    const updatedPreferences: Preferences = { ...currentPreferences, ...preferences };
+    return this.updatePreferencesGQL.mutate({ variables: { id: userId, preferences:  updatedPreferences } }).pipe(
       takeUntilDestroyed(this.destroyRef),
       catchError(error => {
         console.error('Error updating user preferences:', error);
@@ -49,7 +54,7 @@ export class MemberService {
       }),
       tap(() => this.member.update(current => {
         if (current) {
-          return { ...current, preferences: { ...current.preferences, ...preferences } };
+          return { ...current, preferences: updatedPreferences };
         }
         return current;
       })),

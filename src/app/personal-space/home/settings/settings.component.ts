@@ -39,6 +39,7 @@ export class SettingsComponent {
   protected readonly deleteConfirmDialog = viewChild.required<ConfirmDialog>('deleteConfirmDialog');
   protected readonly defaultMailValue = linkedSignal(() => this.member()?.preferences?.defaultMail ?? this.member()?.mail);
   protected readonly usernameValue = linkedSignal(() => this.member()?.name ?? 'Unbekannt'); //Bei Usern, die nach v1.0.0 eingeführt wurden, ist der Name immer gesetzt. 
+  protected readonly subscribeReleaseMailsValue = linkedSignal(() => this.member()?.preferences?.subscribeReleaseMails ?? true);
   protected readonly passwordValue = signal('');
   protected readonly currentPasswordValue = signal('');
   protected readonly deleteAccountPasswordValue = signal('');
@@ -161,5 +162,19 @@ export class SettingsComponent {
   protected openDeleteAccountDialog(): void {
     this.deleteAccountPasswordValue.set('');
     this.deleteConfirmDialog().show();
+  }
+
+  protected toggleSubscribeReleaseMails(subscribe: boolean): void {
+    const member = this.member();
+    if (!member) {
+      return;
+    }
+    this.subscribeReleaseMailsValue.set(subscribe);
+    this.isSaving.set(true);
+    const updatedPreferences = { ...member.preferences, subscribeReleaseMails: subscribe };
+    this.memberService.updatePreferences(member.id, updatedPreferences).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.isSaving.set(false))
+    ).subscribe();
   }
 }
