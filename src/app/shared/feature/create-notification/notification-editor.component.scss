@@ -141,3 +141,8 @@
 :host ::ng-deep .NgxEditor__Seperator {
   border-color: var(--color-base-300);
 }
+
+.input .btn.btn-xs {
+  min-height: 1.5rem;
+  height: 1.5rem;
+}

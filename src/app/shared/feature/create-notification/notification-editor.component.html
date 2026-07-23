@@ -43,6 +43,67 @@
         type="date"/>
     </div>
 
+    <div class="flex flex-col text-sm xl:text-base">
+      <label for="create-notification-location" class="text-left md:ml-0.5 xl:ml-1 mb-1">
+        Füge einen Ort hinzu
+      </label>
+      <div class="dropdown w-full" [class.dropdown-open]="this.locationDropdownOpen()">
+        <label class="input input-md w-full">
+          <div class="tooltip" [attr.data-tip]="this.selectedLocationLabel()">
+            <span class="material-symbols-outlined opacity-70" aria-hidden="true">location_on</span>
+          </div>
+          <input
+            #locationInputElement
+            id="create-notification-location"
+            data-bwignore data-lpignore="true" data-1p-ignore data-form-type="other"
+            class="pl-1"
+            type="text"
+            [ngModel]="this.locationQuery()"
+            (ngModelChange)="this.onLocationInputChange($event)"
+            (focus)="this.onLocationInputFocus()"
+            (blur)="this.onLocationInputBlur()"
+            [ngModelOptions]="{ standalone: true }"
+            placeholder="Ort suchen (Google Maps)"
+            autocomplete="off" />
+          @if (this.locationQuery()) {
+            <button type="button" class="btn btn-ghost btn-xs" aria-label="Ort entfernen" (click)="clearLocation()">
+              <span class="material-symbols-outlined text-sm">close</span>
+            </button>
+          }
+        </label>
+
+        @if (this.locationDropdownOpen() && this.locationSuggestions().length > 0) {
+          <div class="dropdown-content bg-base-100 rounded-box z-4000 mt-2 w-full p-1 shadow border border-base-300 max-h-60 overflow-auto">
+            <div class="menu">
+              @for (suggestion of this.locationSuggestions(); track suggestion.placeId) {
+                <button
+                  type="button"
+                  class="text-left"
+                  (mousedown)="this.selectLocationSuggestion(suggestion, $event)">
+                  <span class="font-medium">{{ suggestion.primaryText }}</span>
+                  @if (suggestion.secondaryText) {
+                    <span class="text-xs opacity-75">{{ suggestion.secondaryText }}</span>
+                  }
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+      @if (this.locationSelectionFailed()) {
+        <div class="reme-validator-hint">Bitte einen Ort aus den Vorschlägen auswählen.</div>
+      }
+      @if (this.notificationForm.locationCoordinates().invalid()) {
+        <div class="reme-validator-hint">Bitte einen gültigen Ort wählen.</div>
+      }
+      @if (this.placesAutocompleteWarning(); as warningText) {
+        <div class="alert alert-warning mt-2 text-xs" role="status" aria-live="polite">
+          <span class="material-symbols-outlined" aria-hidden="true">warning</span>
+          <span>{{ warningText }}</span>
+        </div>
+      }
+    </div>
+
     <input
       type="text"
       title="Additional Info"

@@ -1,12 +1,18 @@
 import { HttpClient } from "@angular/common/http";
 import { DestroyRef, inject, Injectable } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
-import { INotification } from "@shared/utils/models/notification.model";
-import { IUser } from "@shared/utils/models/user.model";
 import { environment } from "@environments/environment";
 import { DeleteNotificationByIdGQL, DeleteNotificationsByUserIdGQL, GetNotificationByUserIdGQL, InsertNotificationGQL, Notification_Insert_Input, Notification_Set_Input, UpdateNotificationByIdGQL } from "@hasura/generated";
+import { INotification } from "@shared/utils/models/notification.model";
+import { IUser } from "@shared/utils/models/user.model";
 import { catchError, map, Observable, of, tap } from 'rxjs';
 import { ToastService, ToastType } from "./toast.service";
+
+// type NotificationExtras = INotification['extras'];
+type NotificationWithExtras = {
+  Extras?: unknown;
+};
+type NotificationSetInputWithExtras = Notification_Set_Input & NotificationWithExtras;
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
@@ -19,6 +25,23 @@ export class NotificationService {
   private readonly deleteNotificationByIdGQL = inject(DeleteNotificationByIdGQL);
   private readonly getNotificationByUserIdGQL = inject(GetNotificationByUserIdGQL);
   private readonly deleteArchivedNotificationsByUserIdGQL = inject(DeleteNotificationsByUserIdGQL);
+
+  // private parseExtras(extrasValue: NotificationWithExtras): NotificationExtras {
+  //   if (!extrasValue || typeof extrasValue !== 'object') {
+  //     return { ...EMPTY_NOTIFICATION_EXTRAS };
+  //   }
+
+  //   const locationCoordinates = (extrasValue as { locationCoordinates?: unknown }).locationCoordinates;
+  //   const locationName = (extrasValue as { locationName?: unknown }).locationName;
+  //   return {
+  //     locationCoordinates: typeof locationCoordinates === 'string' ? locationCoordinates : undefined,
+  //     locationName: typeof locationName === 'string' ? locationName : undefined,
+  //   };
+  // }
+
+  // private extractExtras(notification: unknown): NotificationExtras {
+  //   return this.parseExtras((notification as NotificationWithExtras).Extras);
+  // }
   
   /**
    * Inserts notification and send email.
@@ -49,6 +72,7 @@ export class NotificationService {
           mail: notification?.Mail ?? '',
           isDraft: notification?.IsDraft ?? false,
           isArchived: notification?.IsArchived ?? false,
+          extras: notification?.Extras ?? {},
         }) satisfies INotification;
       }),
       catchError((error) => {
@@ -60,14 +84,15 @@ export class NotificationService {
   }
 
   public updateNotification(updatedNotification: INotification): Observable<INotification | undefined> {
-    const notification = {
+    const notification: NotificationSetInputWithExtras = {
       Subject: updatedNotification.subject,
       Content: updatedNotification.content,
       DueDate: updatedNotification.dueDate,
       IsDraft: updatedNotification.isDraft,
       IsArchived: updatedNotification.isArchived,
-      Mail: updatedNotification.mail
-    } satisfies Notification_Set_Input;
+      Mail: updatedNotification.mail,
+      Extras: updatedNotification.extras,
+    };
 
     return this.updateNotificationGQL.mutate({ variables: 
       { 
@@ -90,6 +115,7 @@ export class NotificationService {
           mail: notification?.Mail ?? '',
           isDraft: notification?.IsDraft ?? false,
           isArchived: notification.IsArchived ?? false,
+          extras: notification.Extras ?? {},
         }) satisfies INotification;
       }),
       catchError((error) => {
@@ -116,6 +142,7 @@ export class NotificationService {
         mail: n.Mail,
         isDraft: n.IsDraft ?? false,
         isArchived: n.IsArchived ?? false,
+        extras: n.Extras ?? {},
       } satisfies INotification)) ?? []),
       catchError(error => {
         console.error('Error loading notifications:', error);

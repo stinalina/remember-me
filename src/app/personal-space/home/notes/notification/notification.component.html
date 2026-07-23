@@ -48,26 +48,33 @@
     </div>
 
     <div class="card-footer">
-      <div class="card-actions flex flex-row gap-2 justify-end">
-        <button type="button" class="btn btn-xs btn-square tooltip"
-          aria-label="Notiz duplizieren" data-tip="Duplizieren"
-          [attr.data-testid]="this.preId() + '-duplicate'"
-          (click)="duplicateClicked.emit()">
-          <span class="material-symbols-outlined">content_copy</span>
-        </button>
-        <button type="button" class="btn btn-xs btn-square"
-          aria-label="Notiz bearbeiten"
-          [attr.data-testid]="this.preId() + '-edit'"
-          [disabled]="isDuePast() || isReadonly"
-          (click)="editClicked.emit()">
-          <span class="material-symbols-outlined">edit_square</span>
-        </button>
-        <button type="button" class="btn btn-xs btn-square"
-          aria-label="Notiz löschen"
-          [attr.data-testid]="this.preId() + '-delete'"
-          (click)="deleteDialog.show()">
-          <span class="material-symbols-outlined">delete</span>
-        </button>
+      <div class="flex"
+        [class.justify-between]="hasLocation()"
+        [class.justify-end]="!hasLocation()">
+        @if (hasLocation()) {
+          <ng-container *ngTemplateOutlet="locationLink"></ng-container>
+        }
+        <div class="card-actions flex flex-row gap-2">
+          <button type="button" class="btn btn-xs btn-square"
+            aria-label="Notiz bearbeiten"
+            [attr.data-testid]="this.preId() + '-edit'"
+            [disabled]="isDuePast() || isReadonly"
+            (click)="editClicked.emit()">
+            <span class="material-symbols-outlined">edit_square</span>
+          </button>
+          <button type="button" class="btn btn-xs btn-square tooltip"
+            aria-label="Notiz duplizieren" data-tip="Duplizieren"
+            [attr.data-testid]="this.preId() + '-duplicate'"
+            (click)="duplicateClicked.emit()">
+            <span class="material-symbols-outlined">content_copy</span>
+          </button>
+          <button type="button" class="btn btn-xs btn-square"
+            aria-label="Notiz löschen"
+            [attr.data-testid]="this.preId() + '-delete'"
+            (click)="deleteDialog.show()">
+            <span class="material-symbols-outlined">delete</span>
+          </button>
+        </div>
       </div>
       <small class="text-gray-500">
         @if (notification.isArchived) {
@@ -98,3 +105,21 @@
   (secondaryConfirm)="this.deleteNotification.emit()">
   Diese Notiz scheint erledigt. Möchtest du sie archivieren oder löschen?
 </reme-confirm-dialog>
+
+<ng-template #locationLink>
+  <div class="flex items-center gap-1 text-xs 2xl:text-sm">
+    <span class="material-symbols-outlined text-base" aria-hidden="true">location_on</span>
+    @if (locationMapLink()) {
+      <a
+        class="reme-link"
+        [href]="locationMapLink()"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Ort in Google Maps öffnen">
+        {{ locationName() || 'Ort in Google Maps öffnen' }}
+      </a>
+    } @else {
+      <span>{{ locationName() || locationValue() }}</span>
+    }
+  </div>
+</ng-template>

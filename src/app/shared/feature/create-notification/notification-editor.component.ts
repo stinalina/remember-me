@@ -1,10 +1,25 @@
 import { DatePipe, NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, input, linkedSignal, OnDestroy, OnInit, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  ElementRef,
+  inject,
+  input,
+  linkedSignal,
+  OnDestroy,
+  OnInit,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { AbstractControl, FormsModule } from '@angular/forms';
 import { email, form, FormField, maxLength, required, validate } from '@angular/forms/signals';
 import { MemberService } from '@app/personal-space/utils/member.service';
+import { GoogleMapsLoaderService, GoogleMapsLoadResult } from '@app/shared/services/google-maps-loader.service';
 import { TypewriterActionType, TypewriterEffectService } from '@app/shared/services/typewriter-effect.service';
 import { UserService } from '@app/shared/services/user.service';
+import { environment } from '@environments/environment';
 import { Notification_Insert_Input } from '@hasura/generated';
 import { CheckboxComponent } from '@root/src/app/shared/utils/checkbox/checkbox.component';
 import { LocalStorageService } from '@services/local-storage.service';
@@ -47,10 +62,56 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   private readonly localStorageService = inject(LocalStorageService);
   private readonly toastService = inject(ToastService);
   private readonly typewriterEffectService = inject(TypewriterEffectService);
+  private readonly googleMapsLoaderService = inject(GoogleMapsLoaderService);
   
   protected readonly isLoggedIn = this.authService.isAuthenticated.asReadonly();
   private readonly freeNotificationsLimit = this.userService.freeNotificationsLimit;
   private readonly limitReached = signal<boolean>(false);
+  protected readonly locationInputElement = viewChild<ElementRef<HTMLInputElement>>('locationInputElement');
+  protected readonly locationQuery = signal<string>('');
+  protected readonly locationSuggestions = signal<{ placeId: string; primaryText: string; secondaryText: string; description: string }[]>([]);
+  protected readonly locationDropdownOpen = signal<boolean>(false);
+  protected readonly locationSelectionFailed = signal<boolean>(false);
+  protected readonly selectedLocationLabel = signal<string>('');
+  protected readonly placesAutocompleteWarning = signal<string | null>(null);
+  private readonly googleMapsApiKey = environment.GOOGLE_MAPS_API_KEY;
+  private autocompleteInitialized = false;
+  private autocompleteService?: {
+    getPlacePredictions: (
+      request: { input: string; types?: string[] },
+      callback: (
+        predictions: {
+          description?: string;
+          place_id?: string;
+          structured_formatting?: { main_text?: string; secondary_text?: string };
+        }[] | null,
+        status: string,
+      ) => void,
+    ) => void;
+  };
+  private placesService?: {
+    getDetails: (
+      request: {
+        placeId: string;
+        fields: string[];
+      },
+      callback: (
+        place: {
+          name?: string;
+          formatted_address?: string;
+          geometry?: {
+            location?: {
+              lat: () => number;
+              lng: () => number;
+            };
+          };
+        } | null,
+        status: string,
+      ) => void,
+    ) => void;
+  };
+  private suggestionFetchTimeoutId?: number;
+  private closeDropdownTimeoutId?: number;
 
   public readonly editor: Editor = new Editor();
   public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);
@@ -69,6 +130,8 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
       dateTime: dueDate ?? Utils.tomorrow,
       isDraft: notification?.isDraft ?? false,
       isArchived: notification?.isArchived ?? false,
+      locationCoordinates: notification?.extras.locationCoordinates ?? '',
+      locationName: notification?.extras.locationName ?? '',
     })
   });
   
@@ -126,6 +189,23 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
 
       return null;
     });
+
+    validate(path.locationCoordinates, ({ value }) => {
+      const locationCoordinates = value().trim();
+      if (!locationCoordinates) {
+        return null;
+      }
+
+      const locationPattern = /^-?\d+(\.\d+)?,-?\d+(\.\d+)?$/;
+      if (!locationPattern.test(locationCoordinates)) {
+        return {
+          kind: 'invalidLocation',
+          message: 'Bitte wähle einen Ort aus den Google-Vorschlägen.',
+        };
+      }
+
+      return null;
+    });
   });
 
   protected readonly retry = signal<boolean>(false);
@@ -157,6 +237,15 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
         this.typewriterEffectService.animatePlaceholder(this.updatePlaceholder.bind(this));
       }
     });
+
+    effect(() => {
+      const locationInputRef = this.locationInputElement();
+      if (!locationInputRef || this.autocompleteInitialized) {
+        return;
+      }
+      this.autocompleteInitialized = true;
+      void this.initializePlacesAutocomplete(locationInputRef.nativeElement);
+    });
   }
 
   public ngOnInit(): void {
@@ -185,12 +274,23 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
         this.typewriterEffectService.animatePlaceholder(this.updatePlaceholder.bind(this));
       }
     }
+
+    const initialLocation = this.notificationModel().locationCoordinates;
+    const initialLocationName = this.notificationModel().locationName;
+    this.locationQuery.set(initialLocationName || initialLocation);
+    this.selectedLocationLabel.set(initialLocationName || initialLocation);
   }
 
   public ngOnDestroy(): void {
     const form = this.notificationModel();
     if (this.editorMode() == 'create' && form.content && form.content.length > 0) {
       this.sessionStorage.setItem('notificationDraft', JSON.stringify(form));
+    }
+    if (this.suggestionFetchTimeoutId) {
+      window.clearTimeout(this.suggestionFetchTimeoutId);
+    }
+    if (this.closeDropdownTimeoutId) {
+      window.clearTimeout(this.closeDropdownTimeoutId);
     }
     this.editor.destroy();
   }
@@ -203,7 +303,47 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
         ...current,
         ...parsedDraft,
       }));
+      const locationCoordinates = parsedDraft.locationCoordinates ?? '';
+      const locationName = parsedDraft.locationName ?? locationCoordinates;
+      this.locationQuery.set(locationName);
+      this.selectedLocationLabel.set(locationName);
       this.showPlaceholderAnimation.set(false);
+    }
+  }
+
+  private async initializePlacesAutocomplete(inputElement: HTMLInputElement): Promise<void> {
+    if (!this.googleMapsApiKey || this.googleMapsApiKey.trim().length === 0) {
+      this.placesAutocompleteWarning.set('Google Places ist nicht konfiguriert. Bitte API-Key setzen, damit Suchvorschläge erscheinen.');
+      return;
+    }
+
+    const result = await this.googleMapsLoaderService.loadPlacesApi(this.googleMapsApiKey);
+    if (!result.success || !window.google?.maps?.places) {
+      this.placesAutocompleteWarning.set(this.mapPlacesLoadError(result));
+      return;
+    }
+
+    this.placesAutocompleteWarning.set(null);
+    this.autocompleteService = new window.google.maps.places.AutocompleteService();
+    this.placesService = new window.google.maps.places.PlacesService(inputElement);
+  }
+
+  private mapPlacesLoadError(result: GoogleMapsLoadResult): string {
+    switch (result.code) {
+      case 'MISSING_API_KEY':
+        return 'Google Places ist nicht konfiguriert: kein API-Key gesetzt.';
+      case 'AUTH_FAILURE':
+        return 'Google Maps Authentifizierung fehlgeschlagen. Prüfe API-Key, HTTP-Referrer, aktivierte APIs und Billing.';
+      case 'SCRIPT_LOAD_ERROR':
+        return 'Google Maps Script konnte nicht geladen werden. Prüfe CSP und Netzwerkzugriff auf maps.googleapis.com.';
+      case 'TIMEOUT':
+        return 'Google Maps Script-Timeout. Prüfe Netzwerk, Werbeblocker/Privacy-Tools und Firewall.';
+      case 'PLACES_UNAVAILABLE':
+        return 'Google Maps wurde geladen, aber Places ist nicht verfügbar. Aktiviere Places API (und ggf. Places API New) im gleichen Projekt.';
+      case 'NOT_BROWSER':
+        return 'Google Places ist nur im Browser verfügbar.';
+      default:
+        return result.detail ?? 'Google Places konnte nicht geladen werden. Prüfe API-Key, Billing und Referrer.';
     }
   }
 
@@ -226,6 +366,10 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
       isDraft: formValue.isDraft,
       isArchived: formValue.isArchived,
       mail: formValue.mail,
+      extras: {
+        locationCoordinates: formValue.locationCoordinates || undefined,
+        locationName: formValue.locationName || undefined,
+      },
     } satisfies INotification;
 
     this.resetForm();
@@ -242,8 +386,13 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
       IsDraft: formValue.isDraft,
       IsArchived: formValue.isArchived,
       UserId: this.userService.currUser()?.userId,
-      Mail: mail
+      Mail: mail,
     } satisfies Notification_Insert_Input;
+
+    (notification as { Extras?: INotification['extras'] }).Extras = {
+      locationCoordinates: formValue.locationCoordinates || undefined,
+      locationName: formValue.locationName || undefined,
+    };
 
     this.sendingNotification.set(true)
     this.userService.getUserByMailOrCreateUserIfNotExists(mail).pipe(
@@ -290,6 +439,13 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     }
 
     if (this.notificationForm().invalid()) {
+      console.error('Form is invalid. Please check the input fields.');
+      console.dir(this.notificationForm());
+      return;
+    }
+
+    if (this.locationQuery().trim().length > 0 && this.notificationForm.locationCoordinates().value().trim().length === 0) {
+      this.locationSelectionFailed.set(true);
       return;
     }
 
@@ -317,6 +473,126 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     this.notificationForm.content().value.set(content ?? '');
   }
 
+  protected onLocationInputChange(value: string): void {
+    this.locationQuery.set(value);
+    this.locationSelectionFailed.set(false);
+    this.notificationForm.locationCoordinates().value.set('');
+    this.notificationForm.locationName().value.set(value.trim());
+    if (value.trim().length === 0) {
+      this.locationSuggestions.set([]);
+      this.locationDropdownOpen.set(false);
+      this.selectedLocationLabel.set('');
+      return;
+    }
+
+    this.fetchLocationSuggestions(value.trim());
+  }
+
+  protected clearLocation(): void {
+    this.locationQuery.set('');
+    this.locationSuggestions.set([]);
+    this.locationDropdownOpen.set(false);
+    this.locationSelectionFailed.set(false);
+    this.selectedLocationLabel.set('');
+    this.notificationForm.locationCoordinates().value.set('');
+    this.notificationForm.locationName().value.set('');
+  }
+
+  protected onLocationInputFocus(): void {
+    if (this.locationSuggestions().length > 0) {
+      this.locationDropdownOpen.set(true);
+    }
+  }
+
+  protected onLocationInputBlur(): void {
+    this.closeDropdownTimeoutId = window.setTimeout(() => {
+      this.locationDropdownOpen.set(false);
+    }, 150);
+  }
+
+  protected selectLocationSuggestion(
+    suggestion: { placeId: string; primaryText: string; secondaryText: string; description: string },
+    event: MouseEvent,
+  ): void {
+    event.preventDefault();
+    if (this.closeDropdownTimeoutId) {
+      window.clearTimeout(this.closeDropdownTimeoutId);
+    }
+
+    if (!this.placesService) {
+      this.locationSelectionFailed.set(true);
+      return;
+    }
+
+    this.placesService.getDetails(
+      {
+        placeId: suggestion.placeId,
+        fields: ['formatted_address', 'geometry', 'name'],
+      },
+      (place, status) => {
+        if (status !== 'OK' || !place) {
+          this.locationSelectionFailed.set(true);
+          return;
+        }
+
+        const lat = place.geometry?.location?.lat();
+        const lng = place.geometry?.location?.lng();
+        if (lat === undefined || lng === undefined) {
+          this.locationSelectionFailed.set(true);
+          this.notificationForm.locationCoordinates().value.set('');
+          return;
+        }
+
+        const coordinates = `${lat.toFixed(6)},${lng.toFixed(6)}`;
+        const locationName = place.formatted_address || place.name || suggestion.description || coordinates;
+        this.locationSelectionFailed.set(false);
+        this.notificationForm.locationCoordinates().value.set(coordinates);
+        this.notificationForm.locationName().value.set(locationName);
+        this.locationQuery.set(locationName);
+        this.selectedLocationLabel.set(locationName);
+        this.locationSuggestions.set([]);
+        this.locationDropdownOpen.set(false);
+      },
+    );
+  }
+
+  private fetchLocationSuggestions(input: string): void {
+    if (!this.autocompleteService) {
+      return;
+    }
+
+    if (this.suggestionFetchTimeoutId) {
+      window.clearTimeout(this.suggestionFetchTimeoutId);
+    }
+
+    this.suggestionFetchTimeoutId = window.setTimeout(() => {
+      this.autocompleteService?.getPlacePredictions(
+        {
+          input,
+        },
+        (predictions, status) => {
+          if (status !== 'OK' || !predictions?.length) {
+            this.locationSuggestions.set([]);
+            this.locationDropdownOpen.set(false);
+            return;
+          }
+
+          const mappedSuggestions = predictions
+            .filter((prediction) => !!prediction.place_id)
+            .map((prediction) => ({
+              placeId: prediction.place_id as string,
+              primaryText: prediction.structured_formatting?.main_text || prediction.description || '',
+              secondaryText: prediction.structured_formatting?.secondary_text || '',
+              description: prediction.description || '',
+            }));
+
+          this.locationSuggestions.set(mappedSuggestions);
+          this.locationDropdownOpen.set(mappedSuggestions.length > 0);
+        },
+      );
+    }, 180);
+  }
+
   protected hasMailError(kind: string): boolean {
     return this.notificationForm.mail().errors().some((error) => error.kind === kind);
   }
@@ -330,6 +606,13 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
       dateTime: this.tomorrow,
       isDraft: false,
       isArchived: false,
+      locationCoordinates: '',
+      locationName: '',
     });
+    this.locationQuery.set('');
+    this.locationSuggestions.set([]);
+    this.locationDropdownOpen.set(false);
+    this.locationSelectionFailed.set(false);
+    this.selectedLocationLabel.set('');
   }
 }
