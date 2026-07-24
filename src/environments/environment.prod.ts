@@ -6,6 +6,7 @@ export const environment = {
   HASURA_ADMIN_SECRET: undefined,
   BACKEND_URL: 'https://fa-rememberme-backend-cchucab0bsdpepb5.germanywestcentral-01.azurewebsites.net',
   SEND_WELCOME_MAIL_URL: '/api/sendWelcomeMail',
+  GOOGLE_MAPS_API_KEY: '',
   CONTACT_MAIL: 'stina.boehmig@gmx.de',
   DATE_SINCE: 2026,
   firebaseAuthEmulator: {

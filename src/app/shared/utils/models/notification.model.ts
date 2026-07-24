@@ -7,4 +7,8 @@ export interface INotification {
   content: string;
   dueDate: string;
   createdAt: string;
+  extras: {
+    locationCoordinates?: string;
+    locationName?: string;
+  };
 }

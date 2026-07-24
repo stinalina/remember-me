@@ -113,6 +113,7 @@ export class NotesComponent {
       IsArchived: false,
       UserId: this.memberService.member()!.id,
       Mail: notification.mail,
+      Extras: notification.extras,
     } satisfies Notification_Insert_Input;
 
     this.notificationService.createNotification(duplicatedNote).pipe(
