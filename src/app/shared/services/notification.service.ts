@@ -1,12 +1,14 @@
 import { HttpClient } from "@angular/common/http";
 import { DestroyRef, inject, Injectable } from "@angular/core";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { environment } from "@environments/environment";
+import { DeleteNotificationByIdGQL, DeleteNotificationsByUserIdGQL, GetNotificationByUserIdGQL, InsertNotificationGQL, Notification as HasuraNotification, Notification_Insert_Input, Notification_Set_Input, UpdateNotificationByIdGQL } from "@hasura/generated";
 import { INotification } from "@shared/utils/models/notification.model";
 import { IUser } from "@shared/utils/models/user.model";
-import { environment } from "@environments/environment";
-import { DeleteNotificationByIdGQL, DeleteNotificationsByUserIdGQL, GetNotificationByUserIdGQL, InsertNotificationGQL, Notification_Insert_Input, Notification_Set_Input, UpdateNotificationByIdGQL } from "@hasura/generated";
 import { catchError, map, Observable, of, tap } from 'rxjs';
 import { ToastService, ToastType } from "./toast.service";
+
+type NotificationFragment = Pick<HasuraNotification, 'Id' | 'Subject' | 'Content' | 'DueDate' | 'CreatedAt' | 'Mail' | 'IsDraft' | 'IsArchived' | 'Extras'>;
 
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
@@ -19,7 +21,21 @@ export class NotificationService {
   private readonly deleteNotificationByIdGQL = inject(DeleteNotificationByIdGQL);
   private readonly getNotificationByUserIdGQL = inject(GetNotificationByUserIdGQL);
   private readonly deleteArchivedNotificationsByUserIdGQL = inject(DeleteNotificationsByUserIdGQL);
-  
+
+  private toNotification(n: NotificationFragment): INotification {
+    return {
+      id: n.Id,
+      subject: n.Subject,
+      content: n.Content,
+      dueDate: n.DueDate,
+      createdAt: n.CreatedAt,
+      mail: n.Mail,
+      isDraft: n.IsDraft ?? false,
+      isArchived: n.IsArchived,
+      extras: (n.Extras as INotification['extras']) ?? {},
+    };
+  }
+
   /**
    * Inserts notification and send email.
    * @param insertNotification 
@@ -40,16 +56,7 @@ export class NotificationService {
           this.toastService.showToast('Error creating notification. Please try again.', ToastType.Error);
           return undefined;
         }
-        return ({
-          id: notification?.Id ?? '',
-          subject: notification?.Subject ?? '',
-          content: notification?.Content ?? '',
-          dueDate: notification?.DueDate ?? '',
-          createdAt: notification?.CreatedAt ?? '',
-          mail: notification?.Mail ?? '',
-          isDraft: notification?.IsDraft ?? false,
-          isArchived: notification?.IsArchived ?? false,
-        }) satisfies INotification;
+        return this.toNotification(notification);
       }),
       catchError((error) => {
         console.error(`Error inserting notification: ${JSON.stringify(error)}`);
@@ -60,14 +67,15 @@ export class NotificationService {
   }
 
   public updateNotification(updatedNotification: INotification): Observable<INotification | undefined> {
-    const notification = {
+    const notification: Notification_Set_Input = {
       Subject: updatedNotification.subject,
       Content: updatedNotification.content,
       DueDate: updatedNotification.dueDate,
       IsDraft: updatedNotification.isDraft,
       IsArchived: updatedNotification.isArchived,
-      Mail: updatedNotification.mail
-    } satisfies Notification_Set_Input;
+      Mail: updatedNotification.mail,
+      Extras: updatedNotification.extras,
+    };
 
     return this.updateNotificationGQL.mutate({ variables: 
       { 
@@ -81,16 +89,7 @@ export class NotificationService {
           this.toastService.showToast('Error updating notification. Please try again.', ToastType.Error);
           return undefined;
         }
-        return ({
-          id: notification?.Id ?? '',
-          subject: notification?.Subject ?? '',
-          content: notification?.Content ?? '',
-          dueDate: notification?.DueDate ?? '',
-          createdAt: notification?.CreatedAt ?? '',
-          mail: notification?.Mail ?? '',
-          isDraft: notification?.IsDraft ?? false,
-          isArchived: notification.IsArchived ?? false,
-        }) satisfies INotification;
+        return this.toNotification(notification);
       }),
       catchError((error) => {
         console.error(`Error updating notification: ${JSON.stringify(error)}`);
@@ -107,16 +106,7 @@ export class NotificationService {
     }
     return this.getNotificationByUserIdGQL.fetch({variables: {userId }}).pipe(
       takeUntilDestroyed(this.destroyRef),
-      map(result => result.data?.['Notification']?.map(n => ({
-        id: n.Id,
-        subject: n.Subject,
-        content: n.Content,
-        dueDate: n.DueDate,
-        createdAt: n.CreatedAt,
-        mail: n.Mail,
-        isDraft: n.IsDraft ?? false,
-        isArchived: n.IsArchived ?? false,
-      } satisfies INotification)) ?? []),
+      map(result => result.data?.['Notification']?.map(n => this.toNotification(n)) ?? []),
       catchError(error => {
         console.error('Error loading notifications:', error);
         return of([]);

@@ -54,6 +54,7 @@ export type Notification = {
   Content: Scalars['String']['output'];
   CreatedAt: Scalars['timestamptz']['output'];
   DueDate: Scalars['timestamptz']['output'];
+  Extras: Scalars['jsonb']['output'];
   Id: Scalars['uuid']['output'];
   IsArchived: Scalars['Boolean']['output'];
   IsDraft?: Maybe<Scalars['Boolean']['output']>;
@@ -63,6 +64,12 @@ export type Notification = {
   /** An object relationship */
   User: User;
   UserId: Scalars['uuid']['output'];
+};
+
+
+/** columns and relationships of "dev.Notification" */
+export type NotificationExtrasArgs = {
+  path?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregated selection of "dev.Notification" */
@@ -137,6 +144,11 @@ export type Notification_Aggregate_Order_By = {
   variance?: InputMaybe<Notification_Variance_Order_By>;
 };
 
+/** append existing jsonb value of filtered columns with new jsonb value */
+export type Notification_Append_Input = {
+  Extras?: InputMaybe<Scalars['jsonb']['input']>;
+};
+
 /** input type for inserting array relation for remote table "dev.Notification" */
 export type Notification_Arr_Rel_Insert_Input = {
   data: Array<Notification_Insert_Input>;
@@ -160,6 +172,7 @@ export type Notification_Bool_Exp = {
   Content?: InputMaybe<String_Comparison_Exp>;
   CreatedAt?: InputMaybe<Timestamptz_Comparison_Exp>;
   DueDate?: InputMaybe<Timestamptz_Comparison_Exp>;
+  Extras?: InputMaybe<Jsonb_Comparison_Exp>;
   Id?: InputMaybe<Uuid_Comparison_Exp>;
   IsArchived?: InputMaybe<Boolean_Comparison_Exp>;
   IsDraft?: InputMaybe<Boolean_Comparison_Exp>;
@@ -179,6 +192,21 @@ export enum Notification_Constraint {
   NotificationPkey = 'Notification_pkey'
 }
 
+/** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+export type Notification_Delete_At_Path_Input = {
+  Extras?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+/** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+export type Notification_Delete_Elem_Input = {
+  Extras?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** delete key/value pair or string element. key/value pairs are matched based on their key value */
+export type Notification_Delete_Key_Input = {
+  Extras?: InputMaybe<Scalars['String']['input']>;
+};
+
 /** input type for incrementing numeric columns in table "dev.Notification" */
 export type Notification_Inc_Input = {
   RememberCount?: InputMaybe<Scalars['smallint']['input']>;
@@ -189,6 +217,7 @@ export type Notification_Insert_Input = {
   Content?: InputMaybe<Scalars['String']['input']>;
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
+  Extras?: InputMaybe<Scalars['jsonb']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
   IsArchived?: InputMaybe<Scalars['Boolean']['input']>;
   IsDraft?: InputMaybe<Scalars['Boolean']['input']>;
@@ -270,6 +299,7 @@ export type Notification_Order_By = {
   Content?: InputMaybe<Order_By>;
   CreatedAt?: InputMaybe<Order_By>;
   DueDate?: InputMaybe<Order_By>;
+  Extras?: InputMaybe<Order_By>;
   Id?: InputMaybe<Order_By>;
   IsArchived?: InputMaybe<Order_By>;
   IsDraft?: InputMaybe<Order_By>;
@@ -285,6 +315,11 @@ export type Notification_Pk_Columns_Input = {
   Id: Scalars['uuid']['input'];
 };
 
+/** prepend existing jsonb value of filtered columns with new jsonb value */
+export type Notification_Prepend_Input = {
+  Extras?: InputMaybe<Scalars['jsonb']['input']>;
+};
+
 /** select columns of table "dev.Notification" */
 export enum Notification_Select_Column {
   /** column name */
@@ -293,6 +328,8 @@ export enum Notification_Select_Column {
   CreatedAt = 'CreatedAt',
   /** column name */
   DueDate = 'DueDate',
+  /** column name */
+  Extras = 'Extras',
   /** column name */
   Id = 'Id',
   /** column name */
@@ -330,6 +367,7 @@ export type Notification_Set_Input = {
   Content?: InputMaybe<Scalars['String']['input']>;
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
+  Extras?: InputMaybe<Scalars['jsonb']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
   IsArchived?: InputMaybe<Scalars['Boolean']['input']>;
   IsDraft?: InputMaybe<Scalars['Boolean']['input']>;
@@ -385,6 +423,7 @@ export type Notification_Stream_Cursor_Value_Input = {
   Content?: InputMaybe<Scalars['String']['input']>;
   CreatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   DueDate?: InputMaybe<Scalars['timestamptz']['input']>;
+  Extras?: InputMaybe<Scalars['jsonb']['input']>;
   Id?: InputMaybe<Scalars['uuid']['input']>;
   IsArchived?: InputMaybe<Scalars['Boolean']['input']>;
   IsDraft?: InputMaybe<Scalars['Boolean']['input']>;
@@ -414,6 +453,8 @@ export enum Notification_Update_Column {
   /** column name */
   DueDate = 'DueDate',
   /** column name */
+  Extras = 'Extras',
+  /** column name */
   Id = 'Id',
   /** column name */
   IsArchived = 'IsArchived',
@@ -430,8 +471,18 @@ export enum Notification_Update_Column {
 }
 
 export type Notification_Updates = {
+  /** append existing jsonb value of filtered columns with new jsonb value */
+  _append?: InputMaybe<Notification_Append_Input>;
+  /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
+  _delete_at_path?: InputMaybe<Notification_Delete_At_Path_Input>;
+  /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
+  _delete_elem?: InputMaybe<Notification_Delete_Elem_Input>;
+  /** delete key/value pair or string element. key/value pairs are matched based on their key value */
+  _delete_key?: InputMaybe<Notification_Delete_Key_Input>;
   /** increments the numeric columns with given value of the filtered values */
   _inc?: InputMaybe<Notification_Inc_Input>;
+  /** prepend existing jsonb value of filtered columns with new jsonb value */
+  _prepend?: InputMaybe<Notification_Prepend_Input>;
   /** sets the columns of the filtered rows to the given values */
   _set?: InputMaybe<Notification_Set_Input>;
   /** filter the rows which have to be updated */
@@ -895,7 +946,12 @@ export type Mutation_RootInsert_User_OneArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_NotificationArgs = {
+  _append?: InputMaybe<Notification_Append_Input>;
+  _delete_at_path?: InputMaybe<Notification_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Notification_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Notification_Delete_Key_Input>;
   _inc?: InputMaybe<Notification_Inc_Input>;
+  _prepend?: InputMaybe<Notification_Prepend_Input>;
   _set?: InputMaybe<Notification_Set_Input>;
   where: Notification_Bool_Exp;
 };
@@ -903,7 +959,12 @@ export type Mutation_RootUpdate_NotificationArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdate_Notification_By_PkArgs = {
+  _append?: InputMaybe<Notification_Append_Input>;
+  _delete_at_path?: InputMaybe<Notification_Delete_At_Path_Input>;
+  _delete_elem?: InputMaybe<Notification_Delete_Elem_Input>;
+  _delete_key?: InputMaybe<Notification_Delete_Key_Input>;
   _inc?: InputMaybe<Notification_Inc_Input>;
+  _prepend?: InputMaybe<Notification_Prepend_Input>;
   _set?: InputMaybe<Notification_Set_Input>;
   pk_columns: Notification_Pk_Columns_Input;
 };
@@ -1174,7 +1235,7 @@ export type InsertNotificationMutationVariables = Exact<{
 }>;
 
 
-export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', returning: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, IsDraft?: boolean | null, UserId: any, Subject: string, RememberCount: any, Mail: string, IsArchived: boolean }> } | null };
+export type InsertNotificationMutation = { __typename?: 'mutation_root', insert_Notification?: { __typename?: 'Notification_mutation_response', returning: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Extras: any, Id: any, IsDraft?: boolean | null, UserId: any, Subject: string, RememberCount: any, Mail: string, IsArchived: boolean }> } | null };
 
 export type UpdateNotificationByIdMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -1182,7 +1243,7 @@ export type UpdateNotificationByIdMutationVariables = Exact<{
 }>;
 
 
-export type UpdateNotificationByIdMutation = { __typename?: 'mutation_root', update_Notification_by_pk?: { __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Id: any, IsDraft?: boolean | null, UserId: any, Subject: string, RememberCount: any, Mail: string, IsArchived: boolean } | null };
+export type UpdateNotificationByIdMutation = { __typename?: 'mutation_root', update_Notification_by_pk?: { __typename?: 'Notification', Content: string, CreatedAt: any, DueDate: any, Extras: any, Id: any, IsDraft?: boolean | null, UserId: any, Subject: string, RememberCount: any, Mail: string, IsArchived: boolean } | null };
 
 export type DeleteNotificationByIdMutationVariables = Exact<{
   id: Scalars['uuid']['input'];
@@ -1203,7 +1264,7 @@ export type GetNotificationByUserIdQueryVariables = Exact<{
 }>;
 
 
-export type GetNotificationByUserIdQuery = { __typename?: 'query_root', Notification: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, Subject: string, RememberCount: any, Id: any, DueDate: any, Mail: string, IsDraft?: boolean | null, IsArchived: boolean }> };
+export type GetNotificationByUserIdQuery = { __typename?: 'query_root', Notification: Array<{ __typename?: 'Notification', Content: string, CreatedAt: any, Subject: string, RememberCount: any, Id: any, DueDate: any, Extras: any, Mail: string, IsDraft?: boolean | null, IsArchived: boolean }> };
 
 export type InsertUserMutationVariables = Exact<{
   mail: Scalars['String']['input'];
@@ -1292,6 +1353,7 @@ export const InsertNotificationDocument = gql`
       Content
       CreatedAt
       DueDate
+      Extras
       Id
       IsDraft
       UserId
@@ -1320,6 +1382,7 @@ export const UpdateNotificationByIdDocument = gql`
     Content
     CreatedAt
     DueDate
+    Extras
     Id
     IsDraft
     UserId
@@ -1389,6 +1452,7 @@ export const GetNotificationByUserIdDocument = gql`
     RememberCount
     Id
     DueDate
+    Extras
     Mail
     IsDraft
     IsArchived
