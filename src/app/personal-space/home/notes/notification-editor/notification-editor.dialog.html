@@ -5,7 +5,7 @@
     <h1 class="text-lg font-bold">{{ mode === 'create' ? 'Erinnerung erstellen' : 'Erinnerung bearbeiten' }}</h1>
     <reme-notification-editor #createNotification 
       [editorMode]="this.mode" [defaultMail]="defaultMail" 
-      [notification]="notification" (notificationChanged)="close($event)" >
+      [notificationToEdit]="notification" (notificationChanged)="close($event)" >
     </reme-notification-editor>
   </div>
 </div>

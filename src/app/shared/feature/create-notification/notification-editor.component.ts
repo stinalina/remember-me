@@ -36,7 +36,7 @@ import { catchError, EMPTY, finalize, switchMap } from 'rxjs';
 export class NotificationEditorComponent implements OnInit, OnDestroy {
   public readonly editorMode = input<'create' | 'edit'>('create');
   public readonly defaultMail = input<string | undefined>(undefined);
-  public readonly notification = input<INotification | undefined>(undefined);
+  public readonly notificationToEdit = input<INotification | undefined>(undefined);
   public readonly notificationChanged = output<INotification | undefined>();
 
   private readonly notificationService = inject(NotificationService);
@@ -56,7 +56,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   public readonly toolbar: Toolbar = inject(EDITOR_TOOLBAR_MIN_CONFIG_TOKEN);
 
   private readonly notificationModel = linkedSignal(() => {
-    const notification = this.notification();
+    const notification = this.notificationToEdit();
     let dueDate = notification?.dueDate;
     if (dueDate) {
       dueDate = new DatePipe('en-US').transform(dueDate, 'yyyy-MM-dd')!;
@@ -117,13 +117,17 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
 
     required(path.dateTime);
     validate(path.dateTime, ({ value }) => {
-      if (this.editorMode() === 'create' && value() < this.tomorrow) {
+      const notification = this.notificationToEdit();
+      if (notification && notification.isDraft) {
+        // Due Date does not matter for Drafts
+        return null;
+      }
+      if (value() < this.tomorrow) {
         return {
           kind: 'minDate',
           message: 'Datum muss in der Zukunft liegen',
         };
       }
-
       return null;
     });
   });
@@ -208,7 +212,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
   }
 
   private updateNotification(): void {
-    const notification = this.notification();
+    const notification = this.notificationToEdit();
     if (!notification) {
       this.toastService.showToast('Error updating notification. Please try again.', ToastType.Error);
       this.retry.set(true);
