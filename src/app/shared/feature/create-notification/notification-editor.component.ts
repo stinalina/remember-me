@@ -117,7 +117,7 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
 
     required(path.dateTime);
     validate(path.dateTime, ({ value }) => {
-      if (value() < this.tomorrow) {
+      if (this.editorMode() === 'create' && value() < this.tomorrow) {
         return {
           kind: 'minDate',
           message: 'Datum muss in der Zukunft liegen',
@@ -290,6 +290,8 @@ export class NotificationEditorComponent implements OnInit, OnDestroy {
     }
 
     if (this.notificationForm().invalid()) {
+      console.error('Form is invalid. Please check the fields and try again.');
+      console.dir(this.notificationForm().errorSummary());
       return;
     }
 
