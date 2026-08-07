@@ -1,126 +1,12 @@
-import { test, expect, type APIRequestContext, type Locator, type Page } from '@playwright/test';
+import { test, expect, type Locator, type Page } from '@playwright/test';
 import { Global } from '../global-helper.object';
+import { HasuraHelper } from '../hasura-helper.object';
 
 test.describe('Notifications Page', () => {
   const testuserEmail = 'testuser@mail.de';
   const testuserPassword = 'test123';
-  const hasuraUrl = 'http://localhost:8081/v1/graphql';
-  const hasuraAdminSecret = 'mysecretkey';
   const seededSubjectPrefix = 'e2e-is-archived';
-  const initialPreferences = { avatarName: 'Kingston' };
-
-  const graphqlRequest = async <T>(
-    request: APIRequestContext,
-    query: string,
-    variables?: Record<string, unknown>,
-  ): Promise<T> => {
-    const response = await request.post(hasuraUrl, {
-      headers: {
-        'content-type': 'application/json',
-        'x-hasura-admin-secret': hasuraAdminSecret,
-      },
-      data: {
-        query,
-        variables,
-      },
-    });
-
-    expect(response.ok()).toBeTruthy();
-    const payload = (await response.json()) as { data?: T; errors?: { message: string }[] };
-    expect(payload.errors, JSON.stringify(payload.errors ?? [])).toBeUndefined();
-
-    return payload.data as T;
-  };
-
-  const ensureTestUserId = async (request: APIRequestContext): Promise<string> => {
-    const existingUser = await graphqlRequest<{
-      User: { Id: string }[];
-    }>(
-      request,
-      `query GetUserByMail($mail: String!) {
-        User(where: {Mail: {_eq: $mail}}) {
-          Id
-        }
-      }`,
-      { mail: testuserEmail },
-    );
-
-    const currentUserId = existingUser.User[0]?.Id;
-    if (currentUserId) {
-      return currentUserId;
-    }
-
-    const insertedUser = await graphqlRequest<{
-      insert_User: { returning: { Id: string }[] };
-    }>(
-      request,
-      `mutation InsertUser($mail: String!, $name: String!, $preferences: jsonb!) {
-        insert_User(objects: {Mail: $mail, Name: $name, Preferences: $preferences}) {
-          returning {
-            Id
-          }
-        }
-      }`,
-      {
-        mail: testuserEmail,
-        name: testuserEmail.split('@')[0],
-        preferences: initialPreferences,
-      },
-    );
-
-    return insertedUser.insert_User.returning[0].Id;
-  };
-
-  const deleteSeededNotifications = async (request: APIRequestContext) => {
-    await graphqlRequest(
-      request,
-      `mutation DeleteNotifications($mail: String!, $subjectPattern: String!) {
-        delete_Notification(where: {
-          Mail: {_eq: $mail},
-          Subject: {_like: $subjectPattern}
-        }) {
-          affected_rows
-        }
-      }`,
-      {
-        mail: testuserEmail,
-        subjectPattern: `${seededSubjectPrefix}%`,
-      },
-    );
-  };
-
-  const seedNotification = async (
-    request: APIRequestContext,
-    options: { subject: string; content: string; dueDate: string; isArchived?: boolean },
-  ) => {
-    const userId = await ensureTestUserId(request);
-
-    const result = await graphqlRequest<{
-      insert_Notification: { returning: { Id: string }[] };
-    }>(
-      request,
-      `mutation InsertNotification($object: Notification_insert_input!) {
-        insert_Notification(objects: [$object]) {
-          returning {
-            Id
-          }
-        }
-      }`,
-      {
-        object: {
-          Subject: options.subject,
-          Content: options.content,
-          DueDate: options.dueDate,
-          IsDraft: false,
-          IsArchived: options.isArchived ?? false,
-          UserId: userId,
-          Mail: testuserEmail,
-        },
-      },
-    );
-
-    return result.insert_Notification.returning[0].Id;
-  };
+  const initialPreferences = { avatarName: 'Kingston', subscribeReleaseMails: true };
 
   const getNotificationCard = (page: Page, subject: string) =>
     page.locator('.card').filter({
@@ -151,7 +37,7 @@ test.describe('Notifications Page', () => {
     page: Page,
     options: { subject: string; content: string; isDraft?: boolean },
   ) => {
-    await page.locator('div.py-6.grid > .card').first().click();
+    await page.locator('div.py-4.grid > .card').first().click();
     await expect(page.getByRole('heading', { name: 'Erinnerung erstellen' })).toBeVisible();
 
     const editor = page.locator('.ProseMirror');
@@ -177,17 +63,17 @@ test.describe('Notifications Page', () => {
     return createdCard;
   };
 
-  test.beforeEach(async ({ page, request }) => {
-    await deleteSeededNotifications(request);
+  test.beforeEach(async ({ page }) => {
+    await HasuraHelper.deleteNotificationsBySubjectPattern(`${seededSubjectPrefix}%`);
     await Global.login(page, testuserEmail, testuserPassword);
   });
 
-  test.afterEach(async ({ request }) => {
-    await deleteSeededNotifications(request);
+  test.afterEach(async () => {
+    await HasuraHelper.deleteNotificationsBySubjectPattern(`${seededSubjectPrefix}%`);
   });
 
   test('Neue Note erstellen Karte sollte an erster Stelle stehen und min. 5 Platzhalter zu sehen sein', async ({ page }) => {
-    const cards = page.locator('div.py-6.grid > .card');
+    const cards = page.locator('div.py-4.grid > .card');
     await expect(cards.first()).toContainText('Neue Note erstellen');
 
     const ghostCards = page.locator('div.card.border-2.border-dashed');
@@ -196,7 +82,7 @@ test.describe('Notifications Page', () => {
 
 
   test('beim erstellen einer Note, sollte diese auftauchen und range sich auf 1 / 5 erhöhen', async ({ page }) => {
-    await page.locator('div.py-6.grid > .card').first().click();
+    await page.locator('div.py-4.grid > .card').first().click();
     await expect(page.getByRole('heading', { name: 'Erinnerung erstellen' })).toBeVisible();
     
     // Click in editor and add content
@@ -296,11 +182,56 @@ test.describe('Notifications Page', () => {
     await expect(publishedCard).toHaveCount(0);
   });
 
-  test('Lösche überfällige Notiz, anhand des Overdue Dialogs', async ({ page, request }) => {
+  test('ein Entwurf kann auch mit DueDate in der Vergangenheit bearbeitet und gespeichert werden', async ({ page }) => {
+    const subject = `${seededSubjectPrefix}-draft-edit-${Date.now()}`;
+    const updatedSubject = `${subject}-updated`;
+    const updatedContent = 'Aktualisierter Entwurf trotz vergangenem DueDate';
+    const pastDueDate = getOverdueDueDate();
+
+    await HasuraHelper.seedNotification({
+      userMail: testuserEmail,
+      userName: testuserEmail.split('@')[0],
+      initialPreferences,
+      subject,
+      content: 'Originalinhalt für Entwurf',
+      dueDate: pastDueDate.toISOString(),
+      isDraft: true,
+    });
+
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+
+    const card = getNotificationCard(page, subject);
+    await expect(card).toBeVisible();
+    await expect(card.getByText('Entwurf', { exact: true })).toBeVisible();
+
+    const editButton = card.getByTestId(/note-\d+-edit/);
+    await expect(editButton).toBeEnabled();
+    await editButton.click();
+
+    await expect(page.getByRole('heading', { name: 'Erinnerung bearbeiten' })).toBeVisible();
+    await page.locator('#create-notifcation-subject').fill(updatedSubject);
+    await page.locator('.ProseMirror').click();
+    await page.locator('.ProseMirror').fill(updatedContent);
+
+    await page.getByRole('button', { name: 'Änderungen speichern' }).click();
+
+    const updatedCard = getNotificationCard(page, updatedSubject);
+    await expect(updatedCard).toBeVisible();
+    await expect(updatedCard).toContainText(updatedContent);
+    await expect(updatedCard.getByText('Entwurf', { exact: true })).toBeVisible();
+  });
+
+
+
+  test('Lösche überfällige Notiz, anhand des Overdue Dialogs', async ({ page }) => {
     const subject = `${seededSubjectPrefix}-delete-${Date.now()}`;
     const dueDate = getOverdueDueDate();
 
-    await seedNotification(request, {
+    await HasuraHelper.seedNotification({
+      userMail: testuserEmail,
+      userName: testuserEmail.split('@')[0],
+      initialPreferences,
       subject,
       content: 'Überfällige Notiz zum Löschen',
       dueDate: dueDate.toISOString(),
@@ -321,12 +252,15 @@ test.describe('Notifications Page', () => {
     await expect(getNotificationCard(page, subject)).toHaveCount(0);
   });
 
-  test('Archiviere überfällige Notiz, anhand des Overdue Dialogs', async ({ page, request }) => {
+  test('Archiviere überfällige Notiz, anhand des Overdue Dialogs', async ({ page }) => {
     const subject = `${seededSubjectPrefix}-archive-${Date.now()}`;
     const dueDate = getOverdueDueDate();
     const expectedDueDate = formatGermanDate(dueDate);
 
-    await seedNotification(request, {
+    await HasuraHelper.seedNotification({
+      userMail: testuserEmail,
+      userName: testuserEmail.split('@')[0],
+      initialPreferences,
       subject,
       content: 'Überfällige Notiz zum Archivieren',
       dueDate: dueDate.toISOString(),
@@ -354,5 +288,45 @@ test.describe('Notifications Page', () => {
     await expect(editButton).toBeDisabled();
     await expect(deleteButton).toBeEnabled();
     await expect(page.getByRole('heading', { name: 'Erinnerung bearbeiten' })).toHaveCount(0);
+  });
+
+  test('archivierte Notes können dupliziert, aber nicht bearbeitet werden', async ({ page }) => {
+    const subject = `${seededSubjectPrefix}-archived-duplicate-${Date.now()}`;
+    const dueDate = getOverdueDueDate();
+
+    await HasuraHelper.seedNotification({
+      userMail: testuserEmail,
+      userName: testuserEmail.split('@')[0],
+      initialPreferences,
+      subject,
+      content: 'Archivierte Note zum Duplizieren',
+      dueDate: dueDate.toISOString(),
+      isArchived: true,
+    });
+
+    await page.reload();
+    await page.waitForLoadState('networkidle');
+
+    const card = getNotificationCard(page, subject);
+    await expect(card).toBeVisible();
+    await expect(card.getByText('Archiviert', { exact: true })).toBeVisible();
+
+    const editButton = card.getByTestId(/note-\d+-edit/);
+    const duplicateButton = card.getByTestId(/note-\d+-duplicate/);
+
+    await expect(editButton).toBeDisabled();
+    await expect(duplicateButton).toBeEnabled();
+
+    await duplicateButton.click();
+
+    await expect(page.locator('.card').filter({
+      has: page.getByRole('heading', { name: subject, exact: true }),
+    })).toHaveCount(2);
+
+    const notifications = await HasuraHelper.getNotificationsBySubject(subject);
+    expect(notifications).toHaveLength(2);
+    expect(notifications.filter((notification) => notification.IsArchived)).toHaveLength(1);
+    expect(notifications.filter((notification) => !notification.IsArchived)).toHaveLength(1);
+    expect(page.getByRole('heading', { name: 'Erinnerung bearbeiten' })).toHaveCount(0);
   });
 });
