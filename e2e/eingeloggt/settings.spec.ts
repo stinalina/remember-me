@@ -1,12 +1,22 @@
 import { expect, test, type Page } from '@playwright/test';
+import { FirebaseAuthHelper } from '../firebase-auth-helper.object';
 import { Global } from '../global-helper.object';
+import { HasuraHelper } from '../hasura-helper.object';
 
 test.describe('Settings Page', () => {
 	const testuserEmail = 'testuser@mail.de';
 	const testuserPassword = 'test123';
+	const initialUsername = 'testuser';
+  const seededSubjectPrefix = 'e2e-is-archived';
+  const initialPreferences = { avatarName: 'Kingston', subscribeReleaseMails: true };
   const updatedMail = 'testuser-e2e-update@mail.de';
   const updatedUsername = 'testuser-e2e-update';
   const updatedPassword = `test123-${Date.now()}`;
+
+	const getNotificationCard = (page: Page, subject: string) =>
+		page.locator('.card').filter({
+			has: page.getByRole('heading', { name: subject, exact: true }),
+		}).first();
 
 	const loginAndOpenSettings = async (page: Page, email = testuserEmail, password = testuserPassword) => {
 		await Global.login(page, email, password);
@@ -15,6 +25,12 @@ test.describe('Settings Page', () => {
 	};
 
 	test.beforeEach(async ({ page }) => {
+		await FirebaseAuthHelper.recreateUser(testuserEmail, testuserPassword);
+		await HasuraHelper.resetUser({
+			mail: testuserEmail,
+			name: initialUsername,
+			preferences: initialPreferences,
+		});
 		await loginAndOpenSettings(page);
 	});
 
@@ -80,6 +96,50 @@ test.describe('Settings Page', () => {
 		await expect(defaultMailInput).toHaveValue(updatedMail);
 	});
 
+	test('beim Anlegen neuer Notes wird die Default-Mail aus den Settings verwendet', async ({ page }) => {
+    const subject = `${seededSubjectPrefix}-default-mail-${Date.now()}`;
+    const defaultMail = `default-mail-${Date.now()}@example.com`;
+		const originalPreferences = await HasuraHelper.getUserPreferences(testuserEmail, initialPreferences);
+
+    try {
+			await HasuraHelper.updateUserPreferences({
+				mail: testuserEmail,
+				name: testuserEmail.split('@')[0],
+				initialPreferences,
+				preferences: {
+					...originalPreferences,
+					defaultMail,
+				},
+			});
+
+      await page.reload();
+      await page.waitForLoadState('networkidle');
+      await page.locator('div.py-4.grid > .card').first().click();
+      await expect(page.getByRole('heading', { name: 'Erinnerung erstellen' })).toBeVisible();
+
+      const mailInput = page.locator('#create-notifcation-mail');
+      await expect(mailInput).toHaveValue(defaultMail);
+
+      await page.locator('.ProseMirror').click();
+      await page.locator('.ProseMirror').fill('Note mit Default-Mail aus den Settings');
+      await page.locator('#create-notifcation-subject').fill(subject);
+      await page.getByRole('button', { name: 'Notiz erstellen' }).click();
+
+      await expect(getNotificationCard(page, subject)).toBeVisible();
+
+	      const notifications = await HasuraHelper.getNotificationsBySubject(subject);
+      expect(notifications).toHaveLength(1);
+      expect(notifications[0]?.Mail).toBe(defaultMail);
+    } finally {
+	      await HasuraHelper.updateUserPreferences({
+	        mail: testuserEmail,
+	        name: testuserEmail.split('@')[0],
+	        initialPreferences,
+	        preferences: originalPreferences,
+	      });
+    }
+  });
+
 	test('Passwort kann gespeichert und mit dem neuen Wert genutzt werden', async ({ page }) => {
 		const passwordInput = page.locator('#password-input');
 		const passwordRow = page.locator('div.grid', { has: page.locator('#password-input') });
@@ -100,7 +160,7 @@ test.describe('Settings Page', () => {
 		await expect(page).toHaveURL(/.*login/);
 
 		await Global.login(page, testuserEmail, updatedPassword);
-		await expect(page.getByTestId('home-username')).toHaveText(updatedUsername);
+		await expect(page.getByTestId('home-username')).toHaveText('testuser');
 	});
 
 	test('Profil loeschen entfernt den User und verhindert anschliessendes Login', async ({ page }) => {
