@@ -52,11 +52,11 @@ export class AuthService {
         this.isAuthenticated.set(true);
         this.localStorage.setUserMail(email);
       }),
+      map(() => true),
       catchError(error => {
         this.handleError(error);
         return of(false);
-      }),
-      map(() => true)
+      })
     );
   }
 
